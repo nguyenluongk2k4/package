@@ -2,14 +2,14 @@ import "./globals.css";
 import LegacyScripts from "../components/LegacyScripts";
 
 export const metadata = {
-  title: "Travlla - Travel & Tour Tailwind CSS Template",
+  title: "Sắc Cố Đô",
   description:
-    "Travlla is a responsive Travel & Tour Tailwind CSS template designed for travel agencies, tour operators, holiday planners, and booking websites.",
+    "Sổ pop-up passport và trải nghiệm đóng dấu tại 6 điểm văn hóa Ninh Bình.",
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="vi">
       <head>
         <meta name="format-detection" content="telephone=no" />
         <link rel="icon" type="image/png" href="/assets/images/favicon.png" />

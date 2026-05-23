@@ -1,12 +1,11 @@
-import StaticPage from "../components/StaticPage";
-import { getPage, getPageMetadata } from "../lib/static-pages";
+import SacHomePage from "../components/sac-co-do/HomePage";
 
-export function generateMetadata() {
-  return getPageMetadata("index");
-}
+export const metadata = {
+  title: "Sắc Cố Đô | Pop-up passport Ninh Bình",
+  description:
+    "Sổ pop-up passport kết hợp hành trình đóng dấu, check-in QR và photobooth tại 6 điểm văn hóa Ninh Bình.",
+};
 
 export default function HomePage() {
-  const page = getPage("index");
-
-  return <StaticPage html={page.html} />;
+  return <SacHomePage />;
 }
