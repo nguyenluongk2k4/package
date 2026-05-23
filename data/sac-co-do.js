@@ -90,3 +90,52 @@ export const proofStats = [
   { value: "03", label: "Gói sản phẩm" },
   { value: "100%", label: "Mobile-first" },
 ];
+
+export const packages = [
+  {
+    id: "single",
+    name: "Sổ Đơn Tiêu Chuẩn",
+    price: 150000,
+    priceFormatted: "150.000đ",
+    image: "/assets/images/trv-pricing/pic1.jpg",
+    features: [
+      "01 Cuốn sổ pop-up Sắc Cố Đô",
+      "01 Mã ID kích hoạt SCD-XXXXX",
+      "Bản đồ check-in 6 trạm trực tuyến",
+      "Truy cập kho photobooth & chụp ảnh",
+      "Nhận certificate hoàn thành hành trình",
+    ],
+  },
+  {
+    id: "combo",
+    name: "Combo Đồng Hành (2 Sổ)",
+    price: 270000,
+    priceFormatted: "270.000đ",
+    image: "/assets/images/trv-pricing/pic2.jpg",
+    badge: "Tiết kiệm 30k",
+    features: [
+      "02 Cuốn sổ pop-up Sắc Cố Đô",
+      "02 Mã ID kích hoạt SCD-XXXXX",
+      "Bản đồ check-in 6 trạm trực tuyến",
+      "Truy cập kho photobooth & chụp ảnh",
+      "Nhận certificate hoàn thành hành trình",
+    ],
+  },
+  {
+    id: "gift",
+    name: "Hộp Quà Tặng Sắc Cố Đô",
+    price: 200000,
+    priceFormatted: "200.000đ",
+    image: "/assets/images/trv-pricing/pic3.png",
+    badge: "Quà tặng cao cấp",
+    features: [
+      "01 Cuốn sổ pop-up Sắc Cố Đô",
+      "01 Mã ID kích hoạt SCD-XXXXX",
+      "Đóng gói hộp quà cao cấp, thiệp chúc mừng",
+      "Bản đồ check-in 6 trạm trực tuyến",
+      "Truy cập kho photobooth & chụp ảnh",
+      "Nhận certificate hoàn thành hành trình",
+    ],
+  },
+];
+

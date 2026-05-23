@@ -1,7 +1,34 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { navItems } from "../../data/sac-co-do";
+import { getCart } from "../../lib/db";
 
 export default function SiteHeader() {
+  const [cartCount, setCartCount] = useState(0);
+
+  useEffect(() => {
+    // Function to calculate cart items count
+    const updateCount = () => {
+      const cart = getCart();
+      const count = cart.reduce((total, item) => total + item.quantity, 0);
+      setCartCount(count);
+    };
+
+    // Initialize on mount
+    updateCount();
+
+    // Listen for storage changes & custom update events
+    window.addEventListener("cart-updated", updateCount);
+    window.addEventListener("storage", updateCount);
+
+    return () => {
+      window.removeEventListener("cart-updated", updateCount);
+      window.removeEventListener("storage", updateCount);
+    };
+  }, []);
+
   return (
     <header className="site-header sticky-header absolute lg:left-8.75 lg:right-8.75 lg:top-8.75 left-0 right-0 top-0 duration-500 z-999 [.site-header.is-fixed]:fixed [.site-header.is-fixed]:animate-header-scroll-animation [.site-header.is-fixed]:bg-primary [.site-header.is-fixed]:rounded-b-3xl [.site-header.is-fixed]:top-0">
       <div className="main-bar-wraper">
@@ -47,14 +74,22 @@ export default function SiteHeader() {
                 ))}
               </ul>
               <div className="lg:hidden block max-lg:p-5 text-center mt-auto">
-                <Link href="/gio-hang" className="site-button butn-bg-shape">
-                  Mua ngay
+                <Link href="/gio-hang" className="site-button butn-bg-shape flex items-center justify-center gap-2">
+                  <i className="fa-solid fa-shopping-cart" /> Giỏ hàng ({cartCount})
                 </Link>
               </div>
             </div>
 
-            <div className="flex lg:justify-end lg:items-center z-9 h-20 xl:pl-8 max-lg:ms-auto">
-              <Link href="/gio-hang" className="sac-header-cta max-lg:hidden">
+            <div className="flex lg:justify-end lg:items-center z-9 h-20 xl:pl-8 max-lg:ms-auto gap-4">
+              <Link href="/gio-hang" className="relative flex items-center justify-center text-white text-2xl hover:text-secondary transition-colors" aria-label="Xem giỏ hàng">
+                <i className="fa-solid fa-shopping-cart" />
+                {cartCount > 0 && (
+                  <span className="absolute -top-2 -right-3 bg-citrusyellow text-primary font-bold text-xs size-5 rounded-full flex items-center justify-center animate-bounce shadow-md">
+                    {cartCount}
+                  </span>
+                )}
+              </Link>
+              <Link href="/san-pham" className="sac-header-cta max-lg:hidden">
                 Mua ngay
               </Link>
             </div>
@@ -65,3 +100,4 @@ export default function SiteHeader() {
     </header>
   );
 }
+

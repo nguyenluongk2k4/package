@@ -1,3 +1,11 @@
+@font-face {
+  font-family: "UTM-Azuki";
+  src: url("/assets/fonts/UTM-Azuki.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 html {
   scroll-behavior: auto;
 }
@@ -26,7 +34,7 @@ body {
   color: #fff;
   display: inline-flex;
   flex-direction: column;
-  font-family: "Kaushan Script", cursive;
+  font-family: "UTM-Azuki", cursive;
   font-size: 30px;
   font-weight: 700;
   line-height: 0.95;
@@ -153,9 +161,9 @@ body {
 }
 
 .sac-book-cover strong {
-  font-family: "Kaushan Script", cursive;
-  font-size: 42px;
-  line-height: 1;
+  font-family: "UTM-Azuki", cursive;
+  font-size: 32px;
+  line-height: 1.3;
 }
 
 .sac-book-page {
@@ -297,10 +305,10 @@ body {
 }
 
 .sac-station-illustration strong {
-  font-family: "Kaushan Script", cursive;
-  font-size: 44px;
+  font-family: "UTM-Azuki", cursive;
+  font-size: 28px;
   font-weight: 400;
-  line-height: 1;
+  line-height: 1.3;
   max-width: 260px;
   text-shadow: 0 8px 22px rgba(0, 0, 0, 0.22);
 }
@@ -434,10 +442,10 @@ body {
 }
 
 .sac-product-book-main strong {
-  font-family: "Kaushan Script", cursive;
-  font-size: 42px;
+  font-family: "UTM-Azuki", cursive;
+  font-size: 32px;
   font-weight: 400;
-  line-height: 1;
+  line-height: 1.3;
 }
 
 .sac-product-book-left,
@@ -511,10 +519,10 @@ body {
 }
 
 .sac-step-visual strong {
-  font-family: "Kaushan Script", cursive;
-  font-size: 34px;
+  font-family: "UTM-Azuki", cursive;
+  font-size: 26px;
   font-weight: 400;
-  line-height: 1;
+  line-height: 1.3;
 }
 
 .sac-icon-filter {
@@ -534,6 +542,15 @@ body {
   max-width: 1100px;
   overflow: hidden;
   position: relative;
+}
+
+.sac-section-heading {
+  font-family: "UTM-Azuki", cursive;
+  line-height: 1.3;
+}
+
+.sac-inner-banner h1 {
+  font-family: "UTM-Azuki", cursive;
 }
 
 .sac-inner-banner {

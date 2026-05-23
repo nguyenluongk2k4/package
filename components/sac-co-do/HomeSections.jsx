@@ -173,7 +173,7 @@ export function StorySection() {
           <div className="xl:col-span-5 lg:col-span-7 col-span-12 px-3.75 max-lg:mb-40">
             <div className="2xl:mb-30 mb-10 relative">
               <div className="text-left 2xl:mb-15 mb-10">
-                <h2 className="xl:text-46 md:text-40 text-3xl mb-2.5">
+                <h2 className="!font-display xl:text-46 md:text-40 text-3xl mb-2.5">
                   Không chỉ là <span className="text-citrusyellow">một cuốn sổ</span>
                 </h2>
                 <p className="2xl:mb-12.5 mb-7 sm:pr-8.75 text-base">
@@ -270,9 +270,10 @@ export function ProofBandSection() {
                       <div>
                         <h4 className="!font-medium !text-white sm:mb-5 mb-2.5 xl:text-2xl sm:text-xl text-sm">{stat.label}</h4>
                         <div className="font-black xl:text-42 sm:text-36 text-2xl leading-[0.75] font-base text-white">
-                          <span className="value" data-value={stat.value}>
-                            {stat.value}
+                          <span className="value" data-value={stat.value.replace("%", "")}>
+                            {stat.value.replace("%", "")}
                           </span>
+                          {stat.value.includes("%") && "%"}
                         </div>
                       </div>
                     </div>
@@ -298,7 +299,7 @@ export function HowItWorksSection() {
             <div className="grid grid-cols-12">
               <div className="xl:col-span-7 col-span-12 px-3.75">
                 <div className="md:max-w-100 max-w-[inherit] text-left lg:mb-15 mb-7.5">
-                  <h2 className="xl:text-46 md:text-40 text-3xl mb-3.5">
+                  <h2 className="!font-display xl:text-46 md:text-40 text-3xl mb-3.5">
                     <span className="text-citrusyellow">3 bước </span>để bắt đầu hành trình
                   </h2>
                 </div>
@@ -357,9 +358,9 @@ export function HowItWorksSection() {
 
           <div className="overflow-hidden rounded-br-25xl rounded-bl-25xl bg-primary pt-27.5 pb-17.5 bg-[url(../images/w-cho-top.png),url(../images/w-cho-btm.png)] bg-no-repeat [background-position:top_left,bottom_left] flex flex-wrap items-center justify-between">
             <div className="max-w-122.5 xl:ml-45 ml-10 mb-7.5">
-              <h3 className="!font-display !text-40 mb-7.5 !text-white">Vì sao nên làm theo hướng này?</h3>
+              <h3 className="!font-display !text-40 !leading-[1.2] mb-7.5 !text-white">Vì sao chọn chúng tôi?</h3>
               <ul className="sm:flex text-white flex-wrap">
-                {["Giữ animation template", "Dữ liệu 6 trạm tách riêng", "Sẵn sàng Firebase", "Mobile-first cho người đi chơi"].map((item) => (
+                {["Thiết kế thủ công, độc bản 100%", "6 điểm check-in di sản Ninh Bình", "Mã ID riêng cho từng cuốn sổ", "Lưu ký ức số mãi mãi qua app"].map((item) => (
                   <li className="font-title font-medium text-lg text-white sm:w-1/2 pr-2.5 flex mb-5" key={item}>
                     <i className="size-7.5 max-w-7.5 mr-6 rounded-full bg-citrusyellow !flex items-center justify-center text-white fa-solid fa-check" />
                     <span>{item}</span>

@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "UTM-Azuki";
+  src: url("/assets/fonts/UTM-Azuki.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* BASE CSS */
 @import "./base/global.css";
 @import "./base/grid.css";
@@ -22,7 +30,7 @@
     --spacing: .25rem;
 
     /* FONT FAMILY */
-    --font-display: "Kaushan Script", "cursive";
+    --font-display: "UTM-Azuki", "cursive";
     --font-title: "Afacad", "sans-serif";
     --font-base: "Figtree", "sans-serif";
 
