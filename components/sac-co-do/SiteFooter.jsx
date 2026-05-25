@@ -3,12 +3,15 @@ import { navItems, stations } from "../../data/sac-co-do";
 
 export default function SiteFooter() {
   return (
-    <footer className="pt-20 bg-primary bg-cover bg-[url(../images/background/ftr-dark-bg.png)]">
+    <footer className="pt-20 bg-primary bg-cover bg-[url(../images/background/ftr-dark-bg.png)] relative z-10">
       <div className="-mt-40">
         <div className="container bg-citrusyellow rounded-3xl md:flex items-center justify-between !py-6.25 lg:!px-17.5 sm:!px-10.5 !px-5.5 max-w-324">
           <div className="pr-5 max-lg:w-1/2 max-md:w-full">
-            <div className="text-primary font-display lg:text-80 sm:text-46 text-28 leading-[0.75] sm:text-shadow-[2px_3px_0px_rgba(255,255,255,0.72)] pb-5">
-              <span className="text-white inline-block">Đi đủ</span> 6 trạm!
+            <div
+              className="text-primary font-display lg:text-80 sm:text-46 text-28 pb-3"
+              style={{ lineHeight: 1.6 }}
+            >
+              <span className="text-white">Đi đủ</span>{" "}6 trạm!
             </div>
             <div className="text-primary text-xl font-medium font-title max-md:mb-5">
               Kích hoạt ID để lưu tiến độ, mở photobooth và nhận phần thưởng số.

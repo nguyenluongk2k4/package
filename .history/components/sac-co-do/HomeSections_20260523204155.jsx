@@ -251,7 +251,7 @@ export function ProofBandSection() {
           <div className="lg:h-120 sm:h-150 h-125 bg-black overflow-hidden relative">
             <div className="h-200 md:h-250 opacity-100 left-0 top-0 absolute translate-z-0 w-full z-1 sac-proof-bg" />
             <div className="absolute inset-0 bg-primary/65 z-2" />
-            <div className="relative z-3 h-full flex items-start justify-center text-center px-5 p-10">
+            <div className="relative z-3 h-full flex items-start justify-center text-center px-5 p-20">
               <div>
                 <h2 className="!font-display lg:!text-70 sm:!text-60 !text-40 !text-white mb-5">
                   Một hành trình có thể cầm, mở và lưu lại.
@@ -290,7 +290,7 @@ export function ProofBandSection() {
 
 export function HowItWorksSection() {
   return (
-    <div className="bg-white md:pt-30 pt-17.5 relative pb-0">
+    <div className="bg-white md:pt-30 pt-17.5 relative overflow-hidden">
       <div className="absolute w-150 h-137.5 -left-75 top-1/2 bg-amber [filter:blur(100px)]" />
       <div className="absolute w-150 h-125 -right-75 top-1/2 bg-bluelight [filter:blur(100px)]" />
       <div className="container">
@@ -356,12 +356,12 @@ export function HowItWorksSection() {
             </div>
           </div>
 
-          <div className="overflow-hidden rounded-br-25xl rounded-bl-25xl bg-paleaqua pt-27.5 pb-17.5 bg-[url(../images/w-cho-top.png),url(../images/w-cho-btm.png)] bg-no-repeat [background-position:top_left,bottom_left] flex flex-wrap items-center justify-between mb-28">
+          <div className="overflow-hidden rounded-br-25xl rounded-bl-25xl bg-primary pt-27.5 pb-17.5 bg-[url(../images/w-cho-top.png),url(../images/w-cho-btm.png)] bg-no-repeat [background-position:top_left,bottom_left] flex flex-wrap items-center justify-between mb-300">
             <div className="max-w-122.5 xl:ml-45 ml-10 mb-7.5">
-              <h3 className="!font-display !text-40 mb-7.5 !text-primary" style={{ lineHeight: 1.6 }}>Vì sao chọn chúng tôi?</h3>
-              <ul className="sm:flex text-primary flex-wrap">
+              <h3 className="!font-display !text-40 !leading-[1.2] mb-7.5 !text-white">Vì sao chọn chúng tôi?</h3>
+              <ul className="sm:flex text-white flex-wrap">
                 {["Thiết kế thủ công, độc bản 100%", "6 điểm check-in di sản Ninh Bình", "Mã ID riêng cho từng cuốn sổ", "Lưu ký ức số mãi mãi qua app"].map((item) => (
-                  <li className="font-title font-medium text-lg text-primary sm:w-1/2 pr-2.5 flex mb-5" key={item}>
+                  <li className="font-title font-medium text-lg text-white sm:w-1/2 pr-2.5 flex mb-5" key={item}>
                     <i className="size-7.5 max-w-7.5 mr-6 rounded-full bg-citrusyellow !flex items-center justify-center text-white fa-solid fa-check" />
                     <span>{item}</span>
                   </li>
@@ -373,7 +373,7 @@ export function HowItWorksSection() {
             </div>
             <div className="mx-auto lg:mr-40 max-lg:text-center">
               <img src="/assets/images/24-Image.png" alt="" width="147" height="163" loading="lazy" />
-              <h3 className="!font-black xl:!text-58 !text-40 !leading-[0.75] mb-2.5 uppercase !text-primary !font-base">SCD</h3>
+              <h3 className="!font-black xl:!text-58 !text-40 !leading-[0.75] mb-2.5 uppercase !text-white !font-base">SCD</h3>
               <span className="block font-bold xl:text-38 text-28 leading-[1.2] uppercase text-secondary">MVP</span>
             </div>
           </div>

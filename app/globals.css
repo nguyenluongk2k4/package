@@ -30,6 +30,19 @@ body {
   display: none !important;
 }
 
+/* ─── FIX: UTM-Azuki needs generous line-height for Vietnamese diacritics ───
+   Tailwind v4 defaults to line-height: 1 for text-5xl+.
+   Vietnamese chars (ắ, ề, ủ, ạ…) extend far above/below the baseline.
+   Force minimum 1.45 on ALL elements using font-display. */
+[class~="font-display"],
+[class~="\\!font-display"] {
+  line-height: 1.45 !important;
+}
+/* Hero title is intentionally compact — restore its tight setting */
+.sac-hero-title {
+  line-height: 0.82 !important;
+}
+
 .sac-logo {
   color: #fff;
   display: inline-flex;
