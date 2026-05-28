@@ -11,7 +11,7 @@ export function CartPage() {
       description="Giao diện này giữ chỗ cho luồng chọn gói, số lượng và thanh toán."
     >
       <div className="cart-row">
-        <img src={packages[0].image} alt={packages[0].name} />
+        <img src={packages[0].image} alt={packages[0].name} loading="lazy" decoding="async" />
         <div>
           <h3>{packages[0].name}</h3>
           <p>01 cuốn · Mã ID sẽ được tạo sau khi thanh toán</p>
@@ -51,7 +51,7 @@ export function PhotoboothPage() {
     >
       <div className="gallery-strip framed">
         {gallery.map((image) => (
-          <img key={image} src={image} alt="" />
+          <img key={image} src={image} alt="" loading="lazy" decoding="async" />
         ))}
       </div>
     </UtilityPage>
@@ -84,7 +84,7 @@ export function CheckinPage({ stationId }) {
       description={station.description}
     >
       <div className="checkin-card">
-        <img src={station.image} alt={station.name} />
+        <img src={station.image} alt={station.name} loading="lazy" decoding="async" />
         <div>
           <span className="pill">{station.tag}</span>
           <h3>{station.stamp}</h3>

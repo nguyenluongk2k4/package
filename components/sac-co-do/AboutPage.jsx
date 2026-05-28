@@ -17,7 +17,7 @@ export default function AboutPage() {
               dễ dùng và có khả năng mở rộng theo mùa.
             </p>
           </div>
-          <img src="/gowilds/assets/images/gallery/we-6.jpg" alt="Sắc Cố Đô" />
+          <img src="/gowilds/assets/images/gallery/we-6.jpg" alt="Sắc Cố Đô" decoding="async" fetchPriority="high" />
         </section>
         <SectionTitle eyebrow="Định hướng" title="Ba nguyên tắc thiết kế trải nghiệm" />
         <div className="step-grid">

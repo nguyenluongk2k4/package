@@ -27,7 +27,7 @@ export default function HomePage() {
             </div>
           </div>
           <div className="hero-media">
-            <img src={hero.image} alt="Hành trình Sắc Cố Đô" />
+            <img src={hero.image} alt="Hành trình Sắc Cố Đô" decoding="async" fetchPriority="high" />
             <div className="passport-card">
               <span>SCD-2026</span>
               <strong>Passport đã sẵn sàng</strong>
@@ -71,7 +71,7 @@ export default function HomePage() {
           <div className="product-grid">
             {featuredPackages.map((item) => (
               <article className="product-card" key={item.id}>
-                <img src={item.image} alt={item.name} />
+                <img src={item.image} alt={item.name} loading="lazy" decoding="async" />
                 <div>
                   <span className="pill">{item.badge}</span>
                   <h3>{item.name}</h3>
@@ -94,7 +94,7 @@ export default function HomePage() {
 
         <section className="gallery-strip" aria-label="Ảnh cảm hứng">
           {gallery.map((image) => (
-            <img key={image} src={image} alt="" />
+            <img key={image} src={image} alt="" loading="lazy" decoding="async" />
           ))}
         </section>
       </main>

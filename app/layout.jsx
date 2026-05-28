@@ -1,4 +1,5 @@
 import "./globals.css";
+import ScrollReveal from "../components/sac-co-do/ScrollReveal";
 
 export const metadata = {
   title: "Sắc Cố Đô | Pop-up passport Ninh Bình",
@@ -17,7 +18,10 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        <ScrollReveal />
+        {children}
+      </body>
     </html>
   );
 }
