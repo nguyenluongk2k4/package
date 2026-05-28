@@ -1,11 +1,11 @@
-import CheckinPage from "../../../components/sac-co-do/CheckinPage";
+import { CheckinPage } from "../../../components/sac-co-do/UtilityPages";
 
 export const metadata = {
-  title: "Check-in Trạm Di Sản | Sắc Cố Đô",
-  description:
-    "Xác nhận sự hiện diện của bạn tại trạm di sản Ninh Bình bằng mã ngày thực tế để mở khóa dấu mốc tiếp theo.",
+  title: "Check-in | Sắc Cố Đô",
 };
 
-export default function CheckinRoute() {
-  return <CheckinPage />;
+export default async function Page({ params }) {
+  const { "tram-id": stationId } = await params;
+
+  return <CheckinPage stationId={stationId} />;
 }

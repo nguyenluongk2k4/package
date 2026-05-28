@@ -1,11 +1,9 @@
-import RewardPage from "../../components/sac-co-do/RewardPage";
+import { RewardPage } from "../../components/sac-co-do/UtilityPages";
 
 export const metadata = {
-  title: "Chứng Nhận & Phần Thưởng | Sắc Cố Đô",
-  description:
-    "Nhận chứng nhận hoàn thành hành trình di sản Ninh Bình và mở khóa hộp quà số tri ân sau khi chinh phục trọn vẹn 6 trạm.",
+  title: "Phần thưởng | Sắc Cố Đô",
 };
 
-export default function RewardRoute() {
+export default function Page() {
   return <RewardPage />;
 }

@@ -1,8 +1,9 @@
-import StaticPage from "../components/StaticPage";
-import { getPage } from "../lib/static-pages";
-
 export default function NotFound() {
-  const page = getPage("error-404");
-
-  return page ? <StaticPage html={page.html} /> : null;
+  return (
+    <main className="app-not-found">
+      <h1>404</h1>
+      <p>Page not found.</p>
+      <a href="/">Back to home</a>
+    </main>
+  );
 }
