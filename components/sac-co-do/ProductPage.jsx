@@ -1,4 +1,4 @@
-import ProductConfigurator from "./ProductConfigurator";
+import PassportVersionSection from "./PassportVersionSection";
 import SiteFooter from "./SiteFooter";
 import SiteHeader from "./SiteHeader";
 
@@ -6,8 +6,8 @@ export default function ProductPage() {
   return (
     <>
       <SiteHeader />
-      <main className="product-detail-page">
-        <ProductConfigurator />
+      <main>
+        <PassportVersionSection />
       </main>
       <SiteFooter />
     </>

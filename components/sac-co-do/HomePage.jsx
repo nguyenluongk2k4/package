@@ -1,4 +1,5 @@
-import { brand, gallery, heroSlides, packages, proofStats, stations, steps } from "../../data/sac-co-do";
+import { brand, gallery, heroSlides, proofStats, stations, steps } from "../../data/sac-co-do";
+import PassportVersionSection from "./PassportVersionSection";
 import SectionTitle from "./SectionTitle";
 import SiteFooter from "./SiteFooter";
 import SiteHeader from "./SiteHeader";
@@ -6,7 +7,6 @@ import StationCarousel from "./StationCarousel";
 
 export default function HomePage() {
   const hero = heroSlides[0];
-  const featuredPackages = packages.slice(0, 3);
 
   return (
     <>
@@ -58,26 +58,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="content-section warm-section product-showcase" id="san-pham-noi-bat">
-          <SectionTitle
-            eyebrow="Sản phẩm"
-            title="Chọn phiên bản passport phù hợp chuyến đi"
-            description="Từ bản cá nhân đến combo đồng hành và hộp quà tặng."
-          />
-          <div className="product-grid">
-            {featuredPackages.map((item) => (
-              <article className="product-card" key={item.id}>
-                <img src={item.image} alt={item.name} loading="lazy" decoding="async" />
-                <div>
-                  <span className="pill">{item.badge}</span>
-                  <h3>{item.name}</h3>
-                  <p>{item.description}</p>
-                  <strong>{item.priceFormatted}</strong>
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
+        <PassportVersionSection className="content-section" />
 
         <section className="content-section" id="tram-trai-nghiem">
           <SectionTitle

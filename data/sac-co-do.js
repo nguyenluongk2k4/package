@@ -100,8 +100,7 @@ export const heroSlides = [
 export const proofStats = [
   { value: "06", label: "trạm trải nghiệm" },
   { value: "03", label: "gói sản phẩm" },
-  { value: "01", label: "mã ID cá nhân" },
-  { value: "100%", label: "mobile-first" },
+  { value: "01", label: "mã ID cá nhân" }
 ];
 
 export const steps = [
