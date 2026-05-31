@@ -45,7 +45,7 @@ export default function HomePage() {
           ))}
         </section>
 
-        <section className="content-section">
+        <section className="content-section" id="cach-hoat-dong">
           <SectionTitle
             eyebrow="Cách hoạt động"
             title="Một hành trình đủ nhẹ để chơi, đủ sâu để nhớ"
@@ -62,7 +62,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="content-section warm-section">
+        <section className="content-section warm-section" id="san-pham-noi-bat">
           <SectionTitle
             eyebrow="Sản phẩm"
             title="Chọn phiên bản passport phù hợp chuyến đi"
@@ -83,7 +83,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="content-section">
+        <section className="content-section" id="tram-trai-nghiem">
           <SectionTitle
             eyebrow="6 trạm"
             title="Các điểm đến tạo nên bản đồ trải nghiệm"

@@ -16,6 +16,9 @@ export default function StationCard({ station, variant = "default" }) {
             <dd>{station.stamp}</dd>
           </div>
         </dl>
+        <a className="station-checkin-link" href={`/checkin/${station.id}`}>
+          Quét QR / mở AR
+        </a>
       </div>
     </article>
   );

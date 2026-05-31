@@ -8,6 +8,9 @@ const revealSelectors = [
   ".stats-band > *",
   ".content-section > .section-title",
   ".page-shell > .section-title",
+  ".page-shell > *",
+  ".product-detail-page > *",
+  ".product-detail > *",
   ".step-grid > *",
   ".product-grid > *",
   ".station-grid > *",
@@ -21,6 +24,7 @@ const revealSelectors = [
   ".reward-card",
   ".cart-row",
   ".checkin-card",
+  ".site-footer > *",
 ];
 
 function getDelay(element) {

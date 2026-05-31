@@ -12,6 +12,7 @@ export default function RootLayout({ children }) {
     <html lang="vi">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js" async></script>
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link
           href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap"
