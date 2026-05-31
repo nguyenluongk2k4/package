@@ -4,6 +4,15 @@ import SiteFooter from "./SiteFooter";
 import SiteHeader from "./SiteHeader";
 import StationCard from "./StationCard";
 
+const mapMarkers = [
+  { number: "1", name: "Bái Đính", x: 47, y: 15, checkX: 86.8, checkY: 20.4 },
+  { number: "2", name: "Tràng An", x: 31, y: 36, checkX: 86.8, checkY: 31.2 },
+  { number: "3", name: "Hang Múa", x: 63, y: 41, checkX: 86.8, checkY: 42.6 },
+  { number: "4", name: "Tam Cốc", x: 51, y: 59, checkX: 86.8, checkY: 53.6 },
+  { number: "5", name: "Tuyệt Tình Cốc", x: 33, y: 78, checkX: 86.8, checkY: 65.6 },
+  { number: "6", name: "Thung Nham", x: 58, y: 77, checkX: 86.8, checkY: 76.7 },
+];
+
 export default function JourneyPage() {
   return (
     <>
@@ -24,14 +33,32 @@ export default function JourneyPage() {
           ))}
         </div>
         <section className="journey-map" aria-label="Bản đồ hành trình Sắc Cố Đô">
-          <div>
-            <span className="pill">Bản đồ trải nghiệm</span>
-            <h3>Đi qua 6 điểm, mở khóa đủ bộ dấu mộc</h3>
-            <p>
-              Bản đồ giúp người dùng hình dung hành trình trước khi đến từng trạm, quét QR và mở trải nghiệm AR tại địa điểm thật.
-            </p>
+          <div className="journey-map-frame">
+            <img src="/assets/dia-danh/ban-do.png" alt="Bản đồ các địa danh trong hành trình Sắc Cố Đô" loading="lazy" decoding="async" />
+            {mapMarkers.map((marker, index) => (
+              <span
+                key={marker.number}
+                className="journey-map-marker"
+                style={{ "--marker-x": `${marker.x}%`, "--marker-y": `${marker.y}%`, "--marker-delay": `${720 + index * 140}ms` }}
+                aria-label={`${marker.number}. ${marker.name}`}
+              >
+                <span className="map-flag" aria-hidden="true">
+                  <span>{marker.number}</span>
+                </span>
+                <span className="map-flag-label">{marker.name}</span>
+              </span>
+            ))}
+            {mapMarkers.map((marker, index) => (
+              <label
+                key={`check-${marker.number}`}
+                className="journey-map-check"
+                style={{ "--check-x": `${marker.checkX}%`, "--check-y": `${marker.checkY}%`, "--check-delay": `${1180 + index * 90}ms` }}
+              >
+                <input type="checkbox" aria-label={`Đánh dấu đã qua ${marker.name}`} />
+                <span aria-hidden="true" />
+              </label>
+            ))}
           </div>
-          <img src="/assets/dia-danh/ban-do.png" alt="Bản đồ các địa danh trong hành trình Sắc Cố Đô" loading="lazy" decoding="async" />
         </section>
         <div className="station-grid">
           {stations.map((station) => (

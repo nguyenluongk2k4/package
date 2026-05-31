@@ -931,45 +931,291 @@ html.reveal-ready .reveal-target.is-revealed {
 }
 
 .journey-map {
-  display: grid;
-  grid-template-columns: minmax(260px, 0.42fr) minmax(320px, 1fr);
-  gap: 24px;
-  align-items: stretch;
+  position: relative;
   margin: 0 0 32px;
-  padding: 24px;
+  padding: clamp(12px, 2vw, 20px);
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 26px;
-  background: linear-gradient(135deg, rgba(255, 250, 242, 0.94), rgba(226, 245, 230, 0.78));
+  background: linear-gradient(135deg, rgba(255, 250, 242, 0.96), rgba(226, 245, 230, 0.82));
   box-shadow: 0 18px 56px rgba(66, 38, 18, 0.09);
+  perspective: 1600px;
 }
 
-.journey-map > div {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+.journey-map::before,
+.journey-map::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
 }
 
-.journey-map h3 {
-  margin: 16px 0 10px;
-  color: var(--brand);
-  font-family: "Baloo 2", "Be Vietnam Pro", sans-serif;
-  font-size: clamp(28px, 4vw, 42px);
-  line-height: 1.05;
+.journey-map::before {
+  z-index: 2;
+  background: linear-gradient(90deg, transparent 0 49.6%, rgba(32, 81, 47, 0.2) 49.8% 50.2%, transparent 50.4% 100%);
+  opacity: 0;
+  animation: mapFoldLine 1200ms 220ms ease-out both;
 }
 
-.journey-map p {
-  margin: 0;
-  color: var(--muted);
-  line-height: 1.7;
+.journey-map::after {
+  z-index: 1;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.34), transparent 20%, transparent 80%, rgba(6, 62, 67, 0.08));
+  opacity: 0;
+  animation: mapSheen 1600ms 340ms ease-out both;
+}
+
+.journey-map-frame {
+  position: relative;
+  width: 100%;
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow: 0 18px 46px rgba(6, 62, 67, 0.12);
+  transform-origin: center center;
+  animation: mapOpen 920ms cubic-bezier(0.2, 0.85, 0.18, 1) both;
 }
 
 .journey-map img {
   width: 100%;
-  min-height: 320px;
-  border-radius: 20px;
+  min-height: 360px;
+  border-radius: inherit;
   object-fit: cover;
-  background: #ffffff;
+}
+
+.journey-map-marker {
+  position: absolute;
+  left: var(--marker-x);
+  top: var(--marker-y);
+  z-index: 3;
+  display: grid;
+  justify-items: center;
+  gap: 7px;
+  transform: translate(-50%, -100%);
+  opacity: 0;
+  animation: markerDrop 680ms cubic-bezier(0.24, 0.92, 0.3, 1.18) var(--marker-delay) both;
+}
+
+.map-flag {
+  position: relative;
+  display: grid;
+  width: clamp(34px, 4.2vw, 48px);
+  height: clamp(42px, 5.5vw, 62px);
+  place-items: start center;
+  padding-top: 8px;
+  filter: drop-shadow(0 12px 12px rgba(67, 39, 18, 0.24));
+}
+
+.map-flag::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #9c3d25, #5f2418);
+  clip-path: polygon(50% 0, 94% 18%, 82% 72%, 50% 100%, 18% 72%, 6% 18%);
+}
+
+.map-flag::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -8px;
+  width: 3px;
+  height: 16px;
+  border-radius: 999px;
+  background: #4c2115;
+  transform: translateX(-50%);
+}
+
+.map-flag span {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  width: clamp(22px, 2.8vw, 32px);
+  height: clamp(22px, 2.8vw, 32px);
+  place-items: center;
+  border-radius: 50%;
+  background: #f8e7bc;
+  color: #6b2a1a;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(15px, 1.8vw, 22px);
+  font-weight: 900;
+  line-height: 1;
+}
+
+.map-flag-label {
+  display: inline-flex;
+  min-height: 24px;
+  align-items: center;
+  padding: 0 9px;
+  border: 1px solid rgba(95, 36, 24, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 244, 217, 0.92);
+  color: #5f2418;
+  font-size: clamp(10px, 1.05vw, 12px);
+  font-weight: 900;
+  line-height: 1;
+  white-space: nowrap;
+  box-shadow: 0 8px 18px rgba(67, 39, 18, 0.12);
+}
+
+.journey-map-check {
+  position: absolute;
+  left: var(--check-x);
+  top: var(--check-y);
+  z-index: 4;
+  display: grid;
+  width: clamp(18px, 1.9vw, 27px);
+  height: clamp(18px, 1.9vw, 27px);
+  place-items: center;
+  transform: translate(-50%, -50%) scale(0.8);
+  opacity: 0;
+  animation: checkAppear 420ms ease-out var(--check-delay) both;
+}
+
+.journey-map-check input {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  cursor: pointer;
+  opacity: 0;
+}
+
+.journey-map-check span {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 1.8px solid rgba(83, 46, 22, 0.72);
+  background: rgba(248, 231, 188, 0.42);
+  box-shadow: 0 2px 7px rgba(67, 39, 18, 0.12);
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+.journey-map-check span::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  width: 48%;
+  height: 26%;
+  border-left: 3px solid #176133;
+  border-bottom: 3px solid #176133;
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(-45deg) scale(0.45);
+  transition:
+    opacity 160ms ease,
+    transform 220ms cubic-bezier(0.2, 0.9, 0.2, 1.25);
+}
+
+.journey-map-check input:focus-visible + span {
+  outline: 3px solid rgba(23, 97, 51, 0.26);
+  outline-offset: 3px;
+}
+
+.journey-map-check input:hover + span {
+  background: rgba(255, 244, 217, 0.78);
+  border-color: #5f2418;
+  transform: scale(1.08);
+}
+
+.journey-map-check input:checked + span {
+  border-color: #176133;
+  background: rgba(230, 247, 218, 0.92);
+  box-shadow:
+    0 0 0 4px rgba(23, 97, 51, 0.12),
+    0 8px 18px rgba(23, 97, 51, 0.18);
+}
+
+.journey-map-check input:checked + span::after {
+  opacity: 1;
+  transform: translate(-50%, -50%) rotate(-45deg) scale(1);
+}
+
+@keyframes mapOpen {
+  0% {
+    opacity: 0;
+    filter: blur(8px) saturate(0.82);
+    transform: rotateX(18deg) scaleX(0.58) scaleY(0.92);
+  }
+
+  56% {
+    opacity: 1;
+    filter: blur(0) saturate(1.04);
+    transform: rotateX(0deg) scaleX(1.025) scaleY(1);
+  }
+
+  100% {
+    opacity: 1;
+    filter: none;
+    transform: rotateX(0deg) scaleX(1) scaleY(1);
+  }
+}
+
+@keyframes mapFoldLine {
+  0%,
+  72% {
+    opacity: 0.55;
+    transform: scaleY(0.2);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scaleY(1);
+  }
+}
+
+@keyframes mapSheen {
+  0% {
+    opacity: 0;
+    transform: translateX(-32%);
+  }
+
+  42% {
+    opacity: 0.72;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(36%);
+  }
+}
+
+@keyframes markerDrop {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -180%) scale(0.84);
+  }
+
+  62% {
+    opacity: 1;
+    transform: translate(-50%, -94%) scale(1.08);
+  }
+
+  82% {
+    transform: translate(-50%, -104%) scale(0.96);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -100%) scale(1);
+  }
+}
+
+@keyframes checkAppear {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.62);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
 }
 
 .checkin-gallery {
