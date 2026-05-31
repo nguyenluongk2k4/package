@@ -11,24 +11,89 @@ export const brand = {
   tagline: "Pop-up passport Ninh Bình",
   description:
     "Một cuốn sổ lưu niệm mở ra hành trình đóng dấu, check-in QR và lưu ảnh tại các điểm văn hóa tiêu biểu của Ninh Bình.",
-  primaryCta: { href: "/san-pham", label: "Chọn sổ passport" },
-  secondaryCta: { href: "/hanh-trinh", label: "Xem hành trình" },
+  primaryCta: { href: "/hanh-trinh", label: "Khám phá ngay" },
+  secondaryCta: { href: "/ve-chung-toi", label: "Xem video giới thiệu" },
+};
+
+const diaDanhBase = "/assets/dia-danh";
+
+export const stationAssets = {
+  "trang-an": {
+    map: `${diaDanhBase}/ban-do.png`,
+    hero: `${diaDanhBase}/trang-an/TA1.jpg`,
+    gallery: [
+      `${diaDanhBase}/trang-an/TA1.jpg`,
+      `${diaDanhBase}/trang-an/TA2.jpg`,
+      `${diaDanhBase}/trang-an/TA3.jpg`,
+      `${diaDanhBase}/trang-an/TA10.jpg`,
+    ],
+  },
+  "hoa-lu": {
+    map: `${diaDanhBase}/ban-do.png`,
+    hero: `${diaDanhBase}/co-do-hoa-lu/CDHL 5.webp`,
+    gallery: [
+      `${diaDanhBase}/co-do-hoa-lu/CDHL 5.webp`,
+      `${diaDanhBase}/co-do-hoa-lu/CĐHL 6.webp`,
+      `${diaDanhBase}/co-do-hoa-lu/CĐHL 1.jpg`,
+      `${diaDanhBase}/co-do-hoa-lu/CĐHL 2.jpg`,
+    ],
+  },
+  "bai-dinh": {
+    map: `${diaDanhBase}/ban-do.png`,
+    hero: `${diaDanhBase}/bai-dinh/Chùa Bái Đính 1.jpg`,
+    gallery: [
+      `${diaDanhBase}/bai-dinh/Chùa Bái Đính 1.jpg`,
+      `${diaDanhBase}/bai-dinh/Chùa Bái Đính 2.jpg`,
+      `${diaDanhBase}/bai-dinh/Chùa Bái Đính 3.jpg`,
+      `${diaDanhBase}/bai-dinh/Chùa bái đính 4.jpg`,
+    ],
+  },
+  "pho-co-hoa-lu": {
+    map: `${diaDanhBase}/ban-do.png`,
+    hero: `${diaDanhBase}/pho-co-hoa-lu/PCHL1.jpg`,
+    gallery: [
+      `${diaDanhBase}/pho-co-hoa-lu/PCHL1.jpg`,
+      `${diaDanhBase}/pho-co-hoa-lu/PCHL 2.jpg`,
+      `${diaDanhBase}/pho-co-hoa-lu/PCHL 3.jpg`,
+      `${diaDanhBase}/pho-co-hoa-lu/IMG_1021.JPG`,
+    ],
+  },
+  "tam-coc": {
+    map: `${diaDanhBase}/ban-do.png`,
+    hero: `${diaDanhBase}/tam-coc-bich-dong/TC1.jpg`,
+    gallery: [
+      `${diaDanhBase}/tam-coc-bich-dong/TC1.jpg`,
+      `${diaDanhBase}/tam-coc-bich-dong/TC2.jpg`,
+      `${diaDanhBase}/tam-coc-bich-dong/TC4.jpg`,
+      `${diaDanhBase}/tam-coc-bich-dong/TC5.jpg`,
+    ],
+  },
+  "hang-mua": {
+    map: `${diaDanhBase}/ban-do.png`,
+    hero: `${diaDanhBase}/hang-mua/HM1.jpg`,
+    gallery: [
+      `${diaDanhBase}/hang-mua/HM1.jpg`,
+      `${diaDanhBase}/hang-mua/HM2.jpg`,
+      `${diaDanhBase}/hang-mua/HM3.jpg`,
+      `${diaDanhBase}/hang-mua/HM4.jpg`,
+    ],
+  },
 };
 
 export const heroSlides = [
   {
-    eyebrow: "Sưu tầm dấu ấn cố đô",
-    title: "Mang Ninh Bình vào một cuốn passport pop-up",
+    eyebrow: "Di sản nghìn năm",
+    title: "Hành trình Sắc Cố Đô",
     description:
-      "Đi qua từng trạm văn hóa, quét QR, đóng dấu vào sổ và mở khóa photobooth kỷ niệm trên hành trình của riêng bạn.",
-    image: "/gowilds/assets/images/hero/hero-four_img-1.jpg",
+      "Khám phá vẻ đẹp tiềm ẩn của Ninh Bình thông qua công nghệ AR độc đáo. Mỗi bước chân là một câu chuyện lịch sử, mỗi điểm đến là một dấu ấn trong tấm hộ chiếu di sản của riêng bạn.",
+    image: stationAssets["trang-an"].hero,
   },
   {
     eyebrow: "Check-in có câu chuyện",
     title: "Từ Tràng An đến Hoa Lư, mỗi điểm là một lớp ký ức",
     description:
       "Sắc Cố Đô kết hợp vật phẩm giấy, trải nghiệm số và bản đồ điểm đến để chuyến đi có thứ để giữ lại.",
-    image: "/gowilds/assets/images/place/place-20.jpg",
+    image: stationAssets["hoa-lu"].hero,
   },
 ];
 
@@ -61,7 +126,9 @@ export const stations = [
   {
     id: "trang-an",
     name: "Tràng An",
-    image: "/gowilds/assets/images/place/place-20.jpg",
+    image: stationAssets["trang-an"].hero,
+    gallery: stationAssets["trang-an"].gallery,
+    mapImage: stationAssets["trang-an"].map,
     tag: "Non nước",
     hours: "07:00 - 17:00",
     stamp: "Dấu sóng đá vôi",
@@ -71,7 +138,9 @@ export const stations = [
   {
     id: "hoa-lu",
     name: "Cố Đô Hoa Lư",
-    image: "/gowilds/assets/images/place/place-21.jpg",
+    image: stationAssets["hoa-lu"].hero,
+    gallery: stationAssets["hoa-lu"].gallery,
+    mapImage: stationAssets["hoa-lu"].map,
     tag: "Kinh đô xưa",
     hours: "07:00 - 17:00",
     stamp: "Dấu cổng thành",
@@ -81,7 +150,9 @@ export const stations = [
   {
     id: "bai-dinh",
     name: "Chùa Bái Đính",
-    image: "/gowilds/assets/images/place/place-22.jpg",
+    image: stationAssets["bai-dinh"].hero,
+    gallery: stationAssets["bai-dinh"].gallery,
+    mapImage: stationAssets["bai-dinh"].map,
     tag: "Tâm linh",
     hours: "06:00 - 18:00",
     stamp: "Dấu chuông đồng",
@@ -91,7 +162,9 @@ export const stations = [
   {
     id: "pho-co-hoa-lu",
     name: "Phố Cổ Hoa Lư",
-    image: "/gowilds/assets/images/place/place-23.jpg",
+    image: stationAssets["pho-co-hoa-lu"].hero,
+    gallery: stationAssets["pho-co-hoa-lu"].gallery,
+    mapImage: stationAssets["pho-co-hoa-lu"].map,
     tag: "Đêm phố",
     hours: "08:00 - 22:00",
     stamp: "Dấu đèn phố",
@@ -101,7 +174,9 @@ export const stations = [
   {
     id: "tam-coc",
     name: "Tam Cốc - Bích Động",
-    image: "/gowilds/assets/images/place/place-24.jpg",
+    image: stationAssets["tam-coc"].hero,
+    gallery: stationAssets["tam-coc"].gallery,
+    mapImage: stationAssets["tam-coc"].map,
     tag: "Sông núi",
     hours: "07:00 - 17:30",
     stamp: "Dấu thuyền lúa",
@@ -111,7 +186,9 @@ export const stations = [
   {
     id: "hang-mua",
     name: "Hang Múa",
-    image: "/gowilds/assets/images/place/place-25.jpg",
+    image: stationAssets["hang-mua"].hero,
+    gallery: stationAssets["hang-mua"].gallery,
+    mapImage: stationAssets["hang-mua"].map,
     tag: "Tầm nhìn",
     hours: "06:00 - 18:00",
     stamp: "Dấu long đỉnh",
@@ -190,10 +267,10 @@ export const values = [
 ];
 
 export const gallery = [
-  "/gowilds/assets/images/gallery/gallery-7.jpg",
-  "/gowilds/assets/images/gallery/gallery-8.jpg",
-  "/gowilds/assets/images/gallery/gallery-9.jpg",
-  "/gowilds/assets/images/place/des-single-1.jpg",
-  "/gowilds/assets/images/place/des-single-2.jpg",
-  "/gowilds/assets/images/gallery/cta.jpg",
+  stationAssets["trang-an"].gallery[0],
+  stationAssets["hoa-lu"].gallery[0],
+  stationAssets["bai-dinh"].gallery[0],
+  stationAssets["pho-co-hoa-lu"].gallery[0],
+  stationAssets["tam-coc"].gallery[0],
+  stationAssets["hang-mua"].gallery[0],
 ];

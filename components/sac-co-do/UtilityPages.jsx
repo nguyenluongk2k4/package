@@ -271,6 +271,13 @@ export function CheckinPage({ stationId }) {
               </div>
 
             </div>
+            {station.gallery?.length > 1 && (
+              <div className="checkin-gallery" aria-label={`Ảnh tham khảo ${station.name}`}>
+                {station.gallery.slice(1, 4).map((image) => (
+                  <img key={image} src={image} alt="" loading="lazy" decoding="async" />
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Hiệu ứng đóng dấu thủ công thành công */}

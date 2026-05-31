@@ -3,12 +3,19 @@
   --paper-2: #eef8ea;
   --ink: #063e43;
   --muted: #4c777c;
-  --brand: #00727c;
-  --brand-2: #78d000;
-  --green: #73cf00;
-  --accent: #ffa800;
-  --line: rgba(0, 114, 124, 0.18);
-  --shadow: 0 24px 80px rgba(0, 79, 86, 0.14);
+  --brand: #176133;
+  --brand-2: #d8a23b;
+  --green: #176133;
+  --accent: #f3c977;
+  --cream: #fff0cf;
+  --line: rgba(23, 97, 51, 0.18);
+  --shadow: 0 24px 80px rgba(23, 97, 51, 0.14);
+}
+
+@font-face {
+  font-family: "Thien An";
+  src: url("/assets/fonts/UTM-Thu-Phap-Thien-An.ttf") format("truetype");
+  font-display: swap;
 }
 
 * {
@@ -477,6 +484,22 @@ html.reveal-ready .reveal-target.is-revealed {
   background: rgba(120, 208, 0, 0.08);
 }
 
+.product-showcase {
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) minmax(280px, 0.72fr);
+  gap: 34px;
+  align-items: center;
+}
+
+.product-showcase .product-grid {
+  order: 1;
+}
+
+.product-showcase .section-title {
+  order: 2;
+  margin-bottom: 0;
+}
+
 .section-title {
   margin-bottom: 32px;
 }
@@ -618,13 +641,52 @@ html.reveal-ready .reveal-target.is-revealed {
   overflow: hidden;
 }
 
-.station-card img {
-  width: 100%;
+.station-card-media {
+  position: relative;
   height: 220px;
+  overflow: hidden;
+}
+
+.station-card-media > img {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
 }
 
-.station-card > div {
+.station-card-thumbs {
+  position: relative;
+  display: flex;
+  width: max-content;
+  gap: 6px;
+  margin: 16px 0 2px;
+  padding: 5px;
+  border-radius: 999px;
+  background: rgba(8, 33, 30, 0.58);
+  backdrop-filter: blur(10px);
+}
+
+.station-card-thumbs button {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, 0.78);
+  border-radius: 999px;
+  background: transparent;
+}
+
+.station-card-thumbs button.is-active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(243, 201, 119, 0.34);
+}
+
+.station-card-thumbs img {
+  width: 44px;
+  height: 44px;
+  object-fit: cover;
+}
+
+.station-card-body {
   padding: 22px;
 }
 
@@ -778,17 +840,23 @@ html.reveal-ready .reveal-target.is-revealed {
 }
 
 .station-card-overlay {
-  min-height: 430px;
+  height: 520px;
+  min-height: 520px;
   border: 0;
   border-radius: 26px;
   background: #0b4647;
   box-shadow: var(--shadow);
 }
 
-.station-card-overlay img {
+.station-card-overlay .station-card-media {
+  height: 100%;
+  min-height: 100%;
+}
+
+.station-card-overlay .station-card-media > img {
   width: 100%;
   height: 100%;
-  min-height: 430px;
+  min-height: 100%;
   object-fit: cover;
   transform: scale(1.02);
 }
@@ -802,7 +870,7 @@ html.reveal-ready .reveal-target.is-revealed {
   pointer-events: none;
 }
 
-.station-card-overlay > div {
+.station-card-overlay .station-card-body {
   position: absolute;
   inset: auto 0 0;
   z-index: 1;
@@ -818,6 +886,8 @@ html.reveal-ready .reveal-target.is-revealed {
 .station-card-overlay h3 {
   margin: 14px 0 8px;
   color: #ffffff;
+  font-family: "Thien An", "Baloo 2", "Be Vietnam Pro", sans-serif;
+  font-weight: 400;
   font-size: 32px;
 }
 
@@ -858,6 +928,63 @@ html.reveal-ready .reveal-target.is-revealed {
   grid-template-columns: repeat(3, 1fr);
   gap: 22px;
   margin-bottom: 32px;
+}
+
+.journey-map {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.42fr) minmax(320px, 1fr);
+  gap: 24px;
+  align-items: stretch;
+  margin: 0 0 32px;
+  padding: 24px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 26px;
+  background: linear-gradient(135deg, rgba(255, 250, 242, 0.94), rgba(226, 245, 230, 0.78));
+  box-shadow: 0 18px 56px rgba(66, 38, 18, 0.09);
+}
+
+.journey-map > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.journey-map h3 {
+  margin: 16px 0 10px;
+  color: var(--brand);
+  font-family: "Baloo 2", "Be Vietnam Pro", sans-serif;
+  font-size: clamp(28px, 4vw, 42px);
+  line-height: 1.05;
+}
+
+.journey-map p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.journey-map img {
+  width: 100%;
+  min-height: 320px;
+  border-radius: 20px;
+  object-fit: cover;
+  background: #ffffff;
+}
+
+.checkin-gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.checkin-gallery img {
+  width: 100%;
+  height: 120px;
+  border-radius: 18px;
+  object-fit: cover;
+  box-shadow: 0 12px 34px rgba(0, 79, 86, 0.12);
 }
 
 .about-hero {
@@ -1349,6 +1476,19 @@ html.reveal-ready .reveal-target.is-revealed {
     height: 420px;
   }
 
+  .product-showcase {
+    grid-template-columns: 1fr;
+  }
+
+  .product-showcase .section-title {
+    order: 1;
+    margin-bottom: 10px;
+  }
+
+  .product-showcase .product-grid {
+    order: 2;
+  }
+
   .step-grid,
   .product-grid,
   .station-grid,
@@ -1367,8 +1507,10 @@ html.reveal-ready .reveal-target.is-revealed {
   }
 
   .station-card-overlay,
-  .station-card-overlay img {
-    min-height: 390px;
+  .station-card-overlay .station-card-media,
+  .station-card-overlay .station-card-media > img {
+    height: 480px;
+    min-height: 480px;
   }
 }
 
@@ -1415,6 +1557,7 @@ html.reveal-ready .reveal-target.is-revealed {
   .product-grid,
   .station-grid,
   .timeline,
+  .journey-map,
   .progress-grid,
   .stats-band,
   .gallery-strip,
@@ -1442,8 +1585,27 @@ html.reveal-ready .reveal-target.is-revealed {
   }
 
   .station-card-overlay,
-  .station-card-overlay img {
-    min-height: 420px;
+  .station-card-overlay .station-card-media,
+  .station-card-overlay .station-card-media > img {
+    height: 520px;
+    min-height: 520px;
+  }
+
+  .journey-map {
+    padding: 16px;
+  }
+
+  .journey-map img {
+    min-height: 230px;
+  }
+
+  .checkin-gallery {
+    gap: 8px;
+  }
+
+  .checkin-gallery img {
+    height: 86px;
+    border-radius: 12px;
   }
 
   .total-box {
@@ -1467,5 +1629,330 @@ html.reveal-ready .reveal-target.is-revealed {
     filter: none !important;
     transform: none !important;
     transition: none !important;
+  }
+}
+
+/* Sac Co Do visual refresh: logo header + destination hero */
+.site-header {
+  background: rgba(255, 255, 255, 0.96);
+  border-bottom: 1px solid rgba(23, 97, 51, 0.1);
+  box-shadow: 0 10px 28px rgba(18, 55, 32, 0.06);
+  backdrop-filter: blur(16px);
+}
+
+.header-home {
+  background: rgba(255, 255, 255, 0.96);
+}
+
+.header-navigation {
+  width: min(100%, 1440px) !important;
+  max-width: none !important;
+}
+
+.primary-menu {
+  min-height: 82px;
+  padding: 0 clamp(34px, 7vw, 120px);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.header-inner .primary-menu {
+  border-radius: 0;
+  background: transparent;
+}
+
+.brand-mark {
+  gap: 14px;
+}
+
+.brand-mark img,
+.mobile-logo img {
+  width: auto;
+  height: 56px;
+  object-fit: contain;
+}
+
+.brand-wordmark {
+  color: var(--brand);
+  font-family: "Thien An", "Baloo 2", "Be Vietnam Pro", sans-serif;
+  font-size: 30px;
+  font-weight: 400;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.header-inner .nav-brand {
+  display: inline-flex;
+}
+
+.site-nav {
+  justify-content: center;
+  gap: 46px;
+}
+
+.menu-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 82px;
+  padding: 0;
+  color: rgba(6, 62, 67, 0.68);
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.menu-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 18px;
+  display: block;
+  width: auto;
+  height: 2px;
+  margin: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  transform: none;
+}
+
+.menu-link:hover,
+.menu-link.is-active {
+  color: var(--brand);
+}
+
+.menu-link:hover::after,
+.menu-link.is-active::after {
+  background: var(--brand);
+}
+
+.nav-right-item {
+  gap: 14px;
+}
+
+.header-icon-button {
+  display: inline-grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--brand);
+  font-size: 19px;
+  font-weight: 900;
+}
+
+.header-icon-button:hover {
+  background: rgba(23, 97, 51, 0.08);
+}
+
+.header-cta {
+  min-height: 40px;
+  padding: 0 22px;
+  border-radius: 12px;
+  background: #052d20;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.hero-section {
+  position: relative;
+  display: block;
+  width: 100%;
+  min-height: clamp(560px, 74vh, 760px);
+  max-width: none;
+  margin: 0 auto 54px;
+  overflow: hidden;
+  padding: 0;
+  background: #072f21;
+}
+
+.hero-section::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(90deg, rgba(1, 33, 22, 0.88) 0%, rgba(1, 33, 22, 0.66) 34%, rgba(1, 33, 22, 0.24) 64%, rgba(1, 33, 22, 0.18) 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.2));
+  pointer-events: none;
+}
+
+.hero-media {
+  position: absolute;
+  inset: 0;
+  min-height: 100%;
+}
+
+.hero-media > img {
+  width: 100%;
+  height: 100%;
+  min-height: clamp(560px, 74vh, 760px);
+  border-radius: 0;
+  box-shadow: none;
+  object-fit: cover;
+}
+
+.hero-copy {
+  position: relative;
+  z-index: 2;
+  width: min(760px, calc(100% - 48px));
+  padding: clamp(82px, 13vh, 132px) 0 64px clamp(48px, 9vw, 132px);
+  color: #ffffff;
+}
+
+.hero-copy .eyebrow {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  margin-bottom: 28px;
+  padding: 0 18px;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  color: var(--cream);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+}
+
+.hero-copy h1 {
+  max-width: 640px;
+  color: #ffffff;
+  font-family: "Thien An", "Baloo 2", "Be Vietnam Pro", sans-serif;
+  font-size: clamp(58px, 7.5vw, 118px);
+  font-weight: 400;
+  line-height: 1.12;
+}
+
+.hero-copy p:not(.eyebrow) {
+  max-width: 680px;
+  margin-top: 22px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.8;
+}
+
+.button-row {
+  gap: 16px;
+  margin-top: 34px;
+}
+
+.hero-copy .btn {
+  min-height: 58px;
+  border-radius: 12px;
+  padding: 0 28px;
+  font-size: 14px;
+}
+
+.hero-copy .btn.primary {
+  background: var(--cream);
+  color: #113321;
+}
+
+.hero-copy .btn.ghost {
+  gap: 8px;
+  border: 0;
+  background: transparent;
+  color: #ffffff;
+}
+
+.hero-copy .btn.ghost span {
+  display: inline-grid;
+  width: 18px;
+  height: 18px;
+  place-items: center;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  font-size: 8px;
+}
+
+.section-title h2,
+.step-card h3,
+.product-card h3,
+.station-card h3,
+.timeline h3,
+.progress-grid h3,
+.journey-map h3 {
+  color: var(--brand);
+}
+
+.station-card-overlay h3 {
+  color: #ffffff;
+}
+
+@media (max-width: 1024px) {
+  .site-nav {
+    gap: 22px;
+  }
+
+  .hero-copy {
+    padding-left: 36px;
+  }
+}
+
+@media (max-width: 760px) {
+  .primary-menu {
+    min-height: 72px;
+    padding-inline: 16px;
+  }
+
+  .brand-mark img,
+  .mobile-logo img {
+    height: 44px;
+  }
+
+  .brand-wordmark {
+    font-size: 24px;
+  }
+
+  .site-nav {
+    justify-content: flex-start;
+    gap: 0;
+  }
+
+  .site-nav .menu-link {
+    min-height: 52px;
+  }
+
+  .site-nav .menu-link::after {
+    display: none;
+  }
+
+  .header-icon-button,
+  .header-cta {
+    display: none;
+  }
+
+  .hero-section {
+    width: 100%;
+    min-height: 610px;
+  }
+
+  .hero-media > img {
+    min-height: 610px;
+  }
+
+  .hero-section::after {
+    background: linear-gradient(180deg, rgba(1, 33, 22, 0.45) 0%, rgba(1, 33, 22, 0.82) 58%, rgba(1, 33, 22, 0.92) 100%);
+  }
+
+  .hero-copy {
+    width: calc(100% - 32px);
+    padding: 230px 0 0 20px;
+  }
+
+  .hero-copy h1 {
+    font-size: 58px;
+  }
+
+  .hero-copy p:not(.eyebrow) {
+    font-size: 15px;
+  }
+
+  .hero-copy .btn {
+    min-height: 50px;
+    padding: 0 18px;
   }
 }

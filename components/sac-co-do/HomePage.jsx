@@ -13,6 +13,9 @@ export default function HomePage() {
       <SiteHeader />
       <main>
         <section className="hero-section">
+          <div className="hero-media" aria-hidden="true">
+            <img src={hero.image} alt="" decoding="async" fetchPriority="high" />
+          </div>
           <div className="hero-copy">
             <p className="eyebrow">{hero.eyebrow}</p>
             <h1>{hero.title}</h1>
@@ -22,16 +25,9 @@ export default function HomePage() {
                 {brand.primaryCta.label}
               </a>
               <a className="btn ghost" href={brand.secondaryCta.href}>
+                <span aria-hidden="true">▶</span>
                 {brand.secondaryCta.label}
               </a>
-            </div>
-          </div>
-          <div className="hero-media">
-            <img src={hero.image} alt="Hành trình Sắc Cố Đô" decoding="async" fetchPriority="high" />
-            <div className="passport-card">
-              <span>SCD-2026</span>
-              <strong>Passport đã sẵn sàng</strong>
-              <small>Quét QR, đóng dấu, lưu ảnh.</small>
             </div>
           </div>
         </section>
@@ -62,7 +58,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="content-section warm-section" id="san-pham-noi-bat">
+        <section className="content-section warm-section product-showcase" id="san-pham-noi-bat">
           <SectionTitle
             eyebrow="Sản phẩm"
             title="Chọn phiên bản passport phù hợp chuyến đi"
