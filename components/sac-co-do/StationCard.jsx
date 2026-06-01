@@ -9,9 +9,29 @@ export default function StationCard({ station, variant = "default" }) {
   }, [station.gallery, station.image]);
   const [activeImage, setActiveImage] = useState(images[0]);
   const previewImages = images.slice(0, 4);
+  const detailHref = `/hanh-trinh/${station.id}`;
+
+  function openDetail() {
+    window.location.href = detailHref;
+  }
 
   return (
-    <article className={`station-card ${variant === "overlay" ? "station-card-overlay" : ""}`}>
+    <article
+      className={`station-card station-card-clickable ${variant === "overlay" ? "station-card-overlay" : ""}`}
+      role="link"
+      tabIndex={0}
+      onClick={openDetail}
+      onKeyDown={(event) => {
+        if (event.target !== event.currentTarget) {
+          return;
+        }
+
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          openDetail();
+        }
+      }}
+    >
       <div className="station-card-media">
         <img src={activeImage} alt={station.name} loading="lazy" decoding="async" />
       </div>
@@ -27,7 +47,10 @@ export default function StationCard({ station, variant = "default" }) {
                 key={image}
                 type="button"
                 aria-label={`Xem ảnh ${station.name}`}
-                onClick={() => setActiveImage(image)}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setActiveImage(image);
+                }}
               >
                 <img src={image} alt="" loading="lazy" decoding="async" />
               </button>
@@ -44,6 +67,9 @@ export default function StationCard({ station, variant = "default" }) {
             <dd>{station.stamp}</dd>
           </div>
         </dl>
+        <a className="station-checkin-link" href={detailHref} onClick={(event) => event.stopPropagation()}>
+          Xem chi tiết
+        </a>
       </div>
     </article>
   );

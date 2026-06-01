@@ -3,41 +3,56 @@
 import { useMemo, useState } from "react";
 import { packages } from "../../data/sac-co-do";
 
+const productImages = [
+  { src: "/assets/san-pham.png", label: "Sản phẩm Sắc Cố Đô" },
+  { src: "/gowilds/assets/images/shop/product-big-1.jpg", label: "Mặt trước sản phẩm" },
+  { src: "/gowilds/assets/images/shop/product-big-2.jpg", label: "Bộ sản phẩm" },
+  { src: "/gowilds/assets/images/shop/product-big-3.jpg", label: "Chi tiết đóng gói" },
+];
+
 function formatVnd(value) {
   return new Intl.NumberFormat("vi-VN").format(value) + "đ";
 }
 
 export default function ProductConfigurator() {
   const [selectedId, setSelectedId] = useState(packages[0].id);
+  const [activeImage, setActiveImage] = useState(productImages[0]);
   const [quantity, setQuantity] = useState(1);
   const selected = packages.find((item) => item.id === selectedId) || packages[0];
   const total = useMemo(() => selected.price * quantity, [selected.price, quantity]);
 
   return (
-    <section className="product-detail">
+    <section className="product-detail" aria-label="Chi tiết sản phẩm Sắc Cố Đô">
       <div className="product-gallery-panel">
-        <div className="product-main-image">496x810</div>
+        <div className="product-main-image">
+          <img src={activeImage.src} alt={activeImage.label} loading="eager" decoding="async" />
+        </div>
         <div className="product-thumbs" aria-label="Ảnh sản phẩm">
-          {[0, 1, 2, 3].map((item) => (
-            <button className={item === 0 ? "active" : ""} type="button" key={item}>
-              496x810
+          {productImages.map((image) => (
+            <button
+              className={image.src === activeImage.src ? "active" : ""}
+              type="button"
+              key={image.src}
+              onClick={() => setActiveImage(image)}
+              aria-label={image.label}
+            >
+              <img src={image.src} alt="" loading="lazy" decoding="async" />
             </button>
           ))}
         </div>
       </div>
 
       <div className="product-buy-panel">
-        <span className="product-kicker">Pop-up passport</span>
+        <span className="product-kicker">Sản phẩm du lịch</span>
         <h1>Sổ tay Pop-up Sắc Cố Đô Ninh Bình</h1>
         <div className="rating-row">
           <span aria-label="5 sao">★★★★★</span>
           <small>(48 đánh giá của người đi phượt)</small>
         </div>
         <p>
-          Cuốn passport du lịch Ninh Bình độc nhất vô nhị. Thiết kế bìa cứng cao cấp,
-          đậm họa tiết, mở ra 6 trang sách nổi 3D tương ứng 6 thắng cảnh Ninh Bình
-          tinh xảo. Mỗi cuốn sổ đi kèm một mã kích hoạt độc nhất in riêng giúp số hóa
-          hành trình check-in qua QR code của bạn tại điểm đến thực tế.
+          Cuốn sổ tay du lịch Ninh Bình độc nhất vô nhị. Thiết kế bìa cứng cao cấp, đậm họa tiết,
+          mở ra 6 trang sách nổi 3D tương ứng 6 thắng cảnh Ninh Bình tinh xảo. Mỗi cuốn sổ đi kèm
+          mã dịch vụ riêng để kích hoạt các tiện ích hành trình sau khi mua sản phẩm.
         </p>
 
         <div className="option-group">
@@ -67,11 +82,11 @@ export default function ProductConfigurator() {
           <div>
             <small>Số lượng:</small>
             <div className="quantity-control">
-              <button type="button" onClick={() => setQuantity((value) => Math.max(1, value - 1))}>
+              <button type="button" onClick={() => setQuantity((value) => Math.max(1, value - 1))} aria-label="Giảm số lượng">
                 -
               </button>
               <span>{quantity}</span>
-              <button type="button" onClick={() => setQuantity((value) => value + 1)}>
+              <button type="button" onClick={() => setQuantity((value) => value + 1)} aria-label="Tăng số lượng">
                 +
               </button>
             </div>
@@ -83,7 +98,7 @@ export default function ProductConfigurator() {
         </div>
 
         <button className="add-cart-button" type="button">
-          <span aria-hidden="true">▾</span>
+          <span className="cart-glyph" aria-hidden="true" />
           Thêm vào giỏ hàng
         </button>
       </div>

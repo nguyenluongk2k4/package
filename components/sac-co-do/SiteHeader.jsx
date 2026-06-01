@@ -5,7 +5,8 @@ import { useState } from "react";
 
 const navLinks = [
   { href: "/hanh-trinh", label: "Hành trình" },
-  { href: "/san-pham", label: "Hộ chiếu" },
+  { href: "/ho-chieu", label: "Hộ Chiếu" },
+  { href: "/san-pham", label: "Sản phẩm" },
   { href: "/ve-chung-toi", label: "Giới thiệu" },
 ];
 
@@ -42,10 +43,10 @@ export default function SiteHeader() {
 
           <div className="nav-right-item">
             <a className="header-icon-button" href="/hanh-trinh" aria-label="Tìm hành trình">
-              <span aria-hidden="true">⌕</span>
+              <img src="/assets/ic-search.svg" alt="" aria-hidden="true" />
             </a>
             <a className="header-icon-button" href="/ve-chung-toi" aria-label="Thông tin dự án">
-              <span aria-hidden="true">◎</span>
+              <img src="/assets/ic-language.svg" alt="" aria-hidden="true" />
             </a>
             <a className="header-cta" href="/kich-hoat">
               Bắt đầu

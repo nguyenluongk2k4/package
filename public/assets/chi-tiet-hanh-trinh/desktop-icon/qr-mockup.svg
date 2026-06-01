@@ -1,0 +1,29 @@
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_2_115)">
+<rect width="128" height="128" fill="#EDEEEB"/>
+<g opacity="0.2">
+<rect width="16" height="16" fill="#00241A"/>
+<rect x="16" width="16" height="16" fill="white"/>
+<rect x="32" width="16" height="16" fill="#00241A"/>
+<rect x="48" width="16" height="16" fill="#00241A"/>
+<rect x="64" width="16" height="16" fill="white"/>
+<rect x="80" width="16" height="16" fill="#00241A"/>
+<rect x="96" width="16" height="16" fill="white"/>
+<rect x="112" width="16" height="16" fill="#00241A"/>
+<rect y="16" width="16" height="16" fill="white"/>
+<rect x="16" y="16" width="16" height="16" fill="#00241A"/>
+<rect x="32" y="16" width="16" height="16" fill="white"/>
+<rect x="48" y="16" width="16" height="16" fill="white"/>
+<rect x="64" y="16" width="16" height="16" fill="#00241A"/>
+<rect x="80" y="16" width="16" height="16" fill="white"/>
+<rect x="96" y="16" width="16" height="16" fill="#00241A"/>
+<rect x="112" y="16" width="16" height="16" fill="white"/>
+</g>
+<path d="M66 82V78H70V82H66V82M62 78V68H66V78H62V78M78 72V64H82V72H78V72M74 64V60H78V64H74V64M50 68V64H54V68H50V68M46 64V60H50V64H46V64M64 50V46H68V50H64V50M49 55H55V49H49V55V55M46 58V46H58V58H46V58M49 79H55V73H49V79V79M46 82V70H58V82H46V82M73 55H79V49H73V55V55M70 58V46H82V58H70V58M74 82V76H70V72H78V78H82V82H74V82M66 68V64H74V68H66V68M58 68V64H54V60H66V64H62V68H58V68M60 58V50H64V54H68V58H60V58M50.5 53.5V50.5H53.5V53.5H50.5V53.5M50.5 77.5V74.5H53.5V77.5H50.5V77.5M74.5 53.5V50.5H77.5V53.5H74.5V53.5" fill="#00241A"/>
+</g>
+<defs>
+<clipPath id="clip0_2_115">
+<rect width="128" height="128" fill="white"/>
+</clipPath>
+</defs>
+</svg>

@@ -1,6 +1,7 @@
 export const navItems = [
   { href: "/", label: "Trang chủ" },
   { href: "/san-pham", label: "Sản phẩm" },
+  { href: "/ho-chieu", label: "Hộ Chiếu" },
   { href: "/hanh-trinh", label: "Hành trình" },
   { href: "/kich-hoat", label: "Kích hoạt" },
   { href: "/ve-chung-toi", label: "Về chúng tôi" },
