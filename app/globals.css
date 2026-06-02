@@ -1605,13 +1605,31 @@ html.reveal-ready .reveal-target.is-revealed {
   object-fit: cover;
 }
 
-.ar-live-vignette {
+.ar-live-camera {
   position: absolute;
   inset: 0;
   z-index: -1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: transparent;
+}
+
+.ar-live-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
   background:
     linear-gradient(180deg, rgba(6, 62, 67, 0.24) 0%, rgba(6, 62, 67, 0.02) 28%, rgba(6, 62, 67, 0.1) 54%, rgba(0, 25, 20, 0.72) 100%),
     radial-gradient(circle at 72% 24%, rgba(255, 255, 255, 0.2), transparent 18rem);
+  pointer-events: none;
+}
+
+.ar-live-model-viewer {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
   pointer-events: none;
 }
 
@@ -1653,7 +1671,7 @@ html.reveal-ready .reveal-target.is-revealed {
   gap: 12px;
   margin: 16px 0 0;
   color: rgba(255, 255, 255, 0.86);
-  font-size: clamp(24px, 4vw, 36px);
+  font-size: 16px;
   font-weight: 500;
   letter-spacing: 0.12em;
   line-height: 1;
@@ -1719,38 +1737,63 @@ html.reveal-ready .reveal-target.is-revealed {
   z-index: 3;
   max-width: 720px;
   margin: 0 auto;
-  padding: 42px clamp(28px, 5vw, 48px) 36px;
-  border-radius: 42px 42px 0 0;
+  padding: 24px clamp(22px, 4vw, 34px) 22px;
+  border-radius: 28px 28px 0 0;
   background: rgba(255, 255, 255, 0.96);
   color: var(--ink);
   box-shadow: 0 -24px 80px rgba(1, 32, 25, 0.28);
+  touch-action: none;
+  transition: transform 220ms ease;
+  user-select: none;
+}
+
+.ar-live-sheet.is-expanded {
+  transform: translateY(0);
+}
+
+.ar-live-sheet.is-middle {
+  transform: translateY(26%);
+}
+
+.ar-live-sheet.is-collapsed {
+  transform: translateY(calc(100% - 92px));
 }
 
 .ar-live-sheet-handle {
   display: block;
   width: 88px;
   height: 10px;
-  margin: 0 auto 32px;
+  margin: 0 auto 18px;
+  padding: 0;
+  border: 0;
   border-radius: 999px;
   background: rgba(6, 62, 67, 0.08);
+  cursor: grab;
 }
 
 .ar-live-sheet p {
-  margin: 0 0 14px;
+  margin: 0 0 8px;
   color: #314b50;
-  font-size: clamp(24px, 4vw, 34px);
+  font-size: 16px;
   line-height: 1.25;
   text-align: center;
 }
 
 .ar-live-sheet h1 {
   max-width: 610px;
-  margin: 0 auto 34px;
+  margin: 0 auto 16px;
   color: var(--brand);
-  font-size: clamp(22px, 3.5vw, 30px);
+  font-size: 16px;
   font-weight: 900;
   line-height: 1.45;
   text-align: center;
+}
+
+.ar-live-message {
+  margin: -6px auto 10px !important;
+  color: var(--muted) !important;
+  font-size: 13px !important;
+  line-height: 1.45 !important;
 }
 
 .ar-live-primary,
@@ -1763,14 +1806,14 @@ html.reveal-ready .reveal-target.is-revealed {
 .ar-live-primary {
   display: inline-flex;
   width: 100%;
-  min-height: 78px;
+  min-height: 56px;
   align-items: center;
   justify-content: center;
-  gap: 22px;
+  gap: 12px;
   border: 0;
   background: var(--brand);
   color: #ffffff;
-  font-size: clamp(20px, 3.2vw, 30px);
+  font-size: 16px;
   font-weight: 700;
   box-shadow: 0 16px 36px rgba(23, 97, 51, 0.28);
 }
@@ -1778,8 +1821,8 @@ html.reveal-ready .reveal-target.is-revealed {
 .ar-live-primary img,
 .ar-live-secondary img,
 .ar-live-icon-button img {
-  width: 34px;
-  height: 34px;
+  width: 24px;
+  height: 24px;
 }
 
 .ar-live-primary img {
@@ -1788,15 +1831,15 @@ html.reveal-ready .reveal-target.is-revealed {
 
 .ar-live-secondary-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 102px;
-  gap: 14px;
-  margin-top: 14px;
+  grid-template-columns: minmax(0, 1fr) 72px;
+  gap: 10px;
+  margin-top: 10px;
 }
 
 .ar-live-secondary,
 .ar-live-icon-button {
   display: inline-flex;
-  min-height: 78px;
+  min-height: 56px;
   align-items: center;
   justify-content: center;
   border: 1px solid rgba(6, 62, 67, 0.1);
@@ -1806,8 +1849,8 @@ html.reveal-ready .reveal-target.is-revealed {
 }
 
 .ar-live-secondary {
-  gap: 16px;
-  font-size: clamp(20px, 3vw, 28px);
+  gap: 10px;
+  font-size: 16px;
   font-weight: 500;
 }
 
@@ -1823,21 +1866,21 @@ html.reveal-ready .reveal-target.is-revealed {
 .ar-live-stamp {
   display: inline-flex;
   width: 100%;
-  min-height: 78px;
+  min-height: 56px;
   align-items: center;
   justify-content: center;
-  gap: 18px;
-  margin-top: 14px;
+  gap: 10px;
+  margin-top: 10px;
   border: 1px solid rgba(6, 62, 67, 0.12);
   background: rgba(255, 255, 255, 0.62);
   color: rgba(6, 62, 67, 0.38);
-  font-size: clamp(20px, 3vw, 28px);
+  font-size: 16px;
   font-weight: 600;
 }
 
 .ar-live-stamp img {
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   opacity: 0.45;
   filter: brightness(0) saturate(100%) invert(18%) sepia(25%) saturate(1772%) hue-rotate(137deg) brightness(89%) contrast(94%);
 }
@@ -1850,9 +1893,9 @@ html.reveal-ready .reveal-target.is-revealed {
 
 .ar-live-bottom-dot {
   display: block;
-  width: 34px;
-  height: 34px;
-  margin: 32px auto 0;
+  width: 24px;
+  height: 24px;
+  margin: 16px auto 0;
   border-radius: 999px;
   background: rgba(6, 62, 67, 0.14);
   box-shadow: 0 0 0 18px rgba(6, 62, 67, 0.03);
@@ -1867,7 +1910,7 @@ html.reveal-ready .reveal-target.is-revealed {
     right: 56px;
     left: auto;
     width: min(620px, 42vw);
-    border-radius: 34px;
+    border-radius: 28px;
   }
 
   .ar-live-reticle {
@@ -1916,12 +1959,12 @@ html.reveal-ready .reveal-target.is-revealed {
     right: 29px;
     bottom: 0;
     left: 29px;
-    padding: 28px 42px max(30px, env(safe-area-inset-bottom));
-    border-radius: 42px 42px 0 0;
+    padding: 20px 28px max(20px, env(safe-area-inset-bottom));
+    border-radius: 28px 28px 0 0;
   }
 
   .ar-live-sheet-handle {
-    margin-bottom: 30px;
+    margin-bottom: 14px;
   }
 
   .ar-live-sheet p {
@@ -1929,7 +1972,7 @@ html.reveal-ready .reveal-target.is-revealed {
   }
 
   .ar-live-sheet h1 {
-    margin-bottom: 30px;
+    margin-bottom: 14px;
     font-size: 16px;
   }
 
@@ -1943,7 +1986,7 @@ html.reveal-ready .reveal-target.is-revealed {
   .ar-live-secondary,
   .ar-live-icon-button,
   .ar-live-stamp {
-    min-height: 78px;
+    min-height: 54px;
   }
 }
 
@@ -1982,7 +2025,7 @@ html.reveal-ready .reveal-target.is-revealed {
   .ar-live-sheet {
     right: 18px;
     left: 18px;
-    padding-inline: 24px;
+    padding-inline: 20px;
   }
 
   .ar-live-sheet p {
@@ -1991,12 +2034,12 @@ html.reveal-ready .reveal-target.is-revealed {
   }
 
   .ar-live-sheet h1 {
-    font-size: 17px;
+    font-size: 16px;
     line-height: 1.35;
   }
 
   .ar-live-primary {
-    min-height: 58px;
+    min-height: 52px;
     gap: 10px;
     font-size: 16px;
     line-height: 1.2;
@@ -2005,7 +2048,7 @@ html.reveal-ready .reveal-target.is-revealed {
   .ar-live-secondary,
   .ar-live-icon-button,
   .ar-live-stamp {
-    min-height: 58px;
+    min-height: 52px;
   }
 
   .ar-live-secondary {
@@ -2027,7 +2070,7 @@ html.reveal-ready .reveal-target.is-revealed {
   }
 
   .ar-live-secondary-row {
-    grid-template-columns: minmax(0, 1fr) 74px;
+    grid-template-columns: minmax(0, 1fr) 64px;
   }
 }
 
