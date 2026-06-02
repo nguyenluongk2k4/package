@@ -12,6 +12,17 @@ function getStation(stationId) {
   return stations.find((station) => station.id === stationId) || stations[0];
 }
 
+function isQuickLookDevice() {
+  if (typeof navigator === "undefined") {
+    return false;
+  }
+
+  return (
+    /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)
+  );
+}
+
 export default function CheckinExperiencePage({ stationId }) {
   const station = useMemo(() => getStation(stationId), [stationId]);
   const videoRef = useRef(null);
@@ -25,6 +36,7 @@ export default function CheckinExperiencePage({ stationId }) {
   const [arMessage, setArMessage] = useState("");
   const [hasMounted, setHasMounted] = useState(false);
   const [hasCamera, setHasCamera] = useState(false);
+  const [isIosQuickLook, setIsIosQuickLook] = useState(false);
   const [sheetPosition, setSheetPosition] = useState("middle");
 
   async function openCamera() {
@@ -58,6 +70,7 @@ export default function CheckinExperiencePage({ stationId }) {
 
   useEffect(() => {
     setHasMounted(true);
+    setIsIosQuickLook(isQuickLookDevice());
     openCamera();
 
     return () => {
@@ -70,6 +83,7 @@ export default function CheckinExperiencePage({ stationId }) {
 
   async function handleLaunchAr() {
     setArMessage("");
+    setIsTracking(true);
 
     if (!hasCamera) {
       await openCamera();
@@ -79,21 +93,24 @@ export default function CheckinExperiencePage({ stationId }) {
     if (!viewer || typeof viewer.activateAR !== "function") {
       setArStatus("unsupported");
       setArMessage("Thiết bị hoặc trình duyệt chưa hỗ trợ mở AR thật. Camera vẫn chạy ở chế độ mô phỏng tracking.");
-      setIsTracking(true);
       return;
     }
 
     try {
       setArStatus("launching");
-      setIsTracking(true);
       await viewer.activateAR();
       setArStatus("tracking");
     } catch (error) {
       console.error("Native AR launch error:", error);
       setArStatus("failed");
       setArMessage("Không mở được AR thật trên môi trường hiện tại. Camera vẫn chạy ở chế độ mô phỏng tracking.");
-      setIsTracking(true);
     }
+  }
+
+  function handleQuickLookTap() {
+    setArMessage("");
+    setIsTracking(true);
+    setArStatus("tracking");
   }
 
   function handleNarration() {
@@ -145,6 +162,13 @@ export default function CheckinExperiencePage({ stationId }) {
     event.currentTarget.releasePointerCapture?.(event.pointerId);
   }
 
+  const arButtonLabel =
+    arStatus === "launching"
+      ? "Đang mở AR thật..."
+      : isTracking
+        ? "Mở lại AR thật để track mặt đất"
+        : "Mở AR thật để track mặt đất";
+
   return (
     <main className="ar-live-page">
       <img className="ar-live-background" src={station.image} alt={station.name} loading="eager" decoding="async" />
@@ -157,13 +181,11 @@ export default function CheckinExperiencePage({ stationId }) {
           class="ar-live-model-viewer"
           src={arModelSrc}
           ios-src={arIosModelSrc}
-          alt={`Hướng dẫn viên AR tại ${station.name}`}
+          alt="AR guide model"
           ar
           ar-modes="webxr scene-viewer quick-look"
           ar-placement="floor"
-          ar-scale="fixed"
           camera-controls
-          disable-zoom
           shadow-intensity="0.2"
         />
       ) : null}
@@ -196,14 +218,25 @@ export default function CheckinExperiencePage({ stationId }) {
       >
         <button className="ar-live-sheet-handle" type="button" aria-label="Kéo bảng điều khiển AR" />
         <p>Lia camera xuống nền phẳng.</p>
-        <h1>{isTracking ? "Đã nhận diện mặt đất, chạm để đặt hướng dẫn viên ảo." : "Khi hệ thống nhận diện mặt đất, chạm để đặt hướng dẫn viên ảo."}</h1>
+        <h1>
+          {isTracking
+            ? "Đã nhận diện mặt đất, chạm để đặt hướng dẫn viên ảo."
+            : "Khi hệ thống nhận diện mặt đất, chạm để đặt hướng dẫn viên ảo."}
+        </h1>
 
         {arMessage ? <p className="ar-live-message">{arMessage}</p> : null}
 
-        <button className="ar-live-primary" type="button" onClick={handleLaunchAr} disabled={arStatus === "launching"}>
-          <img src={`${viewArBase}/mobile-app/ic-mo-ar-de-track-khuon-mat.svg`} alt="" aria-hidden="true" />
-          {arStatus === "launching" ? "Đang mở AR thật..." : isTracking ? "Mở lại AR thật để track mặt đất" : "Mở AR thật để track mặt đất"}
-        </button>
+        {isIosQuickLook ? (
+          <a className="ar-live-primary" href={arIosModelSrc} rel="ar" onClick={handleQuickLookTap}>
+            <img src={`${viewArBase}/mobile-app/ic-mo-ar-de-track-khuon-mat.svg`} alt="" aria-hidden="true" />
+            <span>{arButtonLabel}</span>
+          </a>
+        ) : (
+          <button className="ar-live-primary" type="button" onClick={handleLaunchAr} disabled={arStatus === "launching"}>
+            <img src={`${viewArBase}/mobile-app/ic-mo-ar-de-track-khuon-mat.svg`} alt="" aria-hidden="true" />
+            {arButtonLabel}
+          </button>
+        )}
 
         <div className="ar-live-secondary-row">
           <button className="ar-live-secondary" type="button" onClick={handleNarration}>
