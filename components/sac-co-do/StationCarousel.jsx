@@ -5,10 +5,11 @@ import StationCard from "./StationCard";
 
 export default function StationCarousel({ stations }) {
   const [index, setIndex] = useState(0);
-  const total = stations.length;
+  const visibleCount = 3;
+  const total = Math.min(3, Math.max(1, stations.length - visibleCount + 1));
   const visibleStations = useMemo(() => {
-    return [0, 1, 2].map((offset) => stations[(index + offset) % total]);
-  }, [index, stations, total]);
+    return stations.slice(index, index + visibleCount);
+  }, [index, stations]);
 
   function previous() {
     setIndex((value) => (value - 1 + total) % total);

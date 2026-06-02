@@ -229,9 +229,8 @@ export default function JourneyDetailPage({ station }) {
                 <label htmlFor="station-code">Nhập mã ngay tại quầy để nhận dấu trực tiếp vào hộ chiếu di sản.</label>
                 <div>
                   <input id="station-code" type="text" placeholder="Nhập mã xác thực" />
-                  <button type="button" aria-label="Mở bằng mã trạm">
-                    <img src={`${detailAssetBase}/desktop-icon/ic-certificate.svg`} alt="" aria-hidden="true" />
-                    Đóng dấu
+                  <button type="button" aria-label="Đóng dấu passport">
+                    <img src="/assets/view-ar/desktop-app/ic-dong-dau-passport.svg" alt="" aria-hidden="true" />
                   </button>
                 </div>
               </form>
@@ -243,20 +242,7 @@ export default function JourneyDetailPage({ station }) {
             </section>
           </aside>
         </div>
-        <nav className="journey-detail-mobile-nav" aria-label="Điều hướng nhanh">
-          <a href="/hanh-trinh">
-            <img src={`${detailAssetBase}/mobile-icon/ic-la-ban.svg`} alt="" aria-hidden="true" />
-            Hành trình
-          </a>
-          <a className="is-active" href={`/checkin/${station.id}`}>
-            <img src={`${detailAssetBase}/mobile-icon/ic-mo-trai-nghiem-ar.svg`} alt="" aria-hidden="true" />
-            AR Check-in
-          </a>
-          <a href="/cua-toi">
-            <img src={`${detailAssetBase}/desktop-icon/ic-certificate.svg`} alt="" aria-hidden="true" />
-            Của tôi
-          </a>
-        </nav>
+
       </main>
       <SiteFooter />
     </>

@@ -84,7 +84,7 @@ export const stationAssets = {
 export const heroSlides = [
   {
     eyebrow: "Di sản nghìn năm",
-    title: "Hành trình Sắc Cố Đô",
+    title: "Sắc Cố Đô",
     description:
       "Khám phá vẻ đẹp tiềm ẩn của Ninh Bình thông qua công nghệ AR độc đáo. Mỗi bước chân là một câu chuyện lịch sử, mỗi điểm đến là một dấu ấn trong tấm hộ chiếu di sản của riêng bạn.",
     image: stationAssets["trang-an"].hero,
