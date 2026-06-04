@@ -4,8 +4,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { stations } from "../../data/sac-co-do";
 
 const viewArBase = "/assets/view-ar";
-const arModelSrc = "/ar/sac-co-do-guide.glb";
-const arIosModelSrc = "/ar/sac-co-do-guide.usdz";
+const arModelSrc = "/api/ar/sac-co-do-guide.glb";
+const arIosModelSrc = "/api/ar/sac-co-do-guide.usdz";
 const sheetPositions = ["expanded", "middle", "collapsed"];
 
 function getStation(stationId) {
@@ -227,9 +227,15 @@ export default function CheckinExperiencePage({ stationId }) {
         {arMessage ? <p className="ar-live-message">{arMessage}</p> : null}
 
         {isIosQuickLook ? (
-          <a className="ar-live-primary" href={arIosModelSrc} rel="ar" onClick={handleQuickLookTap}>
+          <a
+            className="ar-live-primary ar-live-primary-quicklook"
+            href={arIosModelSrc}
+            rel="ar"
+            aria-label={arButtonLabel}
+            data-label={arButtonLabel}
+            onClick={handleQuickLookTap}
+          >
             <img src={`${viewArBase}/mobile-app/ic-mo-ar-de-track-khuon-mat.svg`} alt="" aria-hidden="true" />
-            <span>{arButtonLabel}</span>
           </a>
         ) : (
           <button className="ar-live-primary" type="button" onClick={handleLaunchAr} disabled={arStatus === "launching"}>

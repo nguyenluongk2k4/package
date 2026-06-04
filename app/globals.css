@@ -1832,6 +1832,10 @@ html.reveal-ready .reveal-target.is-revealed {
   filter: brightness(0) invert(1);
 }
 
+.ar-live-primary-quicklook::after {
+  content: attr(data-label);
+}
+
 .ar-live-secondary-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 72px;
