@@ -1,6 +1,24 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
+  async headers() {
+    return [
+      {
+        source: "/ar/:path*.usdz",
+        headers: [
+          { key: "Content-Type", value: "model/vnd.usdz+zip" },
+          { key: "Access-Control-Allow-Origin", value: "*" },
+        ],
+      },
+      {
+        source: "/ar/:path*.glb",
+        headers: [
+          { key: "Content-Type", value: "model/gltf-binary" },
+          { key: "Access-Control-Allow-Origin", value: "*" },
+        ],
+      },
+    ];
+  },
   async redirects() {
     return [
       { source: "/index.html", destination: "/", permanent: false },
