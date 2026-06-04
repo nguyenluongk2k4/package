@@ -235,7 +235,7 @@ export default function CheckinExperiencePage({ stationId }) {
             data-label={arButtonLabel}
             onClick={handleQuickLookTap}
           >
-            <img src={`${viewArBase}/mobile-app/ic-mo-ar-de-track-khuon-mat.svg`} alt="" aria-hidden="true" />
+            <img className="ar-live-quicklook-hit-image" src={`${viewArBase}/mobile-app/ic-mo-ar-de-track-khuon-mat.svg`} alt="" aria-hidden="true" />
           </a>
         ) : (
           <button className="ar-live-primary" type="button" onClick={handleLaunchAr} disabled={arStatus === "launching"}>
