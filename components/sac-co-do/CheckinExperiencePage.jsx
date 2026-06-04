@@ -4,8 +4,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { stations } from "../../data/sac-co-do";
 
 const viewArBase = "/assets/view-ar";
-const arModelSrc = "/api/ar/sac-co-do-guide.glb";
-const arIosModelSrc = "/api/ar/sac-co-do-guide.usdz";
+const arModelSrc = "/ar/sac-co-do-guide.glb";
+const arIosModelSrc = "/ar/sac-co-do-guide.usdz";
 const sheetPositions = ["expanded", "middle", "collapsed"];
 
 function getStation(stationId) {
@@ -68,16 +68,30 @@ export default function CheckinExperiencePage({ stationId }) {
     }
   }
 
+  function stopCamera() {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => track.stop());
+      streamRef.current = null;
+    }
+
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
+
+    setHasCamera(false);
+  }
+
   useEffect(() => {
+    const quickLookDevice = isQuickLookDevice();
     setHasMounted(true);
-    setIsIosQuickLook(isQuickLookDevice());
-    openCamera();
+    setIsIosQuickLook(quickLookDevice);
+
+    if (!quickLookDevice) {
+      openCamera();
+    }
 
     return () => {
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach((track) => track.stop());
-        streamRef.current = null;
-      }
+      stopCamera();
     };
   }, []);
 
@@ -111,6 +125,7 @@ export default function CheckinExperiencePage({ stationId }) {
     setArMessage("");
     setIsTracking(true);
     setArStatus("tracking");
+    stopCamera();
   }
 
   function handleNarration() {

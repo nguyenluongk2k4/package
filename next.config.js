@@ -1,9 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
-  outputFileTracingIncludes: {
-    "/api/ar/[file]": ["./public/ar/**/*"],
-  },
   async headers() {
     return [
       {
