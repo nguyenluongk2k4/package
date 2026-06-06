@@ -208,7 +208,7 @@ export default function CheckinExperiencePage({ stationId }) {
       <header className="ar-live-header">
         <div>
           <a className="ar-live-station" href={`/hanh-trinh/${station.id}`} aria-label={`Quay lại ${station.name}`}>
-            <img src="/assets/logo.png" alt="" aria-hidden="true" />
+            <img src="/assets/anh-new/AVT.jpg" alt="" aria-hidden="true" />
             <span>{station.name}</span>
           </a>
           <p className="ar-live-status">

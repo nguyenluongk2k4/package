@@ -41,7 +41,7 @@ export default function AboutPage() {
             </div>
           </div>
           <figure className="about-hero-media">
-            <img src="/assets/dia-danh/trang-an/TA2.jpg" alt="Thuyền đi giữa danh thắng Tràng An" decoding="async" fetchPriority="high" />
+            <img src="/assets/anh-new/cover photo.jpg" alt="Sắc Cố Đô - Hành trình di sản Ninh Bình" decoding="async" fetchPriority="high" />
             <figcaption>Passport văn hóa cho hành trình di sản.</figcaption>
           </figure>
         </section>

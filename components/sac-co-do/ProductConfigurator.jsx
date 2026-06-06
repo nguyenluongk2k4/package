@@ -4,10 +4,10 @@ import { useMemo, useState } from "react";
 import { packages } from "../../data/sac-co-do";
 
 const productImages = [
-  { src: "/assets/san-pham.png", label: "Sản phẩm Sắc Cố Đô" },
-  { src: "/gowilds/assets/images/shop/product-big-1.jpg", label: "Mặt trước sản phẩm" },
-  { src: "/gowilds/assets/images/shop/product-big-2.jpg", label: "Bộ sản phẩm" },
-  { src: "/gowilds/assets/images/shop/product-big-3.jpg", label: "Chi tiết đóng gói" },
+  { src: "/assets/anh-new/frame-1.png", label: "Khung nhận diện Sắc Cố Đô" },
+  { src: "/assets/anh-new/cover photo.jpg", label: "Cover Sắc Cố Đô" },
+  { src: "/assets/anh-new/AVT.jpg", label: "Biểu tượng Sắc Cố Đô" },
+  { src: "/assets/anh-new/vvv.jpg", label: "Bảng màu và logo Sắc Cố Đô" },
 ];
 
 function formatVnd(value) {

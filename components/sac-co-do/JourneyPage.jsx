@@ -1,6 +1,5 @@
 import { stations, steps } from "../../data/sac-co-do";
 import JourneyMapSection from "./JourneyMapSection";
-import SectionTitle from "./SectionTitle";
 import SiteFooter from "./SiteFooter";
 import SiteHeader from "./SiteHeader";
 import StationCard from "./StationCard";
@@ -10,11 +9,14 @@ export default function JourneyPage() {
     <>
       <SiteHeader />
       <main className="page-shell">
-        <SectionTitle
-          eyebrow="Hành trình"
-          title="Bản đồ 6 trạm văn hóa Ninh Bình"
-          description="Mỗi trạm được thiết kế để người dùng có lý do dừng lại, quét QR và ghi dấu vào passport."
-        />
+        <section className="page-title-banner">
+          <img src="/assets/anh-new/cover photo.jpg" alt="" aria-hidden="true" />
+          <div>
+            <p className="eyebrow">Hành trình</p>
+            <h1>Bản đồ 6 trạm văn hóa Ninh Bình</h1>
+            <p>Mỗi trạm được thiết kế để người dùng có lý do dừng lại, quét QR và ghi dấu vào passport.</p>
+          </div>
+        </section>
         <div className="timeline">
           {steps.map((step) => (
             <article key={step.number}>

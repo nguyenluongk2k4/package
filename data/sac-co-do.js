@@ -17,6 +17,7 @@ export const brand = {
 };
 
 const diaDanhBase = "/assets/dia-danh";
+const newBrandBase = "/assets/anh-new";
 
 export const stationAssets = {
   "trang-an": {
@@ -205,7 +206,7 @@ export const packages = [
     subtitle: "1 cuốn sổ + 1 mã",
     price: 150000,
     priceFormatted: "150.000đ",
-    image: "/gowilds/assets/images/shop/product-big-1.jpg",
+    image: `${newBrandBase}/frame-1.png`,
     badge: "Dễ bắt đầu",
     description: "Một cuốn passport pop-up cho khách đi cá nhân hoặc mua thử trải nghiệm.",
     features: [
@@ -222,7 +223,7 @@ export const packages = [
     subtitle: "2 cuốn sổ + 2 mã",
     price: 270000,
     priceFormatted: "270.000đ",
-    image: "/gowilds/assets/images/shop/product-big-2.jpg",
+    image: `${newBrandBase}/vvv.jpg`,
     badge: "Tiết kiệm 30k",
     description: "Hai cuốn passport cho cặp đôi, nhóm bạn hoặc gia đình nhỏ đi cùng nhau.",
     features: [
@@ -239,7 +240,7 @@ export const packages = [
     subtitle: "Đóng hộp quà tặng",
     price: 200000,
     priceFormatted: "200.000đ",
-    image: "/gowilds/assets/images/shop/mockup.png",
+    image: `${newBrandBase}/logo.png`,
     badge: "Quà tặng",
     description: "Phiên bản đóng hộp để tặng khách du lịch, đối tác hoặc người thân.",
     features: [
@@ -267,10 +268,12 @@ export const values = [
 ];
 
 export const gallery = [
+  `${newBrandBase}/cover photo.jpg`,
   stationAssets["trang-an"].gallery[0],
   stationAssets["hoa-lu"].gallery[0],
   stationAssets["bai-dinh"].gallery[0],
   stationAssets["pho-co-hoa-lu"].gallery[0],
   stationAssets["tam-coc"].gallery[0],
   stationAssets["hang-mua"].gallery[0],
+  `${newBrandBase}/frame-1.png`,
 ];

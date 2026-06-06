@@ -3,9 +3,9 @@
   --paper-2: #eef8ea;
   --ink: #063e43;
   --muted: #4c777c;
-  --brand: #176133;
-  --brand-2: #d8a23b;
-  --green: #176133;
+  --brand: #104c27;
+  --brand-2: #92330a;
+  --green: #104c27;
   --accent: #f3c977;
   --cream: #fff0cf;
   --line: rgba(23, 97, 51, 0.18);
@@ -14,8 +14,8 @@
 }
 
 @font-face {
-  font-family: "Thien An";
-  src: url("/assets/fonts/UTM-Thu-Phap-Thien-An.ttf") format("truetype");
+  font-family: "Faltura";
+  src: url("/assets/fonts/UTM-Faltura.ttf") format("truetype");
   font-display: swap;
 }
 
@@ -920,7 +920,7 @@ html.reveal-ready .reveal-target.is-revealed {
 .station-card-overlay h3 {
   margin: 14px 0 8px;
   color: #ffffff;
-  font-family: "Thien An", "Baloo 2", "Be Vietnam Pro", sans-serif;
+  font-family: "Faltura", "Baloo 2", "Be Vietnam Pro", sans-serif;
   font-weight: 400;
   font-size: 32px;
 }
@@ -992,13 +992,22 @@ html.reveal-ready .reveal-target.is-revealed {
   background: transparent;
 }
 
+.journey-map-frame picture,
+.journey-map-frame img {
+  display: block;
+}
+
+.journey-map-frame picture {
+  width: 100%;
+  height: 100%;
+}
+
 .journey-map-frame img {
   width: 100%;
   height: 100%;
   min-height: 0;
   border-radius: 0;
   object-fit: contain;
-  display: block;
 }
 
 .journey-map-marker {
@@ -2965,7 +2974,85 @@ html.reveal-ready .reveal-target.is-revealed {
   }
 
   .journey-map-section {
-    padding: 16px;
+    margin-inline: calc(50% - 50vw);
+    padding: 0;
+    background: transparent;
+  }
+
+  .journey-travel-desk {
+    max-width: none;
+  }
+
+  .journey-map-frame {
+    aspect-ratio: auto;
+    width: 100%;
+  }
+
+  .journey-map-frame picture,
+  .journey-map-frame img {
+    height: auto;
+  }
+
+  .journey-map-frame img {
+    width: 100%;
+    object-fit: contain;
+  }
+
+  .journey-map-marker {
+    left: var(--marker-mobile-x);
+    top: var(--marker-mobile-y);
+    display: grid;
+    gap: 5px;
+    transform: translate(-50%, -100%);
+  }
+
+  .journey-map-check {
+    display: none;
+  }
+
+  .journey-map-marker:focus-visible {
+    outline-color: rgba(16, 76, 39, 0.32);
+    outline-offset: 4px;
+  }
+
+  .journey-map-marker .map-flag {
+    width: 36px;
+    height: 46px;
+    padding-top: 7px;
+    place-items: start center;
+    filter: drop-shadow(0 8px 10px rgba(67, 39, 18, 0.24));
+  }
+
+  .journey-map-marker .map-flag::before {
+    border: 0;
+    border-radius: 0;
+    background: linear-gradient(180deg, #9c3d25, #5f2418);
+    clip-path: polygon(50% 0, 94% 18%, 82% 72%, 50% 100%, 18% 72%, 6% 18%);
+    box-shadow: none;
+  }
+
+  .journey-map-marker .map-flag::after {
+    display: block;
+    bottom: -7px;
+    width: 3px;
+    height: 13px;
+  }
+
+  .journey-map-marker .map-flag span {
+    width: 23px;
+    height: 23px;
+    background: #f8e7bc;
+    color: #6b2a1a;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 15px;
+    font-weight: 900;
+  }
+
+  .journey-map-marker .map-flag-label {
+    display: inline-flex;
+    min-height: 21px;
+    padding: 0 8px;
+    font-size: 10px;
   }
 
   .checkin-gallery {
@@ -3032,19 +3119,21 @@ html.reveal-ready .reveal-target.is-revealed {
 }
 
 .brand-mark {
-  gap: 14px;
+  gap: 0;
 }
 
 .brand-mark img,
 .mobile-logo img {
-  width: auto;
-  height: 56px;
+  width: clamp(118px, 13vw, 172px);
+  height: auto;
+  max-height: 48px;
   object-fit: contain;
+  border-radius: 0;
 }
 
 .brand-wordmark {
   color: var(--brand);
-  font-family: "Thien An", "Baloo 2", "Be Vietnam Pro", sans-serif;
+  font-family: "Faltura", "Baloo 2", "Be Vietnam Pro", sans-serif;
   font-size: 30px;
   font-weight: 400;
   line-height: 1;
@@ -3195,7 +3284,7 @@ html.reveal-ready .reveal-target.is-revealed {
 .hero-copy h1 {
   max-width: 640px;
   color: #ffffff;
-  font-family: "Thien An", "Baloo 2", "Be Vietnam Pro", sans-serif;
+  font-family: "Faltura", "Baloo 2", "Be Vietnam Pro", sans-serif;
   font-size: clamp(58px, 7.5vw, 118px);
   font-weight: 400;
   line-height: 1.12;
@@ -3263,9 +3352,6 @@ html.reveal-ready .reveal-target.is-revealed {
     gap: 22px;
   }
 
-  .hero-copy {
-    padding-left: 36px;
-  }
 }
 
 @media (max-width: 760px) {
@@ -3276,11 +3362,9 @@ html.reveal-ready .reveal-target.is-revealed {
 
   .brand-mark img,
   .mobile-logo img {
-    height: 44px;
-  }
-
-  .brand-wordmark {
-    font-size: 24px;
+    width: 132px;
+    height: auto;
+    max-height: 42px;
   }
 
   .site-nav {
@@ -3331,12 +3415,119 @@ html.reveal-ready .reveal-target.is-revealed {
     min-height: 50px;
     padding: 0 18px;
   }
+
+  .page-title-banner {
+    min-height: 260px;
+    padding: 28px;
+    border-radius: 10px;
+  }
+
+  .page-title-banner h1 {
+    font-size: 42px;
+  }
+
+  .page-title-banner p:not(.eyebrow):not(.passport-eyebrow) {
+    font-size: 15px;
+  }
+
+  .passport-title-banner {
+    grid-template-columns: 1fr;
+  }
+
+  .passport-title-banner .passport-progress-ring {
+    display: none;
+  }
 }
 
 .heritage-passport-page {
   width: min(1180px, calc(100% - 32px));
   margin: 0 auto;
   padding: 62px 0 76px;
+}
+
+.page-title-banner {
+  position: relative;
+  display: grid;
+  width: 100vw;
+  min-height: clamp(260px, 28vw, 420px);
+  align-items: end;
+  overflow: hidden;
+  margin: 0 calc(50% - 50vw) 44px;
+  padding: clamp(28px, 5vw, 56px);
+  border-radius: 0;
+  background: #072f21;
+  color: #ffffff;
+  box-shadow: 0 26px 70px rgba(6, 62, 67, 0.14);
+}
+
+.page-title-banner > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.page-title-banner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(4, 34, 24, 0.82) 0%, rgba(4, 34, 24, 0.44) 48%, rgba(4, 34, 24, 0.08) 100%),
+    linear-gradient(180deg, rgba(4, 34, 24, 0.06) 0%, rgba(4, 34, 24, 0.68) 100%);
+}
+
+.page-title-banner > div:not(.passport-progress-ring) {
+  position: relative;
+  z-index: 1;
+  width: min(1180px, calc(100% - 32px));
+  max-width: 1180px;
+  margin-inline: auto;
+}
+
+.page-title-banner .eyebrow,
+.page-title-banner .passport-eyebrow {
+  color: #fff0cf;
+}
+
+.page-title-banner h1 {
+  max-width: 780px;
+  margin: 0 0 16px;
+  color: #ffffff;
+  font-family: "Faltura", "Baloo 2", "Be Vietnam Pro", sans-serif;
+  font-size: clamp(44px, 6vw, 76px);
+  font-weight: 400;
+  line-height: 1;
+}
+
+.page-title-banner p:not(.eyebrow):not(.passport-eyebrow) {
+  max-width: 660px;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.7;
+}
+
+.passport-title-banner {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 32px;
+  align-items: end;
+}
+
+.passport-title-banner .passport-progress-ring {
+  position: absolute;
+  right: max(32px, calc((100vw - 1180px) / 2));
+  bottom: 56px;
+  z-index: 1;
+  width: 104px;
+  height: 104px;
+  margin: 0;
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.98) 0 60%, transparent 61%), conic-gradient(#fff0cf 0 33%, rgba(255, 255, 255, 0.22) 33% 100%);
+}
+
+.passport-title-banner .passport-progress-ring small {
+  color: rgba(255, 255, 255, 0.86);
 }
 
 .passport-hero-panel {
@@ -3876,7 +4067,7 @@ html.reveal-ready .reveal-target.is-revealed {
 .journey-detail-hero h1 {
   max-width: 760px;
   margin: 0;
-  font-family: "Thien An", Georgia, "Times New Roman", serif;
+  font-family: "Faltura", Georgia, "Times New Roman", serif;
   font-size: clamp(42px, 5vw, 64px);
   font-weight: 700;
   line-height: 0.98;
@@ -5311,7 +5502,7 @@ html.reveal-ready .reveal-target.is-revealed {
 
   .ar-mobile-copy h1 {
     margin: 0 0 16px;
-    font-family: "Thien An", Georgia, serif;
+    font-family: "Faltura", Georgia, serif;
     font-size: clamp(58px, 15vw, 78px);
     font-weight: 400;
     line-height: 0.82;

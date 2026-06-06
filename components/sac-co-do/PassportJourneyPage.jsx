@@ -102,7 +102,8 @@ export default function PassportJourneyPage() {
     <>
       <SiteHeader />
       <main className="heritage-passport-page">
-        <section className="passport-hero-panel">
+        <section className="page-title-banner passport-title-banner">
+          <img src="/assets/anh-new/cover photo.jpg" alt="" aria-hidden="true" />
           <div>
             <p className="passport-eyebrow">Hộ chiếu hành trình</p>
             <h1>Hộ Chiếu Di Sản</h1>

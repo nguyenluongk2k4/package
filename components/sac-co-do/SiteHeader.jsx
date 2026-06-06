@@ -20,14 +20,12 @@ export default function SiteHeader() {
       <div className="header-navigation">
         <div className="primary-menu">
           <a className="brand-mark nav-brand" href="/" aria-label="Sắc Cố Đô">
-            <img src="/assets/logo.png" alt="Sắc Cố Đô" />
-            <span className="brand-wordmark">Sắc Cố Đô</span>
+            <img src="/assets/anh-new/logo.png" alt="Sắc Cố Đô" />
           </a>
 
           <nav className={`site-nav ${menuOpen ? "is-open" : ""}`} aria-label="Điều hướng chính">
             <a className="mobile-logo" href="/" onClick={() => setMenuOpen(false)} aria-label="Sắc Cố Đô">
-              <img src="/assets/logo.png" alt="Sắc Cố Đô" />
-              <span className="brand-wordmark">Sắc Cố Đô</span>
+              <img src="/assets/anh-new/logo.png" alt="Sắc Cố Đô" />
             </a>
             {navLinks.map((item) => (
               <a

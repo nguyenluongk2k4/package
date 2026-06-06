@@ -2,9 +2,21 @@ import "./globals.css";
 import ScrollReveal from "../components/sac-co-do/ScrollReveal";
 
 export const metadata = {
+  metadataBase: new URL("https://www.knguyen.shop"),
   title: "Sắc Cố Đô | Pop-up passport Ninh Bình",
   description:
     "Sổ pop-up passport kết hợp hành trình đóng dấu, check-in QR và photobooth tại 6 điểm văn hóa Ninh Bình.",
+  icons: {
+    icon: "/assets/anh-new/logo.png",
+    shortcut: "/assets/anh-new/logo.png",
+    apple: "/assets/anh-new/logo.png",
+  },
+  openGraph: {
+    title: "Sắc Cố Đô",
+    description:
+      "Sổ pop-up passport kết hợp hành trình đóng dấu, check-in QR và photobooth tại 6 điểm văn hóa Ninh Bình.",
+    images: ["/assets/anh-new/cover photo.jpg"],
+  },
 };
 
 export default function RootLayout({ children }) {
