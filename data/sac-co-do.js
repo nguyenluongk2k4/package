@@ -252,6 +252,44 @@ export const packages = [
   },
 ];
 
+const productBase = "/assets/san-pham";
+
+export const souvenirProducts = [
+  {
+    id: "com-chay-dang-tui",
+    name: "Cơm Cháy Cố Đô Dạng Túi",
+    weight: "180g",
+    price: 59000,
+    priceFormatted: "59.000đ",
+    image: `${productBase}/Cơm cháy cố đô dạng túi 180g - 59k_goi.png`,
+    badge: "Bán chạy",
+    description:
+      "Miếng cơm cháy giòn rụm, vị mộc dễ ăn, gói gọn hương vị quà quê Ninh Bình cho những chuyến đi ngắn ngày.",
+  },
+  {
+    id: "com-chay-ruoc-dam-vi",
+    name: "Cơm Cháy Cố Đô Ruốc Đậm Vị",
+    weight: "300g",
+    price: 65000,
+    priceFormatted: "65.000đ",
+    image: `${productBase}/Cơm cháy cố đô ruốc đậm vị 300g 65k_goi.png`,
+    badge: "Đậm vị",
+    description:
+      "Lớp ruốc bông mặn ngọt phủ đều trên nền cơm cháy vàng giòn, phù hợp mua làm quà hoặc dùng chung trong nhóm.",
+  },
+  {
+    id: "com-chay-vuong-lut",
+    name: "Cơm Cháy Cố Đô Vuông Lứt",
+    weight: "210g",
+    price: 54000,
+    priceFormatted: "54.000đ",
+    image: `${productBase}/Cơm cháy cố đô vuông lứt 210g 54k_ goi.png`,
+    badge: "Gạo lứt",
+    description:
+      "Phiên bản vuông gọn với gạo lứt thơm bùi, giữ được độ giòn đặc trưng và cảm giác nhẹ nhàng khi thưởng thức.",
+  },
+];
+
 export const values = [
   {
     title: "Giữ ký ức bằng vật phẩm thật",

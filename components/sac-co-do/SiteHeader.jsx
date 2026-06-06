@@ -46,6 +46,9 @@ export default function SiteHeader() {
             <a className="header-icon-button" href="/ve-chung-toi" aria-label="Thông tin dự án">
               <img src="/assets/ic-language.svg" alt="" aria-hidden="true" />
             </a>
+            <a className="header-icon-button header-cart-link" href="/gio-hang" aria-label="Giỏ hàng">
+              <img src="/assets/ic-gio-hang.svg" alt="" aria-hidden="true" />
+            </a>
             <a className="header-cta" href="/kich-hoat">
               Bắt đầu
             </a>

@@ -1,28 +1,171 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { gallery, packages, stations } from "../../data/sac-co-do";
+import { gallery, souvenirProducts, stations } from "../../data/sac-co-do";
 import SectionTitle from "./SectionTitle";
 import SiteFooter from "./SiteFooter";
 import SiteHeader from "./SiteHeader";
 import WebArViewer from "./WebArViewer";
 
 export function CartPage() {
+  const initialItems = [
+    { ...souvenirProducts[0], quantity: 1, category: "Đặc sản Cố Đô" },
+    { ...souvenirProducts[1], quantity: 2, category: "Quà tặng hành trình" },
+  ].filter((item) => item.id);
+  const [items, setItems] = useState(initialItems);
+  const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const shippingFee = items.length > 0 ? 35000 : 0;
+  const discount = 0;
+  const total = subtotal + shippingFee - discount;
+  const suggestedItems = [
+    {
+      id: "ve-thuyen-trang-an",
+      name: "Vé Thuyền Tràng An",
+      price: "250.000đ",
+      image: stations[0]?.image,
+      href: "/hanh-trinh/trang-an",
+    },
+    {
+      id: "tra-sen-co-do",
+      name: "Trà Sen Cố Đô",
+      price: "180.000đ",
+      image: "/assets/gowilds/assets/images/gallery/act-1.jpg",
+      href: "/san-pham/com-chay-dang-tui",
+    },
+    {
+      id: "combo-qua-tang",
+      name: "Combo Quà Tặng",
+      price: "Liên hệ",
+      image: "",
+      href: "/san-pham/com-chay-ruoc-dam-vi",
+    },
+    {
+      id: "cam-nang-ninh-binh",
+      name: "Cẩm Nang Ninh Bình",
+      price: "Miễn phí",
+      image: "",
+      href: "/hanh-trinh",
+    },
+  ];
+
+  function formatVnd(value) {
+    return new Intl.NumberFormat("vi-VN").format(value) + "đ";
+  }
+
+  function updateQuantity(id, nextQuantity) {
+    setItems((currentItems) =>
+      currentItems.map((item) =>
+        item.id === id ? { ...item, quantity: Math.max(1, nextQuantity) } : item
+      )
+    );
+  }
+
+  function removeItem(id) {
+    setItems((currentItems) => currentItems.filter((item) => item.id !== id));
+  }
+
   return (
-    <UtilityPage
-      eyebrow="Giỏ hàng"
-      title="Giỏ hàng của bạn"
-      description="Giao diện này giữ chỗ cho luồng chọn gói, số lượng và thanh toán."
-    >
-      <div className="cart-row">
-        <img src={packages[0].image} alt={packages[0].name} loading="lazy" decoding="async" />
-        <div>
-          <h3>{packages[0].name}</h3>
-          <p>01 cuốn · Mã ID sẽ được tạo sau khi thanh toán</p>
-        </div>
-        <strong>{packages[0].priceFormatted}</strong>
-      </div>
-    </UtilityPage>
+    <>
+      <SiteHeader />
+      <main className="heritage-cart-page">
+        <section className="heritage-cart-hero" aria-labelledby="cart-title">
+          <h1 id="cart-title">Giỏ hàng</h1>
+          <p>Lưu giữ những mảnh hồn di sản bạn đã chọn.</p>
+        </section>
+
+        <section className="heritage-cart-layout" aria-label="Chi tiết giỏ hàng">
+          <div className="heritage-cart-main">
+            <div className="heritage-cart-items">
+              {items.map((item) => (
+                <article className="heritage-cart-item" key={item.id}>
+                  <img className="heritage-cart-item-image" src={item.image} alt={item.name} loading="lazy" decoding="async" />
+                  <div className="heritage-cart-item-copy">
+                    <h2>{item.name}</h2>
+                    <p>{item.category}</p>
+                    <div className="heritage-quantity-control" aria-label={`Số lượng ${item.name}`}>
+                      <button type="button" onClick={() => updateQuantity(item.id, item.quantity - 1)} aria-label="Giảm số lượng">
+                        -
+                      </button>
+                      <span>{item.quantity}</span>
+                      <button type="button" onClick={() => updateQuantity(item.id, item.quantity + 1)} aria-label="Tăng số lượng">
+                        +
+                      </button>
+                    </div>
+                  </div>
+                  <strong className="heritage-cart-item-price">{formatVnd(item.price * item.quantity)}</strong>
+                  <button className="heritage-cart-remove" type="button" onClick={() => removeItem(item.id)} aria-label={`Xóa ${item.name}`}>
+                    <img src="/assets/ic-trash'.svg" alt="" aria-hidden="true" />
+                  </button>
+                </article>
+              ))}
+            </div>
+
+            <article className="heritage-cart-promo">
+              <div className="heritage-cart-promo-icon">
+                <img src="/assets/ic-uu-dai.svg" alt="" aria-hidden="true" />
+              </div>
+              <div>
+                <h2>Ưu đãi dành riêng cho bạn</h2>
+                <p>Thành viên sở hữu Heritage Passport ép cọc giảm ngay 15% trên tổng hóa đơn.</p>
+              </div>
+              <button type="button">Áp dụng ngay</button>
+            </article>
+          </div>
+
+          <aside className="heritage-cart-summary" aria-label="Tổng đơn hàng">
+            <img className="heritage-cart-summary-bar" src="/assets/img-thanh-ngang-tong-don-gio-hang.svg" alt="" aria-hidden="true" />
+            <div className="heritage-cart-summary-panel">
+              <h2>Tổng cộng</h2>
+              <dl>
+                <div>
+                  <dt>Tạm tính:</dt>
+                  <dd>{formatVnd(subtotal)}</dd>
+                </div>
+                <div>
+                  <dt>Phí vận chuyển:</dt>
+                  <dd>{formatVnd(shippingFee)}</dd>
+                </div>
+                <div className="is-discount">
+                  <dt>Giảm giá Passport:</dt>
+                  <dd>- {formatVnd(discount)}</dd>
+                </div>
+              </dl>
+              <div className="heritage-cart-total">
+                <span>Thành tiền:</span>
+                <strong>{formatVnd(total)}</strong>
+              </div>
+              <a className="heritage-checkout-button" href="/kich-hoat">
+                Tiến hành thanh toán
+                <img src="/assets/ic-next.svg" alt="" aria-hidden="true" />
+              </a>
+              <a className="heritage-continue-button" href="/san-pham">Tiếp tục mua sắm</a>
+              <p>Cam kết bảo tồn giá trị di sản qua từng sản phẩm.</p>
+            </div>
+            <img className="heritage-cart-summary-bar" src="/assets/img-thanh-ngang-tong-don-gio-hang.svg" alt="" aria-hidden="true" />
+          </aside>
+        </section>
+
+        <section className="heritage-cart-suggestions" aria-labelledby="cart-suggestion-title">
+          <h2 id="cart-suggestion-title">Gợi ý thêm cho hành trình của bạn</h2>
+          <div className="heritage-suggestion-grid">
+            {suggestedItems.map((item) => (
+              <a className="heritage-suggestion-card" href={item.href} key={item.id}>
+                <div className="heritage-suggestion-media">
+                  {item.image ? (
+                    <img src={item.image} alt={item.name} loading="lazy" decoding="async" />
+                  ) : (
+                    <span aria-hidden="true">{item.id === "combo-qua-tang" ? "+" : "□"}</span>
+                  )}
+                </div>
+                <h3>{item.name}</h3>
+                <p>{item.price}</p>
+              </a>
+            ))}
+          </div>
+        </section>
+      </main>
+      <SiteFooter />
+    </>
   );
 }
 
