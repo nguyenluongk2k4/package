@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { useFirebaseAuth } from "./FirebaseAuthProvider";
 
 const navLinks = [
   { href: "/hanh-trinh", label: "Hành trình" },
@@ -12,6 +13,7 @@ const navLinks = [
 
 export default function SiteHeader() {
   const pathname = usePathname();
+  const { user } = useFirebaseAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const isHome = pathname === "/";
 
@@ -48,6 +50,9 @@ export default function SiteHeader() {
             </a>
             <a className="header-icon-button header-cart-link" href="/gio-hang" aria-label="Giỏ hàng">
               <img src="/assets/ic-gio-hang.svg" alt="" aria-hidden="true" />
+            </a>
+            <a className="header-account-link" href={user ? "/cua-toi" : "/dang-nhap"}>
+              {user ? "Tài khoản" : "Đăng nhập"}
             </a>
             <a className="header-cta" href="/kich-hoat">
               Bắt đầu

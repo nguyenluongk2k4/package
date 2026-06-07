@@ -1,4 +1,3 @@
-import { notFound } from "next/navigation";
 import ProductDetailPage from "../../../components/sac-co-do/ProductDetailPage";
 import { souvenirProducts } from "../../../data/sac-co-do";
 
@@ -19,11 +18,6 @@ export async function generateMetadata({ params }) {
 
 export default async function Page({ params }) {
   const { productId } = await params;
-  const product = souvenirProducts.find((item) => item.id === productId);
 
-  if (!product) {
-    notFound();
-  }
-
-  return <ProductDetailPage />;
+  return <ProductDetailPage productId={productId} />;
 }

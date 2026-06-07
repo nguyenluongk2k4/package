@@ -1,8 +1,31 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { souvenirProducts } from "../../data/sac-co-do";
+import { getPublicProducts } from "../../lib/firebase/catalog";
 import SiteFooter from "./SiteFooter";
 import SiteHeader from "./SiteHeader";
 
 export default function ProductPage() {
+  const [products, setProducts] = useState(souvenirProducts);
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function loadProducts() {
+      const nextProducts = await getPublicProducts();
+      if (mounted) {
+        setProducts(nextProducts.filter((product) => product.showOnProductList !== false));
+      }
+    }
+
+    loadProducts();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
   return (
     <>
       <SiteHeader />
@@ -16,9 +39,9 @@ export default function ProductPage() {
             </p>
           </div>
 
-          <div className="souvenir-products-grid" data-count={souvenirProducts.length}>
-            {souvenirProducts.map((product) => (
-              <a className="souvenir-product-card" href={`/san-pham/${product.id}`} key={product.id}>
+          <div className="souvenir-products-grid" data-count={products.length}>
+            {products.map((product) => (
+              <a className="souvenir-product-card" href={`/san-pham/${product.slug || product.id}`} key={product.id}>
                 <div className="souvenir-product-media">
                   <img src={product.image} alt={product.name} loading="lazy" decoding="async" />
                 </div>

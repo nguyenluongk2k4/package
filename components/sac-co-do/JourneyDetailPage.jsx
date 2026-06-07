@@ -1,4 +1,8 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { stations } from "../../data/sac-co-do";
+import { getStationBySlugOrId } from "../../lib/firebase/catalog";
 import SiteFooter from "./SiteFooter";
 import SiteHeader from "./SiteHeader";
 
@@ -104,15 +108,36 @@ const stationDetailCopy = {
 };
 
 function getDetail(station) {
-  return stationDetailCopy[station.id] || stationDetailCopy["trang-an"];
+  return {
+    ...(stationDetailCopy[station.id] || stationDetailCopy["trang-an"]),
+    ...(station.detail || {}),
+  };
 }
 
 export function getStationById(stationId) {
   return stations.find((station) => station.id === stationId);
 }
 
-export default function JourneyDetailPage({ station }) {
-  const detail = getDetail(station);
+export default function JourneyDetailPage({ station, stationId }) {
+  const [activeStation, setActiveStation] = useState(station);
+  const detail = getDetail(activeStation);
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function loadStation() {
+      const firebaseStation = await getStationBySlugOrId(stationId || station?.slug || station?.id);
+      if (mounted && firebaseStation) {
+        setActiveStation(firebaseStation);
+      }
+    }
+
+    loadStation();
+
+    return () => {
+      mounted = false;
+    };
+  }, [station?.id, station?.slug, stationId]);
 
   return (
     <>
@@ -125,21 +150,21 @@ export default function JourneyDetailPage({ station }) {
         <div className="journey-detail-layout">
           <div className="journey-detail-main">
             <section className="journey-detail-hero">
-              <img src={station.image} alt={station.name} loading="eager" decoding="async" />
+              <img src={activeStation.image || activeStation.heroImage} alt={activeStation.name} loading="eager" decoding="async" />
               <div className="journey-detail-hero-stamp" aria-hidden="true">
-                <span>{station.stamp}</span>
+                <span>{activeStation.stamp}</span>
               </div>
               <div className="journey-detail-hero-copy">
                 <span>{detail.badge}</span>
-                <h1>{station.name}</h1>
+                <h1>{activeStation.name}</h1>
                 <div className="journey-detail-hero-meta">
                   <p className="journey-detail-hero-location">
                     <img src={`${detailAssetBase}/desktop-icon/ic-dia-diem.svg`} alt="" aria-hidden="true" />
-                    {station.tag}
+                    {activeStation.tag}
                   </p>
                   <p className="journey-detail-hero-time">
                     <img src={`${detailAssetBase}/mobile-icon/ic-time.svg`} alt="" aria-hidden="true" />
-                    {station.hours}
+                    {activeStation.hours}
                   </p>
                 </div>
               </div>
@@ -187,12 +212,12 @@ export default function JourneyDetailPage({ station }) {
                 <img src={`${detailAssetBase}/desktop-icon/ic-lau-dai.svg`} alt="" aria-hidden="true" />
               </div>
               <p className="journey-detail-eyebrow">Trạm dừng chân</p>
-              <h2>{station.name} Station</h2>
+              <h2>{activeStation.name} Station</h2>
 
               <dl>
                 <div>
                   <dt>Giờ mở cửa</dt>
-                  <dd>{station.hours}</dd>
+                  <dd>{activeStation.hours}</dd>
                 </div>
                 <div>
                   <dt>Trạng thái</dt>
@@ -216,10 +241,10 @@ export default function JourneyDetailPage({ station }) {
               </div>
 
               <div className="journey-detail-qr">
-                <img src={`${detailAssetBase}/desktop-icon/qr-mockup.svg`} alt={`QR trải nghiệm ${station.name}`} loading="lazy" decoding="async" />
+                <img src={`${detailAssetBase}/desktop-icon/qr-mockup.svg`} alt={`QR trải nghiệm ${activeStation.name}`} loading="lazy" decoding="async" />
               </div>
 
-              <a className="journey-detail-primary-action" href={`/checkin/${station.id}`}>
+              <a className="journey-detail-primary-action" href={`/checkin/${activeStation.slug || activeStation.id}`}>
                 <img src={`${detailAssetBase}/desktop-icon/ic-mo-trai-nghiem-qr.svg`} alt="" aria-hidden="true" />
                 Mở trải nghiệm AR
               </a>
@@ -238,7 +263,7 @@ export default function JourneyDetailPage({ station }) {
 
             <section className="journey-detail-offer">
               <strong>Ưu đãi đặc quyền</strong>
-              <p>Hoàn thành bộ dấu {station.name} để nhận món quà di sản đặc biệt tại Trung tâm Du khách.</p>
+              <p>Hoàn thành bộ dấu {activeStation.name} để nhận món quà di sản đặc biệt tại Trung tâm Du khách.</p>
             </section>
           </aside>
         </div>

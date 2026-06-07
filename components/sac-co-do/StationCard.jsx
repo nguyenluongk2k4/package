@@ -9,7 +9,7 @@ export default function StationCard({ station, variant = "default" }) {
   }, [station.gallery, station.image]);
   const [activeImage, setActiveImage] = useState(images[0]);
   const previewImages = images.slice(0, 4);
-  const detailHref = `/hanh-trinh/${station.id}`;
+  const detailHref = `/hanh-trinh/${station.slug || station.id}`;
 
   function openDetail() {
     window.location.href = detailHref;

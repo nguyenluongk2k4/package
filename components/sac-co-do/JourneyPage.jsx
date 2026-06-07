@@ -1,10 +1,33 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { stations, steps } from "../../data/sac-co-do";
+import { getPublicStations } from "../../lib/firebase/catalog";
 import JourneyMapSection from "./JourneyMapSection";
 import SiteFooter from "./SiteFooter";
 import SiteHeader from "./SiteHeader";
 import StationCard from "./StationCard";
 
 export default function JourneyPage() {
+  const [journeyStations, setJourneyStations] = useState(stations);
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function loadStations() {
+      const nextStations = await getPublicStations();
+      if (mounted) {
+        setJourneyStations(nextStations);
+      }
+    }
+
+    loadStations();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
   return (
     <>
       <SiteHeader />
@@ -28,7 +51,7 @@ export default function JourneyPage() {
         </div>
         <JourneyMapSection />
         <div className="station-grid">
-          {stations.map((station) => (
+          {journeyStations.map((station) => (
             <StationCard key={station.id} station={station} />
           ))}
         </div>

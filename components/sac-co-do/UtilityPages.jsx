@@ -1,18 +1,23 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { collection, deleteDoc, doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { gallery, souvenirProducts, stations } from "../../data/sac-co-do";
 import SectionTitle from "./SectionTitle";
 import SiteFooter from "./SiteFooter";
 import SiteHeader from "./SiteHeader";
 import WebArViewer from "./WebArViewer";
+import { useFirebaseAuth } from "./FirebaseAuthProvider";
+import { saveJourneyProgress } from "../../lib/firebase/userData";
 
 export function CartPage() {
+  const { user, db } = useFirebaseAuth();
   const initialItems = [
     { ...souvenirProducts[0], quantity: 1, category: "Đặc sản Cố Đô" },
     { ...souvenirProducts[1], quantity: 2, category: "Quà tặng hành trình" },
   ].filter((item) => item.id);
   const [items, setItems] = useState(initialItems);
+  const [cartSource, setCartSource] = useState("fallback");
   const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const shippingFee = items.length > 0 ? 35000 : 0;
   const discount = 0;
@@ -52,16 +57,61 @@ export function CartPage() {
     return new Intl.NumberFormat("vi-VN").format(value) + "đ";
   }
 
+  useEffect(() => {
+    if (!user || !db) {
+      setItems(initialItems);
+      setCartSource("fallback");
+      return undefined;
+    }
+
+    const cartRef = collection(db, "users", user.uid, "cart");
+    return onSnapshot(cartRef, (snapshot) => {
+      const firebaseItems = snapshot.docs.map((cartDoc) => {
+        const data = cartDoc.data();
+        const snapshotData = data.snapshot || {};
+        return {
+          id: data.productId || cartDoc.id,
+          cartDocId: cartDoc.id,
+          slug: data.slug,
+          quantity: Math.max(1, Number(data.quantity || 1)),
+          name: snapshotData.name || "San pham",
+          price: Number(snapshotData.price || 0),
+          image: snapshotData.image || "",
+          category: snapshotData.badge || snapshotData.category || snapshotData.weight || "San pham di san",
+        };
+      });
+
+      setItems(firebaseItems);
+      setCartSource("firebase");
+    });
+  }, [db, user]);
+
   function updateQuantity(id, nextQuantity) {
+    const item = items.find((currentItem) => currentItem.id === id || currentItem.cartDocId === id);
+    const safeQuantity = Math.max(1, nextQuantity);
+
     setItems((currentItems) =>
       currentItems.map((item) =>
-        item.id === id ? { ...item, quantity: Math.max(1, nextQuantity) } : item
+        item.id === id || item.cartDocId === id ? { ...item, quantity: safeQuantity } : item
       )
     );
+
+    if (user && db && item?.cartDocId) {
+      updateDoc(doc(db, "users", user.uid, "cart", item.cartDocId), { quantity: safeQuantity }).catch((error) => {
+        console.error("Cart quantity update failed:", error);
+      });
+    }
   }
 
   function removeItem(id) {
-    setItems((currentItems) => currentItems.filter((item) => item.id !== id));
+    const item = items.find((currentItem) => currentItem.id === id || currentItem.cartDocId === id);
+    setItems((currentItems) => currentItems.filter((item) => item.id !== id && item.cartDocId !== id));
+
+    if (user && db && item?.cartDocId) {
+      deleteDoc(doc(db, "users", user.uid, "cart", item.cartDocId)).catch((error) => {
+        console.error("Cart remove failed:", error);
+      });
+    }
   }
 
   return (
@@ -73,7 +123,7 @@ export function CartPage() {
           <p>Lưu giữ những mảnh hồn di sản bạn đã chọn.</p>
         </section>
 
-        <section className="heritage-cart-layout" aria-label="Chi tiết giỏ hàng">
+        <section className="heritage-cart-layout" data-source={cartSource} aria-label="Chi tiết giỏ hàng">
           <div className="heritage-cart-main">
             <div className="heritage-cart-items">
               {items.map((item) => (
@@ -222,6 +272,7 @@ export function RewardPage() {
 }
 
 export function CheckinPage({ stationId }) {
+  const { user, db } = useFirebaseAuth();
   const station = stations.find((item) => item.id === stationId) || stations[0];
   const [showAr, setShowAr] = useState(false);
   const [isStamped, setIsStamped] = useState(false);
@@ -264,7 +315,7 @@ export function CheckinPage({ stationId }) {
 
       setShowManualSuccess(true);
       
-      setTimeout(() => {
+      setTimeout(async () => {
         setIsStamped(true);
         setShowManualSuccess(false);
 
@@ -274,6 +325,14 @@ export function CheckinPage({ stationId }) {
           visited.push(stationId);
           localStorage.setItem("scd_visited_stations", JSON.stringify(visited));
         }
+
+        await saveJourneyProgress({
+          db,
+          uid: user?.uid,
+          stationId,
+          stationName: station.name,
+          source: "manual-code",
+        });
       }, 1500);
     } else {
       setErrorMessage("Mã ngày không hợp lệ. Vui lòng hỏi nhân viên tại quầy!");

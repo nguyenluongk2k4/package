@@ -1,0 +1,69 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/adminUsers/$(request.auth.uid))
+        && get(/databases/$(database)/documents/adminUsers/$(request.auth.uid)).data.active == true;
+    }
+
+    function published() {
+      return resource.data.status == "published";
+    }
+
+    match /adminUsers/{uid} {
+      allow read: if isAdmin() || (signedIn() && request.auth.uid == uid);
+      allow write: if isAdmin();
+    }
+
+    match /stations/{stationId} {
+      allow read: if published() || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    match /products/{productId} {
+      allow read: if published() || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    match /arCharacters/{characterId} {
+      allow read: if resource.data.status == "active" || resource.data.status == "published" || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    match /users/{uid} {
+      allow read, create, update: if signedIn() && request.auth.uid == uid;
+      allow read: if isAdmin();
+      allow delete: if isAdmin();
+
+      match /cart/{itemId} {
+        allow read, write: if signedIn() && request.auth.uid == uid;
+        allow read: if isAdmin();
+      }
+
+      match /journeyProgress/{stationId} {
+        allow read, write: if signedIn() && request.auth.uid == uid;
+        allow read: if isAdmin();
+      }
+
+      match /photoboothPhotos/{photoId} {
+        allow read, write: if signedIn() && request.auth.uid == uid;
+        allow read: if isAdmin();
+      }
+
+      match /arExperiences/{sessionId} {
+        allow read, write: if signedIn() && request.auth.uid == uid;
+        allow read: if isAdmin();
+      }
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -2,10 +2,13 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { stations } from "../../data/sac-co-do";
+import { getDefaultArCharacter, getStationBySlugOrId } from "../../lib/firebase/catalog";
+import { saveArExperience, saveJourneyProgress } from "../../lib/firebase/userData";
+import { useFirebaseAuth } from "./FirebaseAuthProvider";
 
 const viewArBase = "/assets/view-ar";
-const arModelSrc = "/ar/sac-co-do-guide.glb";
-const arIosModelSrc = "/ar/sac-co-do-guide.usdz";
+const fallbackArModelSrc = "/ar/sac-co-do-guide.glb";
+const fallbackArIosModelSrc = "/ar/sac-co-do-guide.usdz";
 const sheetPositions = ["expanded", "middle", "collapsed"];
 
 function getStation(stationId) {
@@ -24,7 +27,14 @@ function isQuickLookDevice() {
 }
 
 export default function CheckinExperiencePage({ stationId }) {
-  const station = useMemo(() => getStation(stationId), [stationId]);
+  const { user, db } = useFirebaseAuth();
+  const fallbackStation = useMemo(() => getStation(stationId), [stationId]);
+  const [station, setStation] = useState(fallbackStation);
+  const [arCharacter, setArCharacter] = useState({
+    glbUrl: fallbackArModelSrc,
+    usdzUrl: fallbackArIosModelSrc,
+    posterUrl: "",
+  });
   const videoRef = useRef(null);
   const streamRef = useRef(null);
   const modelViewerRef = useRef(null);
@@ -38,6 +48,30 @@ export default function CheckinExperiencePage({ stationId }) {
   const [hasCamera, setHasCamera] = useState(false);
   const [isIosQuickLook, setIsIosQuickLook] = useState(false);
   const [sheetPosition, setSheetPosition] = useState("middle");
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function loadArConfig() {
+      const firebaseStation = await getStationBySlugOrId(stationId);
+      const nextStation = firebaseStation || fallbackStation;
+      const character = await getDefaultArCharacter(nextStation?.arGuide?.modelId);
+
+      if (!mounted) return;
+      setStation(nextStation);
+      setArCharacter({
+        glbUrl: character?.glbUrl || fallbackArModelSrc,
+        usdzUrl: character?.usdzUrl || fallbackArIosModelSrc,
+        posterUrl: character?.posterUrl || "",
+      });
+    }
+
+    loadArConfig();
+
+    return () => {
+      mounted = false;
+    };
+  }, [fallbackStation, stationId]);
 
   async function openCamera() {
     if (typeof navigator === "undefined" || !navigator.mediaDevices?.getUserMedia) {
@@ -143,7 +177,7 @@ export default function CheckinExperiencePage({ stationId }) {
     window.speechSynthesis.speak(utterance);
   }
 
-  function handleStamp() {
+  async function handleStamp() {
     if (!isTracking) {
       return;
     }
@@ -155,6 +189,21 @@ export default function CheckinExperiencePage({ stationId }) {
         localStorage.setItem("scd_visited_stations", JSON.stringify([...visited, station.id]));
       }
     }
+
+    await saveJourneyProgress({
+      db,
+      uid: user?.uid,
+      stationId: station.id || stationId,
+      stationName: station.name,
+      source: "ar-live",
+    });
+    await saveArExperience({
+      db,
+      uid: user?.uid,
+      stationId: station.id || stationId,
+      stationName: station.name,
+      modelId: station.arGuide?.modelId,
+    });
   }
 
   function handleSheetPointerDown(event) {
@@ -194,8 +243,9 @@ export default function CheckinExperiencePage({ stationId }) {
         <model-viewer
           ref={modelViewerRef}
           class="ar-live-model-viewer"
-          src={arModelSrc}
-          ios-src={arIosModelSrc}
+          src={arCharacter.glbUrl}
+          ios-src={arCharacter.usdzUrl}
+          poster={arCharacter.posterUrl || undefined}
           alt="AR guide model"
           ar
           ar-modes="webxr scene-viewer quick-look"
@@ -244,7 +294,7 @@ export default function CheckinExperiencePage({ stationId }) {
         {isIosQuickLook ? (
           <a
             className="ar-live-primary ar-live-primary-quicklook"
-            href={arIosModelSrc}
+            href={arCharacter.usdzUrl || fallbackArIosModelSrc}
             rel="ar"
             aria-label={arButtonLabel}
             data-label={arButtonLabel}

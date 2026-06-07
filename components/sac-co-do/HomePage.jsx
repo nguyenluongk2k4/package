@@ -1,4 +1,8 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
 import { brand, gallery, heroSlides, proofStats, stations, steps } from "../../data/sac-co-do";
+import { getPublicProducts, getPublicStations } from "../../lib/firebase/catalog";
 import PassportVersionSection from "./PassportVersionSection";
 import SectionTitle from "./SectionTitle";
 import SiteFooter from "./SiteFooter";
@@ -6,7 +10,39 @@ import SiteHeader from "./SiteHeader";
 import StationCarousel from "./StationCarousel";
 
 export default function HomePage() {
+  const [firebaseStations, setFirebaseStations] = useState(stations);
+  const [homeProducts, setHomeProducts] = useState([]);
   const hero = heroSlides[0];
+  const featuredStations = useMemo(() => {
+    const selected = firebaseStations
+      .filter((station) => station.isFeatured !== false)
+      .sort((a, b) => (a.sortOrder ?? 999) - (b.sortOrder ?? 999));
+    return selected.length ? selected : firebaseStations;
+  }, [firebaseStations]);
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function loadFirebaseCatalog() {
+      const [nextStations, nextProducts] = await Promise.all([
+        getPublicStations(),
+        getPublicProducts(),
+      ]);
+
+      if (!mounted) {
+        return;
+      }
+
+      setFirebaseStations(nextStations);
+      setHomeProducts(nextProducts.filter((product) => product.showOnHome !== false));
+    }
+
+    loadFirebaseCatalog();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   return (
     <>
@@ -66,8 +102,34 @@ export default function HomePage() {
             title="Các điểm đến tạo nên bản đồ trải nghiệm"
             description="Mỗi trạm có một dấu mộc, một câu chuyện và một hành động check-in riêng."
           />
-          <StationCarousel stations={stations} />
+          <StationCarousel stations={featuredStations} />
         </section>
+
+        {homeProducts.length > 0 && (
+          <section className="content-section product-showcase-home" id="san-pham-noi-bat">
+            <SectionTitle
+              eyebrow="Vật phẩm"
+              title="Những món quà được chọn cho hành trình"
+              description="Danh sách này được điều khiển bằng Firebase qua cờ showOnHome."
+            />
+            <div className="product-grid">
+              {homeProducts.slice(0, 3).map((product) => (
+                <article className="product-card" key={product.id}>
+                  <img src={product.image} alt={product.name} loading="lazy" decoding="async" />
+                  <div>
+                    <span className="pill">{product.badge || product.category || "Sản phẩm"}</span>
+                    <h3>{product.name}</h3>
+                    <p>{product.description}</p>
+                    <strong>{product.priceFormatted}</strong>
+                    <a className="station-checkin-link" href={`/san-pham/${product.slug || product.id}`}>
+                      Xem chi tiết
+                    </a>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+        )}
 
         <section className="gallery-strip" aria-label="Ảnh cảm hứng">
           {gallery.map((image) => (

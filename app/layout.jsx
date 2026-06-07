@@ -1,5 +1,6 @@
 import "./globals.css";
 import ScrollReveal from "../components/sac-co-do/ScrollReveal";
+import { FirebaseAuthProvider } from "../components/sac-co-do/FirebaseAuthProvider";
 
 export const metadata = {
   metadataBase: new URL("https://www.knguyen.shop"),
@@ -32,8 +33,10 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body>
-        <ScrollReveal />
-        {children}
+        <FirebaseAuthProvider>
+          <ScrollReveal />
+          {children}
+        </FirebaseAuthProvider>
       </body>
     </html>
   );

@@ -1,5 +1,4 @@
-import { notFound } from "next/navigation";
-import JourneyDetailPage, { getStationById } from "../../../components/sac-co-do/JourneyDetailPage";
+import JourneyDetailPage from "../../../components/sac-co-do/JourneyDetailPage";
 import { stations } from "../../../data/sac-co-do";
 
 export function generateStaticParams() {
@@ -10,7 +9,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }) {
   const { "dia-diem": stationId } = await params;
-  const station = getStationById(stationId);
+  const station = stations.find((item) => item.id === stationId || item.slug === stationId);
 
   if (!station) {
     return {
@@ -26,11 +25,7 @@ export async function generateMetadata({ params }) {
 
 export default async function Page({ params }) {
   const { "dia-diem": stationId } = await params;
-  const station = getStationById(stationId);
+  const station = stations.find((item) => item.id === stationId || item.slug === stationId) || stations[0];
 
-  if (!station) {
-    notFound();
-  }
-
-  return <JourneyDetailPage station={station} />;
+  return <JourneyDetailPage station={station} stationId={stationId} />;
 }

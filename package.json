@@ -1,17 +1,22 @@
 {
   "name": "travlla-next",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "dev:host": "next dev -H 0.0.0.0",
     "dev:https": "next dev -H 0.0.0.0 --experimental-https",
     "build": "next build",
     "start": "next start",
+    "firebase:seed": "node scripts/seed-firebase.mjs",
     "build:css": "npx @tailwindcss/cli -i ./src/assets/css/tailwind.css -o ./src/assets/css/style.css",
     "dev:css": "npx @tailwindcss/cli -i ./src/assets/css/tailwind.css -o ./src/assets/css/style.css --watch"
   },
   "dependencies": {
+    "@opentelemetry/api": "^1.9.1",
     "@tailwindcss/cli": "4.3.0",
+    "firebase": "^12.14.0",
+    "firebase-admin": "^13.10.0",
     "next": "16.2.6",
     "react": "19.2.6",
     "react-dom": "19.2.6"

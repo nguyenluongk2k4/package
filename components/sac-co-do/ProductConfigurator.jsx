@@ -1,34 +1,150 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { packages } from "../../data/sac-co-do";
+import { getProductBySlugOrId, getPublicProducts } from "../../lib/firebase/catalog";
+import { useFirebaseAuth } from "./FirebaseAuthProvider";
+import { collection, doc, serverTimestamp, setDoc } from "firebase/firestore";
 
-const productImages = [
-  { src: "/assets/anh-new/frame-1.png", label: "Khung nhận diện Sắc Cố Đô" },
-  { src: "/assets/anh-new/cover photo.jpg", label: "Cover Sắc Cố Đô" },
-  { src: "/assets/anh-new/AVT.jpg", label: "Biểu tượng Sắc Cố Đô" },
-  { src: "/assets/anh-new/vvv.jpg", label: "Bảng màu và logo Sắc Cố Đô" },
+const fallbackImages = [
+  { src: "/assets/anh-new/frame-1.png", label: "Khung nhan dien Sac Co Do" },
+  { src: "/assets/anh-new/cover photo.jpg", label: "Cover Sac Co Do" },
+  { src: "/assets/anh-new/AVT.jpg", label: "Bieu tuong Sac Co Do" },
+  { src: "/assets/anh-new/vvv.jpg", label: "Bang mau va logo Sac Co Do" },
 ];
 
 function formatVnd(value) {
-  return new Intl.NumberFormat("vi-VN").format(value) + "đ";
+  return new Intl.NumberFormat("vi-VN").format(Number(value || 0)) + "đ";
 }
 
-export default function ProductConfigurator() {
-  const [selectedId, setSelectedId] = useState(packages[0].id);
-  const [activeImage, setActiveImage] = useState(productImages[0]);
+function toProductOption(product) {
+  return {
+    ...product,
+    id: product.id,
+    shortName: product.shortName || product.name,
+    subtitle: product.category || product.badge || product.weight || "San pham di san",
+    price: Number(product.price || 0),
+    priceFormatted: product.priceFormatted || formatVnd(product.price),
+  };
+}
+
+function getImages(product) {
+  const images = product?.detailImages?.length ? product.detailImages : product?.images;
+  return (images?.length ? images : [product?.image].filter(Boolean)).map((image, index) => {
+    if (typeof image === "string") {
+      return { src: image, label: `${product?.name || "San pham"} ${index + 1}` };
+    }
+
+    return {
+      src: image?.src || image?.url || product?.image || fallbackImages[0].src,
+      label: image?.label || image?.alt || `${product?.name || "San pham"} ${index + 1}`,
+    };
+  });
+}
+
+export default function ProductConfigurator({ productId }) {
+  const { user, db } = useFirebaseAuth();
+  const [catalogProducts, setCatalogProducts] = useState(packages.map(toProductOption));
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedId, setSelectedId] = useState(packages[0]?.id);
+  const [activeImage, setActiveImage] = useState(fallbackImages[0]);
   const [quantity, setQuantity] = useState(1);
-  const selected = packages.find((item) => item.id === selectedId) || packages[0];
-  const total = useMemo(() => selected.price * quantity, [selected.price, quantity]);
+  const [cartState, setCartState] = useState("idle");
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function loadProducts() {
+      const [products, detail] = await Promise.all([
+        getPublicProducts(),
+        productId ? getProductBySlugOrId(productId) : Promise.resolve(null),
+      ]);
+
+      if (!mounted) return;
+
+      const options = (products.length ? products : packages).map(toProductOption);
+      const selected =
+        detail ||
+        options.find((item) => item.slug === productId || item.id === productId) ||
+        options[0] ||
+        packages[0];
+
+      setCatalogProducts(options);
+      setSelectedProduct(selected ? toProductOption(selected) : null);
+      setSelectedId(selected?.id || options[0]?.id);
+      setActiveImage(getImages(selected)[0] || fallbackImages[0]);
+    }
+
+    loadProducts();
+
+    return () => {
+      mounted = false;
+    };
+  }, [productId]);
+
+  const selected = useMemo(() => {
+    return selectedProduct || catalogProducts.find((item) => item.id === selectedId) || catalogProducts[0] || packages[0];
+  }, [catalogProducts, selectedId, selectedProduct]);
+
+  const detailImages = useMemo(() => {
+    const images = getImages(selected);
+    return images.length ? images : fallbackImages;
+  }, [selected]);
+
+  const total = useMemo(() => Number(selected?.price || 0) * quantity, [selected?.price, quantity]);
+  const model3d = selected?.model3d || {};
+
+  async function addToCart() {
+    if (!user || !db || !selected) {
+      setCartState("auth");
+      return;
+    }
+
+    setCartState("saving");
+    const itemId = selected.id || selected.slug;
+    const cartRef = doc(collection(db, "users", user.uid, "cart"), itemId);
+
+    await setDoc(
+      cartRef,
+      {
+        productId: selected.id,
+        slug: selected.slug || selected.id,
+        quantity,
+        updatedAt: serverTimestamp(),
+        snapshot: {
+          name: selected.name,
+          price: Number(selected.price || 0),
+          image: selected.image || detailImages[0]?.src || "",
+          badge: selected.badge || selected.category || "",
+          weight: selected.weight || "",
+        },
+      },
+      { merge: true }
+    );
+    setCartState("saved");
+  }
 
   return (
     <section className="product-detail" aria-label="Chi tiết sản phẩm Sắc Cố Đô">
       <div className="product-gallery-panel">
         <div className="product-main-image">
-          <img src={activeImage.src} alt={activeImage.label} loading="eager" decoding="async" />
+          {model3d.glbUrl ? (
+            <model-viewer
+              src={model3d.glbUrl}
+              ios-src={model3d.usdzUrl || undefined}
+              poster={model3d.posterUrl || activeImage.src}
+              camera-controls
+              auto-rotate
+              ar
+              shadow-intensity="0.8"
+              alt={selected?.name || "Sản phẩm 3D"}
+            />
+          ) : (
+            <img src={activeImage.src} alt={activeImage.label} loading="eager" decoding="async" />
+          )}
         </div>
         <div className="product-thumbs" aria-label="Ảnh sản phẩm">
-          {productImages.map((image) => (
+          {detailImages.map((image) => (
             <button
               className={image.src === activeImage.src ? "active" : ""}
               type="button"
@@ -43,28 +159,28 @@ export default function ProductConfigurator() {
       </div>
 
       <div className="product-buy-panel">
-        <span className="product-kicker">Sản phẩm du lịch</span>
-        <h1>Sổ tay Pop-up Sắc Cố Đô Ninh Bình</h1>
+        <span className="product-kicker">{selected?.category || "Sản phẩm du lịch"}</span>
+        <h1>{selected?.name || "Sản phẩm Sắc Cố Đô"}</h1>
         <div className="rating-row">
           <span aria-label="5 sao">★★★★★</span>
           <small>(48 đánh giá của người đi phượt)</small>
         </div>
-        <p>
-          Cuốn sổ tay du lịch Ninh Bình độc nhất vô nhị. Thiết kế bìa cứng cao cấp, đậm họa tiết,
-          mở ra 6 trang sách nổi 3D tương ứng 6 thắng cảnh Ninh Bình tinh xảo. Mỗi cuốn sổ đi kèm
-          mã dịch vụ riêng để kích hoạt các tiện ích hành trình sau khi mua sản phẩm.
-        </p>
+        <p>{selected?.description || "Sản phẩm di sản Ninh Bình được tuyển chọn cho hành trình Sắc Cố Đô."}</p>
 
         <div className="option-group">
-          <p>Chọn gói sản phẩm:</p>
-          {packages.map((item) => {
-            const active = item.id === selectedId;
+          <p>Chọn sản phẩm:</p>
+          {catalogProducts.map((item) => {
+            const active = item.id === selected?.id;
             return (
               <button
                 className={`product-option ${active ? "active" : ""}`}
                 type="button"
                 key={item.id}
-                onClick={() => setSelectedId(item.id)}
+                onClick={() => {
+                  setSelectedProduct(null);
+                  setSelectedId(item.id);
+                  setActiveImage(getImages(item)[0] || fallbackImages[0]);
+                }}
               >
                 <span className="option-radio" aria-hidden="true" />
                 <span className="option-copy">
@@ -97,10 +213,12 @@ export default function ProductConfigurator() {
           </div>
         </div>
 
-        <button className="add-cart-button" type="button">
+        <button className="add-cart-button" type="button" onClick={addToCart} disabled={cartState === "saving"}>
           <span className="cart-glyph" aria-hidden="true" />
-          Thêm vào giỏ hàng
+          {cartState === "saving" ? "Đang thêm..." : "Thêm vào giỏ hàng"}
         </button>
+        {cartState === "auth" ? <small className="product-cart-note">Đăng nhập để lưu giỏ hàng trên Firebase.</small> : null}
+        {cartState === "saved" ? <small className="product-cart-note">Đã lưu vào giỏ hàng.</small> : null}
       </div>
     </section>
   );

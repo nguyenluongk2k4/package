@@ -1,6 +1,9 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import { getDefaultArCharacter, getStationBySlugOrId } from "../../lib/firebase/catalog";
+import { saveArExperience, saveJourneyProgress } from "../../lib/firebase/userData";
+import { useFirebaseAuth } from "./FirebaseAuthProvider";
 
 const AR_MODEL_SRC = "/ar/sac-co-do-guide.glb";
 const AR_IOS_MODEL_SRC = "/ar/sac-co-do-guide.usdz";
@@ -76,7 +79,14 @@ const STATION_GUIDES = {
 };
 
 export default function WebArViewer({ stationId, onClose, onCheckinSuccess }) {
-  const guide = STATION_GUIDES[stationId] || STATION_GUIDES["trang-an"];
+  const { user, db } = useFirebaseAuth();
+  const defaultGuide = STATION_GUIDES[stationId] || STATION_GUIDES["trang-an"];
+  const [guide, setGuide] = useState(defaultGuide);
+  const [arCharacter, setArCharacter] = useState({
+    glbUrl: AR_MODEL_SRC,
+    usdzUrl: AR_IOS_MODEL_SRC,
+    posterUrl: "",
+  });
   const videoRef = useRef(null);
   const modelViewerRef = useRef(null);
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
@@ -94,6 +104,41 @@ export default function WebArViewer({ stationId, onClose, onCheckinSuccess }) {
   const voiceUtteranceRef = useRef(null);
   const musicAudioRef = useRef(null);
   const cancelIntentionalRef = useRef(false);
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function loadArConfig() {
+      const station = await getStationBySlugOrId(stationId);
+      const character = await getDefaultArCharacter(station?.arGuide?.modelId);
+
+      if (!mounted) return;
+
+      if (station?.arGuide?.voiceText || station?.arGuide?.subtitles?.length) {
+        setGuide({
+          ...defaultGuide,
+          name: station.name || defaultGuide.name,
+          voiceText: station.arGuide.voiceText || defaultGuide.voiceText,
+          stampName: station.arGuide.stampName || defaultGuide.stampName,
+          subtitles: station.arGuide.subtitles?.length ? station.arGuide.subtitles : defaultGuide.subtitles,
+        });
+      } else {
+        setGuide(defaultGuide);
+      }
+
+      setArCharacter({
+        glbUrl: character?.glbUrl || AR_MODEL_SRC,
+        usdzUrl: character?.usdzUrl || AR_IOS_MODEL_SRC,
+        posterUrl: character?.posterUrl || "",
+      });
+    }
+
+    loadArConfig();
+
+    return () => {
+      mounted = false;
+    };
+  }, [defaultGuide, stationId]);
 
   // 1. Khởi động Camera điện thoại làm nền
   useEffect(() => {
@@ -290,7 +335,7 @@ export default function WebArViewer({ stationId, onClose, onCheckinSuccess }) {
     const stampSound = new Audio("https://assets.mixkit.co/active_storage/sfx/2012/2012-84.wav"); // Âm thanh tiếng búa/cộc
     stampSound.play().catch(e => console.log(e));
 
-    setTimeout(() => {
+    setTimeout(async () => {
       setCheckinComplete(true);
       
       // Kích hoạt pháo hoa chúc mừng nếu có
@@ -314,6 +359,21 @@ export default function WebArViewer({ stationId, onClose, onCheckinSuccess }) {
         visitedStations.push(stationId);
         localStorage.setItem("scd_visited_stations", JSON.stringify(visitedStations));
       }
+
+      await saveJourneyProgress({
+        db,
+        uid: user?.uid,
+        stationId,
+        stationName: guide.name,
+        source: "web-ar",
+      });
+      await saveArExperience({
+        db,
+        uid: user?.uid,
+        stationId,
+        stationName: guide.name,
+        modelId: arCharacter.glbUrl,
+      });
 
       // Thông báo thành công ra trang ngoài sau 3 giây
       setTimeout(() => {
@@ -355,8 +415,9 @@ export default function WebArViewer({ stationId, onClose, onCheckinSuccess }) {
       <div className="webar-stage">
         <model-viewer
           ref={modelViewerRef}
-          src={AR_MODEL_SRC}
-          ios-src={AR_IOS_MODEL_SRC}
+          src={arCharacter.glbUrl}
+          ios-src={arCharacter.usdzUrl}
+          poster={arCharacter.posterUrl || undefined}
           alt="AR 3D Tour Guide"
           ar-modes="webxr scene-viewer quick-look"
           ar
