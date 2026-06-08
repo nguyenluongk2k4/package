@@ -5,8 +5,9 @@ import { getDefaultArCharacter, getStationBySlugOrId } from "../../lib/firebase/
 import { saveArExperience, saveJourneyProgress } from "../../lib/firebase/userData";
 import { useFirebaseAuth } from "./FirebaseAuthProvider";
 
-const AR_MODEL_SRC = "/ar/sac-co-do-guide.glb";
-const AR_IOS_MODEL_SRC = "/ar/sac-co-do-guide.usdz";
+const AR_MODEL_SRC = "/ar/sac-co-do-guide-v2.glb";
+const AR_IOS_MODEL_SRC = "/ar/sac-co-do-guide-v2.usdz";
+const MODEL_GREETING_ANIMATION = "WaveOnceThenIdle";
 
 // Định nghĩa thông tin thuyết minh và âm thanh cho từng trạm
 const STATION_GUIDES = {
@@ -94,7 +95,7 @@ export default function WebArViewer({ stationId, onClose, onCheckinSuccess }) {
   const [isPlayingVoice, setIsPlayingVoice] = useState(false);
   const [isMutedMusic, setIsMutedMusic] = useState(false);
   const [currentSubtitle, setCurrentSubtitle] = useState("");
-  const [modelAnimation, setModelAnimation] = useState("Idle");
+  const [modelAnimation, setModelAnimation] = useState(MODEL_GREETING_ANIMATION);
   const [showStampEffect, setShowStampEffect] = useState(false);
   const [checkinComplete, setCheckinComplete] = useState(false);
   const [arStatus, setArStatus] = useState("idle");
@@ -104,6 +105,7 @@ export default function WebArViewer({ stationId, onClose, onCheckinSuccess }) {
   const voiceUtteranceRef = useRef(null);
   const musicAudioRef = useRef(null);
   const cancelIntentionalRef = useRef(false);
+  const playedGreetingRef = useRef(false);
 
   useEffect(() => {
     let mounted = true;
@@ -139,6 +141,10 @@ export default function WebArViewer({ stationId, onClose, onCheckinSuccess }) {
       mounted = false;
     };
   }, [defaultGuide, stationId]);
+
+  useEffect(() => {
+    playedGreetingRef.current = false;
+  }, [arCharacter.glbUrl]);
 
   // 1. Khởi động Camera điện thoại làm nền
   useEffect(() => {
@@ -198,22 +204,48 @@ export default function WebArViewer({ stationId, onClose, onCheckinSuccess }) {
     const viewer = modelViewerRef.current;
     if (!viewer) return;
 
+    const playGreetingOnce = () => {
+      if (playedGreetingRef.current) return;
+      playedGreetingRef.current = true;
+      setModelAnimation(MODEL_GREETING_ANIMATION);
+      viewer.animationName = MODEL_GREETING_ANIMATION;
+      viewer.currentTime = 0;
+      viewer.pause?.();
+      requestAnimationFrame(() => {
+        const playResult = viewer.play?.({ repetitions: 1 });
+        if (playResult?.catch) {
+          playResult.catch(() => viewer.pause?.());
+        }
+      });
+    };
     const handleArStatus = (event) => {
       setArStatus(event.detail?.status || "idle");
     };
-    const handleLoad = () => setModelLoadFailed(false);
+    const handleLoad = () => {
+      setModelLoadFailed(false);
+      playGreetingOnce();
+    };
     const handleError = () => setModelLoadFailed(true);
+    const handleFinished = () => {
+      viewer.pause?.();
+    };
 
     viewer.addEventListener("ar-status", handleArStatus);
     viewer.addEventListener("load", handleLoad);
     viewer.addEventListener("error", handleError);
+    viewer.addEventListener("finished", handleFinished);
+
+    if (viewer.loaded) {
+      handleLoad();
+    }
 
     return () => {
       viewer.removeEventListener("ar-status", handleArStatus);
       viewer.removeEventListener("load", handleLoad);
       viewer.removeEventListener("error", handleError);
+      viewer.removeEventListener("finished", handleFinished);
     };
-  }, []);
+  }, [arCharacter.glbUrl]);
 
   // 2. Xử lý giọng nói thuyết minh đồng bộ với phụ đề và cử chỉ nhân vật 3D
   const startSpeech = () => {
@@ -235,19 +267,19 @@ export default function WebArViewer({ stationId, onClose, onCheckinSuccess }) {
     // Thay đổi animation của Robot 3D khi bắt đầu nói
     utterance.onstart = () => {
       setIsPlayingVoice(true);
-      setModelAnimation("Wave"); // Robot vẫy tay chào khi mở đầu
+      setModelAnimation(MODEL_GREETING_ANIMATION); // Nhân vật chào một lần rồi đứng idle
       
       // Chuyển sang cử chỉ gật đầu biểu cảm nói chuyện sau 3 giây vẫy tay
       setTimeout(() => {
         if (synthRef.current.speaking) {
-          setModelAnimation("Yes"); // Cử chỉ đồng ý/nói chuyện gật đầu
+          setModelAnimation(MODEL_GREETING_ANIMATION);
         }
       }, 3000);
     };
 
     utterance.onend = () => {
       setIsPlayingVoice(false);
-      setModelAnimation("Idle"); // Quay lại trạng thái đứng im thở
+      setModelAnimation(MODEL_GREETING_ANIMATION); // Quay lại trạng thái đứng im
       setCurrentSubtitle("✨ Hãy chạm vào nhân vật để xoay và khám phá!");
     };
 
@@ -255,7 +287,7 @@ export default function WebArViewer({ stationId, onClose, onCheckinSuccess }) {
       if (!cancelIntentionalRef.current) { console.error("SpeechSynthesis error:", e) }
       cancelIntentionalRef.current = false;
       setIsPlayingVoice(false);
-      setModelAnimation("Idle");
+      setModelAnimation(MODEL_GREETING_ANIMATION);
     };
 
     voiceUtteranceRef.current = utterance;
@@ -268,9 +300,9 @@ export default function WebArViewer({ stationId, onClose, onCheckinSuccess }) {
           setCurrentSubtitle(sub.text);
           // Robot phản ứng đổi động tác theo nội dung nói
           if (sub.text.includes("Sắc Cố Đô")) {
-            setModelAnimation("Sitting"); // Robot cúi xuống chỉ tay vào sản phẩm
+            setModelAnimation(MODEL_GREETING_ANIMATION);
           } else if (sub.text.includes("Đóng dấu ngay")) {
-            setModelAnimation("ThumbsUp"); // Robot giơ ngón tay cái khích lệ
+            setModelAnimation(MODEL_GREETING_ANIMATION);
           }
         }
       }, sub.time);
@@ -326,7 +358,7 @@ export default function WebArViewer({ stationId, onClose, onCheckinSuccess }) {
     }
     
     // Robot nhảy múa ăn mừng (Dance!)
-    setModelAnimation("Dance");
+    setModelAnimation(MODEL_GREETING_ANIMATION);
     setIsPlayingVoice(false);
     setCurrentSubtitle("🎉 Tuyệt vời! Bạn đang nhận dấu mộc Sắc Cố Đô...");
     setShowStampEffect(true);
@@ -428,7 +460,6 @@ export default function WebArViewer({ stationId, onClose, onCheckinSuccess }) {
           shadow-intensity="1.5"
           shadow-softness="0.8"
           exposure="1.2"
-          autoplay
           animation-name={modelAnimation}
           className="webar-model"
           style={{ "--poster-color": "transparent" }}

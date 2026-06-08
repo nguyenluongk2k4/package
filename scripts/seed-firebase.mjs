@@ -109,8 +109,8 @@ async function seedDefaultArCharacter() {
   await db.collection("arCharacters").doc("sac-co-do-guide").set(
     {
       name: "Hướng dẫn viên Sắc Cố Đô",
-      glbUrl: "/ar/sac-co-do-guide.glb",
-      usdzUrl: "/ar/sac-co-do-guide.usdz",
+      glbUrl: "/ar/sac-co-do-guide-v2.glb",
+      usdzUrl: "/ar/sac-co-do-guide-v2.usdz",
       posterUrl: "",
       animations: ["Idle"],
       defaultAnimation: "Idle",

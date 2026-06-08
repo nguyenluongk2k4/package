@@ -7,8 +7,9 @@ import { saveArExperience, saveJourneyProgress } from "../../lib/firebase/userDa
 import { useFirebaseAuth } from "./FirebaseAuthProvider";
 
 const viewArBase = "/assets/view-ar";
-const fallbackArModelSrc = "/ar/sac-co-do-guide.glb";
-const fallbackArIosModelSrc = "/ar/sac-co-do-guide.usdz";
+const fallbackArModelSrc = "/ar/sac-co-do-guide-v2.glb";
+const fallbackArIosModelSrc = "/ar/sac-co-do-guide-v2.usdz";
+const modelGreetingAnimation = "WaveOnceThenIdle";
 const sheetPositions = ["expanded", "middle", "collapsed"];
 
 function getStation(stationId) {
@@ -38,6 +39,7 @@ export default function CheckinExperiencePage({ stationId }) {
   const videoRef = useRef(null);
   const streamRef = useRef(null);
   const modelViewerRef = useRef(null);
+  const playedGreetingRef = useRef(false);
   const dragStartRef = useRef(null);
   const [isTracking, setIsTracking] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
@@ -128,6 +130,39 @@ export default function CheckinExperiencePage({ stationId }) {
       stopCamera();
     };
   }, []);
+
+  useEffect(() => {
+    playedGreetingRef.current = false;
+    const viewer = modelViewerRef.current;
+    if (!viewer) return;
+
+    const playGreetingOnce = () => {
+      if (playedGreetingRef.current) return;
+      playedGreetingRef.current = true;
+      viewer.animationName = modelGreetingAnimation;
+      viewer.currentTime = 0;
+      viewer.pause?.();
+      requestAnimationFrame(() => {
+        const playResult = viewer.play?.({ repetitions: 1 });
+        if (playResult?.catch) {
+          playResult.catch(() => viewer.pause?.());
+        }
+      });
+    };
+    const handleFinished = () => viewer.pause?.();
+
+    viewer.addEventListener("load", playGreetingOnce);
+    viewer.addEventListener("finished", handleFinished);
+
+    if (viewer.loaded) {
+      playGreetingOnce();
+    }
+
+    return () => {
+      viewer.removeEventListener("load", playGreetingOnce);
+      viewer.removeEventListener("finished", handleFinished);
+    };
+  }, [hasMounted, arCharacter.glbUrl]);
 
   async function handleLaunchAr() {
     setArMessage("");
@@ -252,6 +287,7 @@ export default function CheckinExperiencePage({ stationId }) {
           ar-placement="floor"
           camera-controls
           shadow-intensity="0.2"
+          animation-name={modelGreetingAnimation}
         />
       ) : null}
 
