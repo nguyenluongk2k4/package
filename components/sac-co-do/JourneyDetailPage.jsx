@@ -20,9 +20,9 @@ const stationDetailCopy = {
       "Hệ thống hang động xuyên thủy nối các thung lũng đá vôi bằng những dòng nước trong.",
     ],
     chapters: [
-      ["Chặng 1", "Bến thuyền Tràng An", "Khởi đầu hành trình trên dòng sông Ngô Đồng xanh biếc."],
-      ["Chặng 2", "Đền Trình", "Dừng lại trước không gian linh thiêng ẩn mình bên vách đá."],
-      ["Chặng 3", "Hang Địa Linh", "Đi xuyên lớp đá vôi để mở khóa dấu mộc đầu tiên."],
+      { label: "Chặng 1", title: "Bến thuyền Tràng An", description: "Khởi đầu hành trình trên dòng sông Ngô Đồng xanh biếc." },
+      { label: "Chặng 2", title: "Đền Trình", description: "Dừng lại trước không gian linh thiêng ẩn mình bên vách đá." },
+      { label: "Chặng 3", title: "Hang Địa Linh", description: "Đi xuyên lớp đá vôi để mở khóa dấu mốc đầu tiên." },
     ],
   },
   "hoa-lu": {
@@ -36,9 +36,9 @@ const stationDetailCopy = {
       "Không gian đền thờ vua Đinh, vua Lê gợi lại cấu trúc quyền lực và văn hóa hơn một nghìn năm trước.",
     ],
     chapters: [
-      ["Chặng 1", "Cổng thành xưa", "Bước qua lớp đá cổ để bắt đầu câu chuyện cố đô."],
-      ["Chặng 2", "Đền vua Đinh", "Nghe lớp ký ức về một triều đại mở nước."],
-      ["Chặng 3", "Sân rồng Hoa Lư", "Đóng dấu cổng thành vào passport hành trình."],
+      { label: "Chặng 1", title: "Cổng thành xưa", description: "Bước qua lớp đá cổ để bắt đầu câu chuyện cố đô." },
+      { label: "Chặng 2", title: "Đền vua Đinh", description: "Nghe lớp ký ức về một triều đại mở nước." },
+      { label: "Chặng 3", title: "Sân rồng Hoa Lư", description: "Đóng dấu cổng thành vào passport hành trình." },
     ],
   },
   "bai-dinh": {
@@ -52,9 +52,9 @@ const stationDetailCopy = {
       "Các hành lang La Hán và tháp chuông là điểm dừng giàu biểu tượng cho trải nghiệm AR.",
     ],
     chapters: [
-      ["Chặng 1", "Cổng Tam Quan", "Bắt đầu lộ trình trong không gian kiến trúc lớn."],
-      ["Chặng 2", "Hành lang La Hán", "Đi giữa những lớp tượng và câu chuyện tu tập."],
-      ["Chặng 3", "Tháp chuông", "Mở dấu chuông đồng cho passport tâm linh."],
+      { label: "Chặng 1", title: "Cổng Tam Quan", description: "Bắt đầu lộ trình trong không gian kiến trúc lớn." },
+      { label: "Chặng 2", title: "Hành lang La Hán", description: "Đi giữa những lớp tượng và câu chuyện tu tập." },
+      { label: "Chặng 3", title: "Tháp chuông", description: "Mở dấu chuông đồng cho passport tâm linh." },
     ],
   },
   "pho-co-hoa-lu": {
@@ -68,9 +68,9 @@ const stationDetailCopy = {
       "Đây là trạm lý tưởng để kích hoạt photobooth, chia sẻ ảnh và nhận dấu đèn phố.",
     ],
     chapters: [
-      ["Chặng 1", "Cầu đá Kỳ Lân", "Ngắm mặt hồ phản chiếu dãy đèn lồng."],
-      ["Chặng 2", "Dãy gian hàng", "Gặp chất liệu thủ công và món quà địa phương."],
-      ["Chặng 3", "Sân khấu đêm", "Đóng dấu đèn phố sau khung giờ lên đèn."],
+      { label: "Chặng 1", title: "Cầu đá Kỳ Lân", description: "Ngắm mặt hồ phản chiếu dãy đèn lồng." },
+      { label: "Chặng 2", title: "Dãy gian hàng", description: "Gặp chất liệu thủ công và món quà địa phương." },
+      { label: "Chặng 3", title: "Sân khấu đêm", description: "Đóng dấu đèn phố sau khung giờ lên đèn." },
     ],
   },
   "tam-coc": {
@@ -84,9 +84,9 @@ const stationDetailCopy = {
       "Bích Động bổ sung lớp trải nghiệm chùa động, đưa hành trình từ sông nước lên không gian núi.",
     ],
     chapters: [
-      ["Chặng 1", "Bến Văn Lâm", "Lên thuyền và bắt đầu lộ trình qua đồng lúa."],
-      ["Chặng 2", "Hang Cả", "Đi vào đoạn hang dài nhất của tuyến Tam Cốc."],
-      ["Chặng 3", "Bích Động", "Mở dấu thuyền lúa trong không gian chùa động."],
+      { label: "Chặng 1", title: "Bến Văn Lâm", description: "Lên thuyền và bắt đầu lộ trình qua đồng lúa." },
+      { label: "Chặng 2", title: "Hang Cả", description: "Đi vào đoạn hang dài nhất của tuyến Tam Cốc." },
+      { label: "Chặng 3", title: "Bích Động", description: "Mở dấu thuyền lúa trong không gian chùa động." },
     ],
   },
   "hang-mua": {
@@ -94,24 +94,94 @@ const stationDetailCopy = {
     badge: "Tầm nhìn toàn cảnh",
     headline: "Nấc thang lên đỉnh rồng",
     intro:
-      "Hang Múa là trạm nhiều năng lượng nhất: leo bậc đá, nhìn xuống thung lũng Tam Cốc và hoàn thành hành trình bằng dấu mộc long đỉnh.",
+      "Hang Múa là trạm nhiều năng lượng nhất: leo bậc đá, nhìn xuống thung lũng Tam Cốc và hoàn thành hành trình bằng dấu mốc long đỉnh.",
     history: [
       "Điểm ngắm cảnh nổi bật với tuyến bậc đá dẫn lên đỉnh núi hình rồng.",
       "Từ đỉnh cao có thể quan sát nhịp sông, đồng lúa và các khối núi đá vôi đặc trưng Ninh Bình.",
     ],
     chapters: [
-      ["Chặng 1", "Chân núi Múa", "Chuẩn bị tuyến leo và kiểm tra passport."],
-      ["Chặng 2", "Đường bậc đá", "Theo từng nấc lên cao để mở góc nhìn rộng hơn."],
-      ["Chặng 3", "Đỉnh rồng", "Hoàn thành dấu long đỉnh và nhận ưu đãi cuối chặng."],
+      { label: "Chặng 1", title: "Chân núi Múa", description: "Chuẩn bị tuyến leo và kiểm tra passport." },
+      { label: "Chặng 2", title: "Đường bậc đá", description: "Theo từng nấc lên cao để mở góc nhìn rộng hơn." },
+      { label: "Chặng 3", title: "Đỉnh rồng", description: "Hoàn thành dấu long đỉnh và nhận ưu đãi cuối chặng." },
     ],
   },
 };
 
-function getDetail(station) {
+const stationFallbackCopy = {
+  "trang-an": {
+    name: "Tràng An",
+    tag: "Non nước",
+    stamp: "Dấu sóng đá vôi",
+    description: "Không gian di sản với núi đá vôi và dòng nước xanh, phù hợp làm trạm mở đầu của hành trình.",
+  },
+  "hoa-lu": {
+    name: "Cố Đô Hoa Lư",
+    tag: "Kinh đô xưa",
+    stamp: "Dấu cổng thành",
+    description: "Dấu mốc lịch sử của vùng đất cố đô, nơi cuốn passport bắt đầu kể chuyện bằng ký ức triều đại.",
+  },
+  "bai-dinh": {
+    name: "Chùa Bái Đính",
+    tag: "Tâm linh",
+    stamp: "Dấu chuông đồng",
+    description: "Một trạm lắng và rộng, dành cho trải nghiệm đóng dấu sau khi đi qua hành lang văn hóa tâm linh.",
+  },
+  "pho-co-hoa-lu": {
+    name: "Phố Cổ Hoa Lư",
+    tag: "Đêm phố",
+    stamp: "Dấu đèn phố",
+    description: "Sắc đèn, mái ngói và nhịp dạo chơi chậm rãi, phù hợp cho check-in và photobooth kỷ niệm.",
+  },
+  "tam-coc": {
+    name: "Tam Cốc - Bích Động",
+    tag: "Sông núi",
+    stamp: "Dấu thuyền lúa",
+    description: "Một lát cắt mềm mại của Ninh Bình, nơi trải nghiệm giấy pop-up gặp cảnh quan ngoài đời.",
+  },
+  "hang-mua": {
+    name: "Hang Múa",
+    tag: "Tầm nhìn",
+    stamp: "Dấu long đỉnh",
+    description: "Trạm kết giàu năng lượng với góc nhìn toàn cảnh, mở khóa phần thưởng sau khi hoàn thành hành trình.",
+  },
+};
+
+function normalizeChapter(chapter) {
+  if (Array.isArray(chapter)) {
+    return {
+      label: chapter[0] || "",
+      title: chapter[1] || "",
+      description: chapter[2] || "",
+    };
+  }
+
   return {
+    label: chapter?.label || "",
+    title: chapter?.title || "",
+    description: chapter?.description || "",
+  };
+}
+
+function normalizeDetail(detail) {
+  return {
+    ...detail,
+    history: Array.isArray(detail.history) ? detail.history.filter(Boolean) : [],
+    chapters: Array.isArray(detail.chapters) ? detail.chapters.map(normalizeChapter) : [],
+  };
+}
+
+function withCleanFallback(station) {
+  return {
+    ...station,
+    ...(stationFallbackCopy[station?.id] || {}),
+  };
+}
+
+function getDetail(station) {
+  return normalizeDetail({
     ...(stationDetailCopy[station.id] || stationDetailCopy["trang-an"]),
     ...(station.detail || {}),
-  };
+  });
 }
 
 export function getStationById(stationId) {
@@ -119,7 +189,7 @@ export function getStationById(stationId) {
 }
 
 export default function JourneyDetailPage({ station, stationId }) {
-  const [activeStation, setActiveStation] = useState(station);
+  const [activeStation, setActiveStation] = useState(withCleanFallback(station));
   const detail = getDetail(activeStation);
 
   useEffect(() => {
@@ -128,7 +198,7 @@ export default function JourneyDetailPage({ station, stationId }) {
     async function loadStation() {
       const firebaseStation = await getStationBySlugOrId(stationId || station?.slug || station?.id);
       if (mounted && firebaseStation) {
-        setActiveStation(firebaseStation);
+        setActiveStation(withCleanFallback(firebaseStation));
       }
     }
 
@@ -144,13 +214,13 @@ export default function JourneyDetailPage({ station, stationId }) {
       <SiteHeader />
       <main className="journey-detail-page">
         <a className="journey-detail-back" href="/hanh-trinh">
-          ← Quay lại hành trình
+          Quay lại hành trình
         </a>
 
         <div className="journey-detail-layout">
           <div className="journey-detail-main">
             <section className="journey-detail-hero">
-              <img src={activeStation.image || activeStation.heroImage} alt={activeStation.name} loading="eager" decoding="async" />
+              <img src={activeStation.heroImage || activeStation.image} alt={activeStation.name} loading="eager" decoding="async" />
               <div className="journey-detail-hero-stamp" aria-hidden="true">
                 <span>{activeStation.stamp}</span>
               </div>
@@ -179,7 +249,7 @@ export default function JourneyDetailPage({ station, stationId }) {
               <article className="journey-detail-history-card">
                 <h2>Thông tin lịch sử</h2>
                 {detail.history.map((item, index) => (
-                  <p key={item}>
+                  <p key={`${item}-${index}`}>
                     <img
                       src={`${detailAssetBase}/desktop-icon/${index === 0 ? "ic-certificate.svg" : "ic-nui.svg"}`}
                       alt=""
@@ -195,8 +265,8 @@ export default function JourneyDetailPage({ station, stationId }) {
               <div className="journey-detail-route-line" aria-hidden="true" />
               <h2>Hành trình khám phá</h2>
               <div className="journey-detail-chapters">
-                {detail.chapters.map(([label, title, description]) => (
-                  <article key={title}>
+                {detail.chapters.map(({ label, title, description }, index) => (
+                  <article key={`${label}-${title}-${index}`}>
                     <span>{label}</span>
                     <h3>{title}</h3>
                     <p>{description}</p>
@@ -267,7 +337,6 @@ export default function JourneyDetailPage({ station, stationId }) {
             </section>
           </aside>
         </div>
-
       </main>
       <SiteFooter />
     </>

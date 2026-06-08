@@ -8,6 +8,14 @@ const titleByResource = {
   users: "Quản lý người dùng",
 };
 
+const placeholderByResource = {
+  dashboard: "Tìm kiếm dữ liệu...",
+  stations: "Tìm kiếm địa danh...",
+  products: "Tìm kiếm sản phẩm...",
+  arCharacters: "Tìm kiếm nhân vật...",
+  users: "Tìm kiếm người dùng...",
+};
+
 export default function AdminHeaderBar({ resource }) {
   return (
     <header className="admin-header-bar">
@@ -16,7 +24,7 @@ export default function AdminHeaderBar({ resource }) {
       <div className="admin-header-actions">
         <label className="admin-header-search">
           <img src="/assets/admin/dashboard/ic-search.svg" alt="" />
-          <input type="search" placeholder="Tìm kiếm dữ liệu..." />
+          <input type="search" placeholder={placeholderByResource[resource] || "Tìm kiếm dữ liệu..."} />
         </label>
 
         <button className="admin-header-icon-button" type="button" aria-label="Thông báo">
