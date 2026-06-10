@@ -4,7 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import { packages } from "../../data/sac-co-do";
 import { getProductBySlugOrId, getPublicProducts } from "../../lib/firebase/catalog";
 import { useFirebaseAuth } from "./FirebaseAuthProvider";
-import { collection, doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { collection, doc, increment, serverTimestamp, setDoc } from "firebase/firestore";
+import { useToast } from "./ToastProvider";
 
 const fallbackImages = [
   { src: "/assets/anh-new/frame-1.png", label: "Khung nhan dien Sac Co Do" },
@@ -44,6 +45,7 @@ function getImages(product) {
 
 export default function ProductConfigurator({ productId }) {
   const { user, db } = useFirebaseAuth();
+  const { showToast } = useToast();
   const [catalogProducts, setCatalogProducts] = useState(packages.map(toProductOption));
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedId, setSelectedId] = useState(packages[0]?.id);
@@ -97,31 +99,39 @@ export default function ProductConfigurator({ productId }) {
   async function addToCart() {
     if (!user || !db || !selected) {
       setCartState("auth");
+      showToast("Đăng nhập để lưu giỏ hàng vào tài khoản.", "info");
       return;
     }
 
     setCartState("saving");
-    const itemId = selected.id || selected.slug;
-    const cartRef = doc(collection(db, "users", user.uid, "cart"), itemId);
+    try {
+      const itemId = selected.id || selected.slug;
+      const cartRef = doc(collection(db, "users", user.uid, "cart"), itemId);
 
-    await setDoc(
-      cartRef,
-      {
-        productId: selected.id,
-        slug: selected.slug || selected.id,
-        quantity,
-        updatedAt: serverTimestamp(),
-        snapshot: {
-          name: selected.name,
-          price: Number(selected.price || 0),
-          image: selected.image || detailImages[0]?.src || "",
-          badge: selected.badge || selected.category || "",
-          weight: selected.weight || "",
+      await setDoc(
+        cartRef,
+        {
+          productId: selected.id,
+          slug: selected.slug || selected.id,
+          quantity: increment(quantity),
+          updatedAt: serverTimestamp(),
+          snapshot: {
+            name: selected.name,
+            price: Number(selected.price || 0),
+            image: selected.image || detailImages[0]?.src || "",
+            badge: selected.badge || selected.category || "",
+            weight: selected.weight || "",
+          },
         },
-      },
-      { merge: true }
-    );
-    setCartState("saved");
+        { merge: true }
+      );
+      setCartState("saved");
+      showToast("Đã thêm vào giỏ hàng.", "success");
+    } catch (error) {
+      console.error("Add to cart failed:", error);
+      setCartState("idle");
+      showToast(error.message || "Không thể thêm vào giỏ hàng.", "error");
+    }
   }
 
   return (

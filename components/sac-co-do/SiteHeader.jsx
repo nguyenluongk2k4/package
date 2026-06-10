@@ -1,8 +1,9 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useFirebaseAuth } from "./FirebaseAuthProvider";
+import { useToast } from "./ToastProvider";
 
 const navLinks = [
   { href: "/hanh-trinh", label: "Hành trình" },
@@ -13,9 +14,26 @@ const navLinks = [
 
 export default function SiteHeader() {
   const pathname = usePathname();
-  const { user } = useFirebaseAuth();
+  const router = useRouter();
+  const { user, profile, logout } = useFirebaseAuth();
+  const { showToast } = useToast();
   const [menuOpen, setMenuOpen] = useState(false);
   const isHome = pathname === "/";
+  const accountName = profile?.displayName || user?.displayName || user?.email?.split("@")[0];
+
+  async function handleLogout() {
+    try {
+      await logout();
+      showToast("Đăng xuất thành công!", "success");
+      setMenuOpen(false);
+
+      if (pathname === "/cua-toi") {
+        router.push("/dang-nhap");
+      }
+    } catch (error) {
+      showToast(error.message || "Không thể đăng xuất. Vui lòng thử lại.", "error");
+    }
+  }
 
   return (
     <header className={`site-header template-header ${isHome ? "header-home" : "header-inner"}`}>
@@ -52,8 +70,13 @@ export default function SiteHeader() {
               <img src="/assets/ic-gio-hang.svg" alt="" aria-hidden="true" />
             </a>
             <a className="header-account-link" href={user ? "/cua-toi" : "/dang-nhap"}>
-              {user ? "Tài khoản" : "Đăng nhập"}
+              {user ? accountName : "Đăng nhập"}
             </a>
+            {user ? (
+              <button className="header-logout-button" type="button" onClick={handleLogout}>
+                Đăng xuất
+              </button>
+            ) : null}
             <a className="header-cta" href="/kich-hoat">
               Bắt đầu
             </a>

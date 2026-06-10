@@ -1,6 +1,7 @@
 import "./globals.css";
 import ScrollReveal from "../components/sac-co-do/ScrollReveal";
 import { FirebaseAuthProvider } from "../components/sac-co-do/FirebaseAuthProvider";
+import { ToastProvider } from "../components/sac-co-do/ToastProvider";
 
 export const metadata = {
   metadataBase: new URL("https://www.knguyen.shop"),
@@ -22,7 +23,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="vi">
+    <html lang="vi" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js" async></script>
@@ -34,8 +35,10 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         <FirebaseAuthProvider>
-          <ScrollReveal />
-          {children}
+          <ToastProvider>
+            {children}
+            <ScrollReveal />
+          </ToastProvider>
         </FirebaseAuthProvider>
       </body>
     </html>

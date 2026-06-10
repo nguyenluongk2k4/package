@@ -5,15 +5,16 @@ import { useRouter } from "next/navigation";
 import AdminHeaderBar from "./AdminHeaderBar";
 import AdminLeftSidebar from "./AdminLeftSidebar";
 import { useFirebaseAuth } from "../sac-co-do/FirebaseAuthProvider";
+import { useToast } from "../sac-co-do/ToastProvider";
 
 export function AdminLoginCard() {
   const { loginWithEmail, isConfigured, missingKeys, authError, user } = useFirebaseAuth();
+  const { showToast } = useToast();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [toast, setToast] = useState({ show: false, message: "", type: "info" });
   const router = useRouter();
 
   useEffect(() => {
@@ -21,13 +22,6 @@ export function AdminLoginCard() {
       router.push("/admin");
     }
   }, [user, router]);
-
-  const showToast = (message, type = "info") => {
-    setToast({ show: true, message, type });
-    setTimeout(() => {
-      setToast({ show: false, message: "", type: "info" });
-    }, 3000);
-  };
 
   const submit = async (event) => {
     event.preventDefault();
@@ -86,16 +80,24 @@ export function AdminLoginCard() {
                   </svg>
                 </span>
                 <input value={password} onChange={(event) => setPassword(event.target.value)} type={showPassword ? "text" : "password"} placeholder="********" required />
-                <button type="button" className="password-toggle-btn" onClick={() => setShowPassword(!showPassword)}>
+                <button
+                  type="button"
+                  className="password-toggle-btn"
+                  aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                  aria-pressed={showPassword}
+                  onClick={() => setShowPassword(!showPassword)}
+                >
                   {showPassword ? (
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
-                      <line x1="1" y1="1" stroke="currentColor" strokeWidth="2" x2="23" y2="23" />
+                    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M17.94 17.94A10.1 10.1 0 0 1 12 20C5 20 1 12 1 12a18.5 18.5 0 0 1 5.06-5.94" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      <path d="M9.9 4.24A9.1 9.1 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      <path d="M14.12 14.12a3 3 0 0 1-4.24-4.24" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      <path d="M1 1l22 22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   ) : (
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                      <circle cx="12" cy="12" r="3" />
+                    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2" />
                     </svg>
                   )}
                 </button>
@@ -113,29 +115,6 @@ export function AdminLoginCard() {
 
         <footer className="admin-login-footer">© 2024 Sac Co Do Admin. Bảo lưu mọi quyền.</footer>
       </div>
-
-      {toast.show ? (
-        <div
-          style={{
-            position: "fixed",
-            bottom: "24px",
-            right: "24px",
-            padding: "16px 24px",
-            backgroundColor: toast.type === "error" ? "#ef4444" : toast.type === "success" ? "#10b981" : "#3b82f6",
-            color: "white",
-            borderRadius: "8px",
-            boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
-            zIndex: 9999,
-            fontSize: "14px",
-            fontWeight: "500",
-            maxWidth: "350px",
-            transition: "all 0.3s ease-in-out",
-            borderLeft: "5px solid rgba(0,0,0,0.2)",
-          }}
-        >
-          {toast.message}
-        </div>
-      ) : null}
     </main>
   );
 }

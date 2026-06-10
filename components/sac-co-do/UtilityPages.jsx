@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { collection, deleteDoc, doc, onSnapshot, updateDoc } from "firebase/firestore";
+import { collection, deleteDoc, doc, onSnapshot, serverTimestamp, updateDoc } from "firebase/firestore";
 import { gallery, souvenirProducts, stations } from "../../data/sac-co-do";
 import SectionTitle from "./SectionTitle";
 import SiteFooter from "./SiteFooter";
@@ -9,15 +9,13 @@ import SiteHeader from "./SiteHeader";
 import WebArViewer from "./WebArViewer";
 import { useFirebaseAuth } from "./FirebaseAuthProvider";
 import { saveJourneyProgress } from "../../lib/firebase/userData";
+import { useToast } from "./ToastProvider";
 
 export function CartPage() {
-  const { user, db } = useFirebaseAuth();
-  const initialItems = [
-    { ...souvenirProducts[0], quantity: 1, category: "Đặc sản Cố Đô" },
-    { ...souvenirProducts[1], quantity: 2, category: "Quà tặng hành trình" },
-  ].filter((item) => item.id);
-  const [items, setItems] = useState(initialItems);
-  const [cartSource, setCartSource] = useState("fallback");
+  const { user, db, loading } = useFirebaseAuth();
+  const { showToast } = useToast();
+  const [items, setItems] = useState([]);
+  const [cartStatus, setCartStatus] = useState("loading");
   const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const shippingFee = items.length > 0 ? 35000 : 0;
   const discount = 0;
@@ -58,37 +56,57 @@ export function CartPage() {
   }
 
   useEffect(() => {
-    if (!user || !db) {
-      setItems(initialItems);
-      setCartSource("fallback");
+    if (loading) {
+      setCartStatus("loading");
       return undefined;
     }
 
+    if (!user || !db) {
+      setItems([]);
+      setCartStatus(user ? "unconfigured" : "auth");
+      return undefined;
+    }
+
+    setCartStatus("loading");
     const cartRef = collection(db, "users", user.uid, "cart");
-    return onSnapshot(cartRef, (snapshot) => {
-      const firebaseItems = snapshot.docs.map((cartDoc) => {
-        const data = cartDoc.data();
-        const snapshotData = data.snapshot || {};
-        return {
-          id: data.productId || cartDoc.id,
-          cartDocId: cartDoc.id,
-          slug: data.slug,
-          quantity: Math.max(1, Number(data.quantity || 1)),
-          name: snapshotData.name || "San pham",
-          price: Number(snapshotData.price || 0),
-          image: snapshotData.image || "",
-          category: snapshotData.badge || snapshotData.category || snapshotData.weight || "San pham di san",
-        };
-      });
+    return onSnapshot(
+      cartRef,
+      (snapshot) => {
+        const firebaseItems = snapshot.docs.map((cartDoc) => {
+          const data = cartDoc.data();
+          const snapshotData = data.snapshot || {};
+          return {
+            id: data.productId || cartDoc.id,
+            cartDocId: cartDoc.id,
+            slug: data.slug,
+            quantity: Math.max(1, Number(data.quantity || 1)),
+            name: snapshotData.name || "Sản phẩm",
+            price: Number(snapshotData.price || 0),
+            image: snapshotData.image || "/assets/anh-new/logo.png",
+            category: snapshotData.badge || snapshotData.category || snapshotData.weight || "Sản phẩm di sản",
+          };
+        });
 
-      setItems(firebaseItems);
-      setCartSource("firebase");
-    });
-  }, [db, user]);
+        setItems(firebaseItems);
+        setCartStatus(firebaseItems.length ? "ready" : "empty");
+      },
+      (error) => {
+        console.error("Cart snapshot failed:", error);
+        setItems([]);
+        setCartStatus("error");
+        showToast(error.message || "Không thể tải giỏ hàng từ database.", "error");
+      }
+    );
+  }, [db, loading, showToast, user]);
 
-  function updateQuantity(id, nextQuantity) {
+  async function updateQuantity(id, nextQuantity) {
     const item = items.find((currentItem) => currentItem.id === id || currentItem.cartDocId === id);
     const safeQuantity = Math.max(1, nextQuantity);
+
+    if (!user || !db || !item?.cartDocId) {
+      showToast("Đăng nhập để cập nhật giỏ hàng.", "info");
+      return;
+    }
 
     setItems((currentItems) =>
       currentItems.map((item) =>
@@ -96,21 +114,33 @@ export function CartPage() {
       )
     );
 
-    if (user && db && item?.cartDocId) {
-      updateDoc(doc(db, "users", user.uid, "cart", item.cartDocId), { quantity: safeQuantity }).catch((error) => {
-        console.error("Cart quantity update failed:", error);
+    try {
+      await updateDoc(doc(db, "users", user.uid, "cart", item.cartDocId), {
+        quantity: safeQuantity,
+        updatedAt: serverTimestamp(),
       });
+    } catch (error) {
+      console.error("Cart quantity update failed:", error);
+      showToast(error.message || "Không thể cập nhật số lượng.", "error");
     }
   }
 
-  function removeItem(id) {
+  async function removeItem(id) {
     const item = items.find((currentItem) => currentItem.id === id || currentItem.cartDocId === id);
+
+    if (!user || !db || !item?.cartDocId) {
+      showToast("Đăng nhập để xóa sản phẩm khỏi giỏ hàng.", "info");
+      return;
+    }
+
     setItems((currentItems) => currentItems.filter((item) => item.id !== id && item.cartDocId !== id));
 
-    if (user && db && item?.cartDocId) {
-      deleteDoc(doc(db, "users", user.uid, "cart", item.cartDocId)).catch((error) => {
-        console.error("Cart remove failed:", error);
-      });
+    try {
+      await deleteDoc(doc(db, "users", user.uid, "cart", item.cartDocId));
+      showToast("Đã xóa sản phẩm khỏi giỏ hàng.", "success");
+    } catch (error) {
+      console.error("Cart remove failed:", error);
+      showToast(error.message || "Không thể xóa sản phẩm.", "error");
     }
   }
 
@@ -123,9 +153,35 @@ export function CartPage() {
           <p>Lưu giữ những mảnh hồn di sản bạn đã chọn.</p>
         </section>
 
-        <section className="heritage-cart-layout" data-source={cartSource} aria-label="Chi tiết giỏ hàng">
+        <section className="heritage-cart-layout" data-source="firebase" aria-label="Chi tiết giỏ hàng">
           <div className="heritage-cart-main">
             <div className="heritage-cart-items">
+              {cartStatus === "loading" ? (
+                <article className="heritage-cart-state">
+                  <h2>Đang tải giỏ hàng...</h2>
+                  <p>Giỏ hàng đang được đồng bộ từ database.</p>
+                </article>
+              ) : null}
+              {cartStatus === "auth" ? (
+                <article className="heritage-cart-state">
+                  <h2>Đăng nhập để xem giỏ hàng</h2>
+                  <p>Giỏ hàng được lưu theo tài khoản để đồng bộ trên mọi thiết bị.</p>
+                  <a href="/dang-nhap?next=/gio-hang">Đăng nhập ngay</a>
+                </article>
+              ) : null}
+              {cartStatus === "unconfigured" || cartStatus === "error" ? (
+                <article className="heritage-cart-state">
+                  <h2>Chưa thể tải giỏ hàng</h2>
+                  <p>Database chưa sẵn sàng hoặc kết nối đang gặp lỗi. Vui lòng thử lại sau.</p>
+                </article>
+              ) : null}
+              {cartStatus === "empty" ? (
+                <article className="heritage-cart-state">
+                  <h2>Giỏ hàng đang trống</h2>
+                  <p>Chọn sản phẩm di sản yêu thích để lưu vào giỏ hàng của bạn.</p>
+                  <a href="/san-pham">Đi mua sắm</a>
+                </article>
+              ) : null}
               {items.map((item) => (
                 <article className="heritage-cart-item" key={item.id}>
                   <img className="heritage-cart-item-image" src={item.image} alt={item.name} loading="lazy" decoding="async" />
@@ -184,8 +240,8 @@ export function CartPage() {
                 <span>Thành tiền:</span>
                 <strong>{formatVnd(total)}</strong>
               </div>
-              <a className="heritage-checkout-button" href="/kich-hoat">
-                Tiến hành thanh toán
+              <a className={`heritage-checkout-button ${items.length ? "" : "is-disabled"}`} href={items.length ? "/kich-hoat" : "/san-pham"}>
+                {items.length ? "Tiến hành thanh toán" : "Chọn sản phẩm"}
                 <img src="/assets/ic-next.svg" alt="" aria-hidden="true" />
               </a>
               <a className="heritage-continue-button" href="/san-pham">Tiếp tục mua sắm</a>

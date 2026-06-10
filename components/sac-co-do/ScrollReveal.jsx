@@ -55,62 +55,68 @@ export default function ScrollReveal() {
       return undefined;
     }
 
+    let frame = 0;
+    let mutationObserver = null;
+    let observer = null;
     const root = document.documentElement;
-    root.classList.add("reveal-ready");
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) {
+    const timer = window.setTimeout(() => {
+      root.classList.add("reveal-ready");
+
+      observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) {
+              return;
+            }
+
+            entry.target.classList.add("is-revealed");
+            observer?.unobserve(entry.target);
+          });
+        },
+        {
+          rootMargin: "0px 0px -10% 0px",
+          threshold: 0.12,
+        },
+      );
+
+      function scan() {
+        const elements = revealSelectors.flatMap((selector) =>
+          Array.from(document.querySelectorAll(selector)),
+        );
+
+        elements.forEach((element) => {
+          if (!(element instanceof HTMLElement)) {
             return;
           }
 
-          entry.target.classList.add("is-revealed");
-          observer.unobserve(entry.target);
+          element.classList.add("reveal-target");
+          element.style.setProperty("--reveal-delay", getDelay(element));
+
+          if (!element.classList.contains("is-revealed")) {
+            observer?.observe(element);
+          }
         });
-      },
-      {
-        rootMargin: "0px 0px -10% 0px",
-        threshold: 0.12,
-      },
-    );
+      }
 
-    function scan() {
-      const elements = revealSelectors.flatMap((selector) =>
-        Array.from(document.querySelectorAll(selector)),
-      );
+      scan();
 
-      elements.forEach((element) => {
-        if (!(element instanceof HTMLElement)) {
-          return;
-        }
-
-        element.classList.add("reveal-target");
-        element.style.setProperty("--reveal-delay", getDelay(element));
-
-        if (!element.classList.contains("is-revealed")) {
-          observer.observe(element);
-        }
+      mutationObserver = new MutationObserver(() => {
+        window.cancelAnimationFrame(frame);
+        frame = window.requestAnimationFrame(scan);
       });
-    }
 
-    scan();
-
-    let frame = 0;
-    const mutationObserver = new MutationObserver(() => {
-      window.cancelAnimationFrame(frame);
-      frame = window.requestAnimationFrame(scan);
-    });
-
-    mutationObserver.observe(document.body, {
-      childList: true,
-      subtree: true,
-    });
+      mutationObserver.observe(document.body, {
+        childList: true,
+        subtree: true,
+      });
+    }, 100);
 
     return () => {
+      window.clearTimeout(timer);
       window.cancelAnimationFrame(frame);
-      mutationObserver.disconnect();
-      observer.disconnect();
+      mutationObserver?.disconnect();
+      observer?.disconnect();
       root.classList.remove("reveal-ready");
     };
   }, []);

@@ -5,29 +5,34 @@ import { useRouter, useSearchParams } from "next/navigation";
 import SiteFooter from "./SiteFooter";
 import SiteHeader from "./SiteHeader";
 import { useFirebaseAuth } from "./FirebaseAuthProvider";
+import { useToast } from "./ToastProvider";
 
 export default function AuthPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user, loading, loginWithEmail, loginWithGoogle, registerWithEmail, logout, isConfigured, missingKeys } = useFirebaseAuth();
+  const { showToast } = useToast();
   const [mode, setMode] = useState("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [displayName, setDisplayName] = useState("");
   const [message, setMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   const redirectTo = searchParams.get("next") || "/cua-toi";
 
-  async function finishAuth(action) {
+  async function finishAuth(action, successMessage = "Đăng nhập thành công!") {
     setSubmitting(true);
     setMessage("");
 
     try {
       await action();
+      showToast(successMessage, "success");
       router.push(redirectTo);
     } catch (error) {
       setMessage(error.message);
+      showToast(error.message || "Không thể xử lý yêu cầu. Vui lòng thử lại.", "error");
     } finally {
       setSubmitting(false);
     }
@@ -41,15 +46,18 @@ export default function AuthPage() {
       }
 
       return loginWithEmail(email, password);
-    });
+    }, mode === "register" ? "Tạo tài khoản thành công!" : "Đăng nhập thành công!");
   }
 
   return (
     <>
       <SiteHeader />
       <main className="customer-auth-page">
+        <div className="customer-auth-logo">
+          <img src="/assets/anh-new/logo.png" alt="Sắc Cố Đô" />
+          <span>TÀI KHOẢN HÀNH TRÌNH</span>
+        </div>
         <section className="customer-auth-card">
-          <span>Tài khoản hành trình</span>
           <h1>{user ? "Tài khoản của bạn" : mode === "register" ? "Tạo tài khoản" : "Đăng nhập"}</h1>
 
           {!isConfigured ? <p className="auth-alert">Thiếu Firebase env: {missingKeys.join(", ")}</p> : null}
@@ -76,19 +84,71 @@ export default function AuthPage() {
 
               <form onSubmit={submit}>
                 {mode === "register" ? (
-                  <label>
-                    Tên hiển thị
-                    <input value={displayName} onChange={(event) => setDisplayName(event.target.value)} />
-                  </label>
+                  <div className="customer-auth-field">
+                    <label>Tên hiển thị</label>
+                    <div className="customer-input-with-icon">
+                      <span className="customer-input-icon" aria-hidden="true">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                          <path d="M20 21a8 8 0 0 0-16 0" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                          <circle cx="12" cy="7" r="4" stroke="currentColor" strokeWidth="2" />
+                        </svg>
+                      </span>
+                      <input value={displayName} onChange={(event) => setDisplayName(event.target.value)} />
+                    </div>
+                  </div>
                 ) : null}
-                <label>
-                  Email
-                  <input value={email} onChange={(event) => setEmail(event.target.value)} type="email" required />
-                </label>
-                <label>
-                  Mật khẩu
-                  <input value={password} onChange={(event) => setPassword(event.target.value)} type="password" minLength={6} required />
-                </label>
+                <div className="customer-auth-field">
+                  <label>Email</label>
+                  <div className="customer-input-with-icon">
+                    <span className="customer-input-icon" aria-hidden="true">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="m22 6-10 7L2 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </span>
+                    <input value={email} onChange={(event) => setEmail(event.target.value)} type="email" placeholder="you@example.com" required />
+                  </div>
+                </div>
+                <div className="customer-auth-field">
+                  <label>Mật khẩu</label>
+                  <div className="customer-input-with-icon">
+                    <span className="customer-input-icon" aria-hidden="true">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                        <rect x="3" y="11" width="18" height="10" rx="2" stroke="currentColor" strokeWidth="2" />
+                        <path d="M7 11V8a5 5 0 0 1 10 0v3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                      </svg>
+                    </span>
+                    <input
+                      value={password}
+                      onChange={(event) => setPassword(event.target.value)}
+                      type={showPassword ? "text" : "password"}
+                      placeholder="********"
+                      minLength={6}
+                      required
+                    />
+                    <button
+                      type="button"
+                      className={`auth-password-toggle ${showPassword ? "is-visible" : ""}`}
+                      aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                      aria-pressed={showPassword}
+                      onClick={() => setShowPassword((value) => !value)}
+                    >
+                      {showPassword ? (
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                          <path d="M17.94 17.94A10.1 10.1 0 0 1 12 20C5 20 1 12 1 12a18.5 18.5 0 0 1 5.06-5.94" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                          <path d="M9.9 4.24A9.1 9.1 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                          <path d="M14.12 14.12a3 3 0 0 1-4.24-4.24" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                          <path d="M1 1l22 22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      ) : (
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                          <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2" />
+                        </svg>
+                      )}
+                    </button>
+                  </div>
+                </div>
                 {message ? <p className="auth-alert">{message}</p> : null}
                 <button type="submit" disabled={submitting || loading || !isConfigured}>
                   {submitting ? "Đang xử lý..." : mode === "register" ? "Tạo tài khoản" : "Đăng nhập"}
@@ -100,9 +160,9 @@ export default function AuthPage() {
                 className="google-auth-button"
                 type="button"
                 disabled={submitting || loading || !isConfigured}
-                onClick={() => finishAuth(loginWithGoogle)}
+                onClick={() => finishAuth(loginWithGoogle, "Đăng nhập Google thành công!")}
               >
-                <span aria-hidden="true">G</span>
+                <img src="/logo-google.jpg" alt="" aria-hidden="true" />
                 Tiếp tục với Google
               </button>
             </>
