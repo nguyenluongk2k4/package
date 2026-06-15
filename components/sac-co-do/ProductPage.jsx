@@ -7,7 +7,7 @@ import SiteFooter from "./SiteFooter";
 import SiteHeader from "./SiteHeader";
 
 export default function ProductPage() {
-  const [products, setProducts] = useState(souvenirProducts);
+  const [products, setProducts] = useState([]);
 
   useEffect(() => {
     let mounted = true;

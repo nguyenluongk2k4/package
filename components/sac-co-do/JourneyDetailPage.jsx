@@ -1,10 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { stations } from "../../data/sac-co-do";
 import { getStationBySlugOrId } from "../../lib/firebase/catalog";
 import SiteFooter from "./SiteFooter";
 import SiteHeader from "./SiteHeader";
+import { gsap } from "gsap";
+import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const detailAssetBase = "/assets/chi-tiet-hanh-trinh";
 
@@ -190,6 +195,9 @@ export function getStationById(stationId) {
 
 export default function JourneyDetailPage({ station, stationId }) {
   const [activeStation, setActiveStation] = useState(withCleanFallback(station));
+  const [isPlayingSound, setIsPlayingSound] = useState(false);
+  const containerRef = useRef(null);
+  
   const detail = getDetail(activeStation);
 
   useEffect(() => {
@@ -209,10 +217,53 @@ export default function JourneyDetailPage({ station, stationId }) {
     };
   }, [station?.id, station?.slug, stationId]);
 
+  // Cleanup synthesis on unmount
+  useEffect(() => {
+    return () => {
+      if (typeof window !== "undefined" && window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, []);
+
+  // Text-To-Speech Vietnamese audio play
+  const handlePlaySound = () => {
+    if (typeof window === "undefined" || !window.speechSynthesis) return;
+
+    if (isPlayingSound) {
+      window.speechSynthesis.cancel();
+      setIsPlayingSound(false);
+    } else {
+      window.speechSynthesis.cancel();
+      const textToSpeak = `${activeStation.name}. ${detail.headline}. ${detail.intro}`;
+      const utterance = new SpeechSynthesisUtterance(textToSpeak);
+      utterance.lang = "vi-VN";
+      utterance.onend = () => setIsPlayingSound(false);
+      utterance.onerror = () => setIsPlayingSound(false);
+      setIsPlayingSound(true);
+      window.speechSynthesis.speak(utterance);
+    }
+  };
+
+  // GSAP scroll anim trigger for chapters
+  useGSAP(() => {
+    gsap.from(".journey-detail-chapters article", {
+      opacity: 0,
+      y: 30,
+      stagger: 0.15,
+      duration: 0.8,
+      ease: "power2.out",
+      scrollTrigger: {
+        trigger: ".journey-detail-chapters",
+        start: "top 85%",
+      },
+    });
+  }, { scope: containerRef });
+
   return (
     <>
       <SiteHeader />
-      <main className="journey-detail-page">
+      <main className="journey-detail-page" ref={containerRef}>
         <a className="journey-detail-back" href="/hanh-trinh">
           Quay lại hành trình
         </a>
@@ -237,6 +288,17 @@ export default function JourneyDetailPage({ station, stationId }) {
                     {activeStation.hours}
                   </p>
                 </div>
+                
+                {/* Narrate TTS Button */}
+                <button 
+                  className="audio-narrate-btn" 
+                  type="button" 
+                  onClick={handlePlaySound}
+                  style={{ marginTop: "16px", cursor: "pointer" }}
+                >
+                  <span style={{ fontSize: "16px" }}>{isPlayingSound ? "⏹" : "🔊"}</span>
+                  {isPlayingSound ? "Dừng thuyết minh" : "Phát thuyết minh"}
+                </button>
               </div>
             </section>
 
@@ -260,6 +322,110 @@ export default function JourneyDetailPage({ station, stationId }) {
                 ))}
               </article>
             </section>
+
+            {/* Dynamic sections based on location ID */}
+            {activeStation.id === "hoa-lu" && (
+              <section className="detail-custom-section">
+                <h2 style={{ fontFamily: "Baloo 2", fontSize: "28px", margin: "24px 0 12px" }}>Góc khám phá</h2>
+                <div className="detail-custom-cards-grid">
+                  <div className="detail-custom-card">
+                    <h4>Cổng thành xưa</h4>
+                    <p>Cánh cổng thành vững chãi nhuốm màu thời gian, ghi lại dấu ấn quân sự độc đáo thời Đinh-Lê.</p>
+                  </div>
+                  <div className="detail-custom-card">
+                    <h4>Đền vua Đinh</h4>
+                    <p>Nơi linh thiêng tưởng nhớ triều đại của vị hoàng đế dẹp loạn 12 sứ quân, thống nhất đất nước.</p>
+                  </div>
+                  <div className="detail-custom-card">
+                    <h4>Đền vua Lê</h4>
+                    <p>Di tích lịch sử tôn kính vua Lê Đại Hành, ngắm nhìn kiến trúc điêu khắc chạm trổ gỗ cổ xưa.</p>
+                  </div>
+                </div>
+              </section>
+            )}
+
+            {activeStation.id === "bai-dinh" && (
+              <section className="detail-custom-section">
+                <h2 style={{ fontFamily: "Baloo 2", fontSize: "28px", margin: "24px 0 12px" }}>Trải nghiệm nên thử</h2>
+                <div className="detail-custom-cards-grid">
+                  <div className="detail-custom-card">
+                    <h4>Hành lang La Hán</h4>
+                    <p>Con đường dài ấn tượng trưng bày hàng trăm pho tượng La Hán tạc bằng đá nguyên khối tinh xảo.</p>
+                  </div>
+                  <div className="detail-custom-card">
+                    <h4>Tháp chuông</h4>
+                    <p>Tháp chuông 3 tầng mái, nơi treo quả chuông đồng lớn nhất Việt Nam vang vọng thung lũng núi.</p>
+                  </div>
+                  <div className="detail-custom-card">
+                    <h4>Điện Tam Thế</h4>
+                    <p>Công trình kiến trúc nguy nga, tráng lệ ngự trên đỉnh đồi với góc nhìn bao quát toàn bộ cảnh chùa.</p>
+                  </div>
+                </div>
+              </section>
+            )}
+
+            {activeStation.id === "pho-co-hoa-lu" && (
+              <section className="detail-custom-section">
+                <div className="detail-photobooth-promo">
+                  <span style={{ fontSize: "36px" }}>📸</span>
+                  <div>
+                    <h4>Trạm Photobooth Kỷ Niệm</h4>
+                    <p style={{ color: "var(--ink)", opacity: 0.9 }}>
+                      Hãy chụp ảnh và kích hoạt khung hình Photobooth đặc quyền tại Phố Cổ Hoa Lư! Chia sẻ bức ảnh kỷ niệm về đêm phố rực rỡ ánh đèn lên mạng xã hội và nhận phần quà nhỏ tại quầy trải nghiệm.
+                    </p>
+                  </div>
+                </div>
+              </section>
+            )}
+
+            {activeStation.id === "tam-coc" && (
+              <section className="detail-custom-section">
+                <h2 style={{ fontFamily: "Baloo 2", fontSize: "28px", margin: "24px 0 12px" }}>Khoảnh khắc nên lưu</h2>
+                <div className="detail-custom-cards-grid">
+                  <div className="detail-custom-card">
+                    <h4>Bến thuyền Văn Lâm</h4>
+                    <p>Khởi đầu chuyến ngao du, ngắm dòng thuyền chèo chân mộc mạc đặc trưng vùng chiêm trũng.</p>
+                  </div>
+                  <div className="detail-custom-card">
+                    <h4>Đồng lúa sông Ngô Đồng</h4>
+                    <p>Dòng sông uốn lượn giữa hai vách đá vôi, nổi bật với sắc vàng rực của cánh đồng lúa chín mùa hè.</p>
+                  </div>
+                  <div className="detail-custom-card">
+                    <h4>Hệ thống hang xuyên thủy</h4>
+                    <p>Đi qua Hang Cả, Hang Hai, Hang Ba mát lạnh để chiêm ngưỡng các thạch nhũ tự nhiên kỳ vĩ.</p>
+                  </div>
+                </div>
+              </section>
+            )}
+
+            {activeStation.id === "hang-mua" && (
+              <section className="detail-custom-section">
+                <div className="detail-hang-mua-progress">
+                  <h3 style={{ fontFamily: "Baloo 2", fontSize: "24px", color: "var(--brand)" }}>
+                    Xin chúc mừng! Bạn đã chinh phục điểm cuối hành trình
+                  </h3>
+                  <p style={{ color: "var(--muted)", margin: "8px 0 16px" }}>
+                    Tất cả 6 trạm trải nghiệm đã được ghi dấu ấn thành công vào cuốn hộ chiếu di sản Sắc Cố Đô.
+                  </p>
+                  <div className="detail-stamps-summary-grid">
+                    <div className="detail-stamp-badge collected">Tràng An</div>
+                    <div className="detail-stamp-badge collected">Hoa Lư</div>
+                    <div className="detail-stamp-badge collected">Bái Đính</div>
+                    <div className="detail-stamp-badge collected">Phố Cổ</div>
+                    <div className="detail-stamp-badge collected">Tam Cốc</div>
+                    <div className="detail-stamp-badge collected">Hang Múa</div>
+                  </div>
+                  <div style={{ display: "flex", gap: "12px", justifyContent: "center", marginTop: "24px" }}>
+                    <a className="btn primary" href="/ho-chieu">
+                      Xem Hộ Chiếu của tôi
+                    </a>
+                    <a className="btn ghost" href="/phan-thuong" style={{ border: "1px solid var(--brand)", color: "var(--brand)" }}>
+                      🎁 Nhận phần thưởng
+                    </a>
+                  </div>
+                </div>
+              </section>
+            )}
 
             <section className="journey-detail-route">
               <div className="journey-detail-route-line" aria-hidden="true" />

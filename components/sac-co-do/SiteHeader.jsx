@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useFirebaseAuth } from "./FirebaseAuthProvider";
 import { useToast } from "./ToastProvider";
 
@@ -12,14 +12,29 @@ const navLinks = [
   { href: "/ve-chung-toi", label: "Giới thiệu" },
 ];
 
+const locationDropdownItems = [
+  { href: "/hanh-trinh/trang-an", label: "Tràng An" },
+  { href: "/hanh-trinh/hoa-lu", label: "Cố Đô Hoa Lư" },
+  { href: "/hanh-trinh/bai-dinh", label: "Chùa Bái Đính" },
+  { href: "/hanh-trinh/pho-co-hoa-lu", label: "Phố Cổ Hoa Lư" },
+  { href: "/hanh-trinh/tam-coc", label: "Tam Cốc - Bích Động" },
+  { href: "/hanh-trinh/hang-mua", label: "Hang Múa" },
+];
+
 export default function SiteHeader() {
   const pathname = usePathname();
   const router = useRouter();
   const { user, profile, logout } = useFirebaseAuth();
   const { showToast } = useToast();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const isHome = pathname === "/";
   const accountName = profile?.displayName || user?.displayName || user?.email?.split("@")[0];
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   async function handleLogout() {
     try {
@@ -47,6 +62,45 @@ export default function SiteHeader() {
             <a className="mobile-logo" href="/" onClick={() => setMenuOpen(false)} aria-label="Sắc Cố Đô">
               <img src="/assets/anh-new/logo.png" alt="Sắc Cố Đô" />
             </a>
+            
+            <div 
+              className={`dropdown-container ${dropdownOpen ? "is-open" : ""}`}
+              onMouseEnter={() => setDropdownOpen(true)}
+              onMouseLeave={() => setDropdownOpen(false)}
+              onClick={() => setDropdownOpen(!dropdownOpen)}
+            >
+              <a 
+                className={`menu-link ${pathname === "/" ? "is-active" : ""}`}
+                href="/"
+                onClick={(e) => {
+                  if (window.innerWidth <= 1024) {
+                    e.preventDefault();
+                  } else {
+                    setMenuOpen(false);
+                  }
+                }}
+              >
+                Trang chủ <span className="dropdown-caret" style={{ display: "inline-block" }}>▼</span>
+              </a>
+              <div 
+                className={`header-dropdown-menu ${dropdownOpen ? "active" : ""}`}
+              >
+                {locationDropdownItems.map((loc) => (
+                  <a 
+                    key={loc.href} 
+                    href={loc.href} 
+                    className="dropdown-item"
+                    onClick={() => {
+                      setMenuOpen(false);
+                      setDropdownOpen(false);
+                    }}
+                  >
+                    {loc.label}
+                  </a>
+                ))}
+              </div>
+            </div>
+
             {navLinks.map((item) => (
               <a
                 className={`menu-link ${pathname === item.href ? "is-active" : ""}`}
@@ -69,14 +123,20 @@ export default function SiteHeader() {
             <a className="header-icon-button header-cart-link" href="/gio-hang" aria-label="Giỏ hàng">
               <img src="/assets/ic-gio-hang.svg" alt="" aria-hidden="true" />
             </a>
-            <a className="header-account-link" href={user ? "/cua-toi" : "/dang-nhap"}>
-              {user ? accountName : "Đăng nhập"}
-            </a>
-            {user ? (
-              <button className="header-logout-button" type="button" onClick={handleLogout}>
-                Đăng xuất
-              </button>
-            ) : null}
+            {mounted && user ? (
+              <>
+                <a className="header-account-link" href="/cua-toi">
+                  {accountName}
+                </a>
+                <button className="header-logout-button" type="button" onClick={handleLogout}>
+                  Đăng xuất
+                </button>
+              </>
+            ) : (
+              <a className="header-account-link" href="/dang-nhap">
+                Đăng nhập
+              </a>
+            )}
             <a className="header-cta" href="/kich-hoat">
               Bắt đầu
             </a>

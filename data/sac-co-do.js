@@ -84,11 +84,12 @@ export const stationAssets = {
 
 export const heroSlides = [
   {
-    eyebrow: "Di sản nghìn năm",
-    title: "Sắc Cố Đô",
+    eyebrow: "DI SẢN NGHÌN NĂM",
+    title: "SẮC CỐ ĐÔ",
     description:
-      "Khám phá vẻ đẹp tiềm ẩn của Ninh Bình thông qua công nghệ AR độc đáo. Mỗi bước chân là một câu chuyện lịch sử, mỗi điểm đến là một dấu ấn trong tấm hộ chiếu di sản của riêng bạn.",
+      "Khám phá Ninh Bình bằng một hành trình văn hóa, di sản và làng nghề đầy cảm hứng.",
     image: stationAssets["trang-an"].hero,
+    video: "https://www.youtube.com/embed/PjGMyZ7o82E",
   },
   {
     eyebrow: "Check-in có câu chuyện",
@@ -287,6 +288,39 @@ export const souvenirProducts = [
     badge: "Gạo lứt",
     description:
       "Phiên bản vuông gọn với gạo lứt thơm bùi, giữ được độ giòn đặc trưng và cảm giác nhẹ nhàng khi thưởng thức.",
+  },
+  {
+    id: "bo-sticker-dau-moc",
+    name: "Bộ Sticker Dấu Mộc Sắc Cố Đô",
+    weight: "20g",
+    price: 25000,
+    priceFormatted: "25.000đ",
+    image: "/assets/san-pham.png",
+    badge: "Độc quyền",
+    description:
+      "Bộ sticker chống nước gồm 6 mẫu dấu mộc đại diện cho các địa điểm văn hóa đặc trưng tại Ninh Bình.",
+  },
+  {
+    id: "postcard-6-diem",
+    name: "Set Postcard 6 Điểm Di Sản",
+    weight: "50g",
+    price: 45000,
+    priceFormatted: "45.000đ",
+    image: "/assets/san-pham.png",
+    badge: "Quà lưu niệm",
+    description:
+      "Bộ 6 tấm thiệp in hình minh họa nghệ thuật các địa danh, thích hợp làm quà tặng hoặc ghi chép kỷ niệm.",
+  },
+  {
+    id: "tui-tote-saccodo",
+    name: "Túi Tote Sắc Cố Đô",
+    weight: "120g",
+    price: 99000,
+    priceFormatted: "99.000đ",
+    image: "/assets/san-pham.png",
+    badge: "Thời trang",
+    description:
+      "Túi vải canvas cao cấp, in hình đồ họa rồng đá và logo Sắc Cố Đô phong cách heritage cổ kính.",
   },
 ];
 

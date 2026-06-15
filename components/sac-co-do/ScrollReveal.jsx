@@ -12,7 +12,6 @@ const revealSelectors = [
   ".product-detail-page > *",
   ".product-detail > *",
   ".step-grid > *",
-  ".product-grid > *",
   ".station-grid > *",
   ".gallery-strip > *",
   ".about-hero > *",
@@ -39,7 +38,6 @@ const revealSelectors = [
   ".journey-detail-route",
   ".journey-detail-chapters > *",
   ".journey-detail-side > *",
-  ".site-footer > *",
 ];
 
 function getDelay(element) {
