@@ -89,7 +89,7 @@ export const heroSlides = [
     description:
       "Khám phá Ninh Bình bằng một hành trình văn hóa, di sản và làng nghề đầy cảm hứng.",
     image: stationAssets["trang-an"].hero,
-    video: "https://www.youtube.com/embed/PjGMyZ7o82E",
+    video: "https://res.cloudinary.com/detdbpes9/video/upload/v1781540651/YTDown_YouTube_NINH-BINH-PROVINCE-VIETNAM-4K-DRONE-VIDE_Media_JtRfHWNukao_001_1080p_v3g6yx.mp4",
   },
   {
     eyebrow: "Check-in có câu chuyện",

@@ -8,6 +8,7 @@ import SectionTitle from "./SectionTitle";
 import SiteFooter from "./SiteFooter";
 import SiteHeader from "./SiteHeader";
 import HeroMediaSwitcher from "./HeroMediaSwitcher";
+import { useI18n } from "./I18nProvider";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -15,6 +16,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 export default function HomePage() {
+  const { t } = useI18n();
   const [firebaseStations, setFirebaseStations] = useState(stations);
   const [homeProducts, setHomeProducts] = useState([]);
   const tickerRef = useRef(null);
@@ -162,11 +164,11 @@ export default function HomePage() {
         <HeroMediaSwitcher
           heroImage={hero.image}
           heroVideo={hero.video}
-          title={hero.title}
-          subtitle={hero.description}
-          badge={hero.eyebrow}
-          primaryCTA={{ label: "Khám phá ngay", href: "#tram-trai-nghiem" }}
-          secondaryCTA={{ label: "Xem video giới thiệu" }}
+          title={t("home.hero.title")}
+          subtitle={t("home.hero.description")}
+          badge={t("home.hero.eyebrow")}
+          primaryCTA={{ label: t("home.hero.primaryCta"), href: "#tram-trai-nghiem" }}
+          secondaryCTA={{ label: t("home.hero.secondaryCta"), imageLabel: t("home.hero.imageCta") }}
         />
 
 
@@ -174,38 +176,38 @@ export default function HomePage() {
         {/* Timeline Redesign with Nibi Guide */}
         <section className="content-section" id="cach-hoat-dong">
           <SectionTitle
-            eyebrow="Cách hoạt động"
-            title="Một hành trình đủ nhẹ để chơi, đủ sâu để nhớ"
-            description="Sắc Cố Đô không chỉ bán một cuốn sổ. Nó tạo ra một vòng trải nghiệm từ vật phẩm giấy tới check-in số."
+            eyebrow={t("home.timeline.eyebrow")}
+            title={t("home.timeline.title")}
+            description={t("home.timeline.description")}
           />
           
-          <div className="timeline-unified-card">
-            <div className="timeline-unified-header">
-              <div className="nibi-guide-row">
-                <img src="/assets/anh-new/logo.png" alt="Nibi" className="nibi-avatar" />
-                <div className="nibi-speech">
-                  <strong>Nibi khuyên dùng:</strong> "Hãy theo sát lộ trình 3 bước dưới đây để kết nối trọn vẹn di sản Ninh Bình và mở khóa các phần quà hấp dẫn!"
-                </div>
+          <div className="nibi-guide-card">
+            <div className="nibi-guide-row">
+              <img src="/ar/avt-nibi.jpg" alt="Nibi" className="nibi-avatar" />
+              <div className="nibi-speech">
+                <strong>{t("home.timeline.nibiLabel")}</strong> "{t("home.timeline.nibiAdvice")}"
               </div>
             </div>
-            
+          </div>
+
+          <div className="timeline-unified-card">
             <div className="timeline-unified-steps">
               <article className="timeline-unified-step">
-                <span className="step-badge">Bước 01</span>
-                <h3>Sở hữu Passport</h3>
-                <p>Nhận cuốn hộ chiếu pop-up di sản thủ công cao cấp kèm mã ID kích hoạt tài khoản số cá nhân của bạn.</p>
+                <span className="step-badge">{t("home.timeline.step1.badge")}</span>
+                <h3>{t("home.timeline.step1.title")}</h3>
+                <p>{t("home.timeline.step1.description")}</p>
               </article>
               <div className="timeline-divider" />
               <article className="timeline-unified-step">
-                <span className="step-badge">Bước 02</span>
-                <h3>Hành trình check-in</h3>
-                <p>Khám phá 6 điểm dừng chân di tích lịch sử, quét mã QR tại các trạm trải nghiệm để tự động ghi dấu mộc số.</p>
+                <span className="step-badge">{t("home.timeline.step2.badge")}</span>
+                <h3>{t("home.timeline.step2.title")}</h3>
+                <p>{t("home.timeline.step2.description")}</p>
               </article>
               <div className="timeline-divider" />
               <article className="timeline-unified-step">
-                <span className="step-badge">Bước 03</span>
-                <h3>Đóng Dấu & Mở AR</h3>
-                <p>Đóng dấu mộc đỏ trực tiếp vào sổ tay, trải nghiệm chụp ảnh cùng Mascot Nibi AR và nhận phần quà lưu niệm.</p>
+                <span className="step-badge">{t("home.timeline.step3.badge")}</span>
+                <h3>{t("home.timeline.step3.title")}</h3>
+                <p>{t("home.timeline.step3.description")}</p>
               </article>
             </div>
           </div>
@@ -217,9 +219,9 @@ export default function HomePage() {
         {/* 6 Locations Redesign (Horizontal Cards) */}
         <section className="content-section" id="tram-trai-nghiem">
           <SectionTitle
-            eyebrow="6 điểm dừng chân"
-            title="Khám phá 6 điểm văn hóa Ninh Bình"
-            description="Mỗi điểm đến là một câu chuyện lịch sử, một dấu mộc và một trải nghiệm check-in thực tế ảo riêng biệt."
+            eyebrow={t("home.locations.eyebrow")}
+            title={t("home.locations.title")}
+            description={t("home.locations.description")}
           />
           
           <div className="locations-horizontal-grid">
@@ -228,7 +230,7 @@ export default function HomePage() {
                 <div className="location-card-image-wrapper">
                   <img src={station.image} alt={station.name} loading="lazy" decoding="async" />
                   <a className="location-image-overlay" href={`/hanh-trinh/${station.id}`}>
-                    <span className="location-overlay-btn">Tìm hiểu thêm</span>
+                    <span className="location-overlay-btn">{t("home.locations.learnMore")}</span>
                   </a>
                 </div>
                 <div className="location-card-content">
@@ -239,7 +241,7 @@ export default function HomePage() {
                     href={`/hanh-trinh/${station.id}`}
                     style={{ fontWeight: "800", color: "var(--brand)", display: "inline-flex", alignItems: "center", gap: "6px" }}
                   >
-                    Khám phá chi tiết →
+                    {t("home.locations.detail")}
                   </a>
                 </div>
               </article>
@@ -251,21 +253,21 @@ export default function HomePage() {
         {displayProducts.length > 0 && (
           <section className="content-section product-showcase-home" id="san-pham-noi-bat">
             <SectionTitle
-              eyebrow="Vật phẩm di sản"
-              title="Những món quà đồng hành cùng hành trình"
-              description="Xem và sở hữu các cuốn sổ tay pop-up di sản cùng những món quà đặc sản lưu niệm đậm đà bản sắc Cố Đô."
+              eyebrow={t("home.products.eyebrow")}
+              title={t("home.products.title")}
+              description={t("home.products.description")}
             />
             <div className="product-grid">
               {displayProducts.slice(0, 6).map((product) => (
                 <article className="product-card" key={product.id}>
                   <img src={product.image} alt={product.name} loading="lazy" decoding="async" />
                   <div>
-                    <span className="pill">{product.badge || product.category || "Sản phẩm"}</span>
+                    <span className="pill">{product.badge || product.category || t("home.products.fallbackBadge")}</span>
                     <h3 style={{ fontFamily: "Baloo 2", fontWeight: 700 }}>{product.name}</h3>
                     <p style={{ minHeight: "68px" }}>{product.description}</p>
                     <strong>{product.priceFormatted}</strong>
                     <a className="station-checkin-link" href={`/san-pham/${product.slug || product.id}`}>
-                      Xem chi tiết
+                      {t("home.products.detail")}
                     </a>
                   </div>
                 </article>
@@ -275,18 +277,18 @@ export default function HomePage() {
         )}
 
         {/* Infinite Loop Image Ticker (GSAP Loop at Bottom) */}
-        <section className="infinite-ticker-wrapper" aria-label="Ảnh cảm hứng lặp liên tục">
+        <section className="infinite-ticker-wrapper" aria-label={t("home.ticker.aria")}>
           <div className="infinite-ticker-track" ref={tickerRef}>
             {/* Group 1 */}
             {loopImages.map((imgSrc, index) => (
               <div className="ticker-image-item" key={`loop1-${index}`}>
-                <img src={imgSrc} alt="Sắc Cố Đô" />
+                <img src={imgSrc} alt={t("home.ticker.alt")} />
               </div>
             ))}
             {/* Group 2 (Duplicate for loop seamless overlap) */}
             {loopImages.map((imgSrc, index) => (
               <div className="ticker-image-item" key={`loop2-${index}`}>
-                <img src={imgSrc} alt="Sắc Cố Đô" />
+                <img src={imgSrc} alt={t("home.ticker.alt")} />
               </div>
             ))}
           </div>

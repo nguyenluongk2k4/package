@@ -21,12 +21,14 @@ export default function HeroMediaSwitcher({
   primaryCTA,
   secondaryCTA,
 }) {
+  const youtubeId = getYoutubeId(heroVideo);
+  const isDirectVideo = heroVideo && !youtubeId;
   const [mediaState, setMediaState] = useState("image"); // "image" | "video"
   const nextSectionRef = useRef(null);
 
-  // Parse YouTube ID if applicable
-  const youtubeId = getYoutubeId(heroVideo);
-  const isDirectVideo = heroVideo && !youtubeId;
+  useEffect(() => {
+    setMediaState("image");
+  }, [heroImage, heroVideo]);
 
   // Handle CTA 1 Click: Set to image & scroll to next section
   const handlePrimaryClick = (e) => {
@@ -41,9 +43,9 @@ export default function HeroMediaSwitcher({
     }
   };
 
-  // Handle CTA 2 Click: Set background to video
+  // Handle CTA 2 Click: Toggle image/video background
   const handleSecondaryClick = () => {
-    setMediaState("video");
+    setMediaState((currentState) => (currentState === "video" ? "image" : "video"));
   };
 
   return (
@@ -61,7 +63,7 @@ export default function HeroMediaSwitcher({
         </div>
 
         {/* State 2: Video Layer */}
-        <div className={`hero-media-layer hero-video-layer ${mediaState === "video" ? "active" : ""}`}>
+        <div className={`hero-media-layer hero-video-layer ${youtubeId ? "is-youtube-video" : ""} ${mediaState === "video" ? "active" : ""}`}>
           {mediaState === "video" && (
             <>
               {isDirectVideo ? (
@@ -76,9 +78,9 @@ export default function HeroMediaSwitcher({
               ) : youtubeId ? (
                 <div className="hero-iframe-container">
                   <iframe
-                    src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&loop=1&playlist=${youtubeId}&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&enablejsapi=1`}
+                    src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&playsinline=1&loop=1&playlist=${youtubeId}&controls=0&disablekb=1&fs=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&enablejsapi=1`}
                     title={title || "Sắc Cố Đô Video"}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
                     allowFullScreen
                     className="hero-video-iframe"
                   />
@@ -114,7 +116,9 @@ export default function HeroMediaSwitcher({
               style={{ display: "flex", gap: "8px", alignItems: "center" }}
             >
               <span className="play-icon" aria-hidden="true">▶</span>
-              {secondaryCTA?.label || "Xem video giới thiệu"}
+              {mediaState === "video"
+                ? secondaryCTA?.imageLabel || "Xem ảnh giới thiệu"
+                : secondaryCTA?.label || "Xem video giới thiệu"}
             </button>
           </div>
         </div>

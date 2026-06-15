@@ -1,52 +1,71 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useFirebaseAuth } from "./FirebaseAuthProvider";
+import { useI18n } from "./I18nProvider";
 import { useToast } from "./ToastProvider";
 
 const navLinks = [
-  { href: "/hanh-trinh", label: "Hành trình" },
-  { href: "/ho-chieu", label: "Hộ Chiếu" },
-  { href: "/san-pham", label: "Sản phẩm" },
-  { href: "/ve-chung-toi", label: "Giới thiệu" },
+  { href: "/hanh-trinh", labelKey: "header.nav.journey" },
+  { href: "/ho-chieu", labelKey: "header.nav.passport" },
+  { href: "/san-pham", labelKey: "header.nav.products" },
+  { href: "/ve-chung-toi", labelKey: "header.nav.about" },
 ];
 
 const locationDropdownItems = [
-  { href: "/hanh-trinh/trang-an", label: "Tràng An" },
-  { href: "/hanh-trinh/hoa-lu", label: "Cố Đô Hoa Lư" },
-  { href: "/hanh-trinh/bai-dinh", label: "Chùa Bái Đính" },
-  { href: "/hanh-trinh/pho-co-hoa-lu", label: "Phố Cổ Hoa Lư" },
-  { href: "/hanh-trinh/tam-coc", label: "Tam Cốc - Bích Động" },
-  { href: "/hanh-trinh/hang-mua", label: "Hang Múa" },
+  { href: "/hanh-trinh/trang-an", labelKey: "header.locations.trangAn" },
+  { href: "/hanh-trinh/hoa-lu", labelKey: "header.locations.hoaLu" },
+  { href: "/hanh-trinh/bai-dinh", labelKey: "header.locations.baiDinh" },
+  { href: "/hanh-trinh/pho-co-hoa-lu", labelKey: "header.locations.phoCoHoaLu" },
+  { href: "/hanh-trinh/tam-coc", labelKey: "header.locations.tamCoc" },
+  { href: "/hanh-trinh/hang-mua", labelKey: "header.locations.hangMua" },
 ];
+
+function getInitials(name = "") {
+  const words = name.trim().split(/\s+/).filter(Boolean);
+  if (!words.length) return "U";
+  return words.slice(0, 2).map((word) => word[0]).join("").toUpperCase();
+}
 
 export default function SiteHeader() {
   const pathname = usePathname();
   const router = useRouter();
   const { user, profile, logout } = useFirebaseAuth();
+  const { locale, locales, setLocale, t } = useI18n();
   const { showToast } = useToast();
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [languageOpen, setLanguageOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const isHome = pathname === "/";
-  const accountName = profile?.displayName || user?.displayName || user?.email?.split("@")[0];
+  const accountName = profile?.displayName || user?.displayName || user?.email?.split("@")[0] || "User";
+  const accountPhoto = profile?.photoURL || user?.photoURL;
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  useEffect(() => {
+    setMenuOpen(false);
+    setDropdownOpen(false);
+    setLanguageOpen(false);
+    setAccountOpen(false);
+  }, [pathname]);
+
   async function handleLogout() {
     try {
       await logout();
-      showToast("Đăng xuất thành công!", "success");
+      showToast(t("header.toast.logoutSuccess"), "success");
       setMenuOpen(false);
+      setAccountOpen(false);
 
       if (pathname === "/cua-toi") {
         router.push("/dang-nhap");
       }
     } catch (error) {
-      showToast(error.message || "Không thể đăng xuất. Vui lòng thử lại.", "error");
+      showToast(error.message || t("header.toast.logoutError"), "error");
     }
   }
 
@@ -54,48 +73,66 @@ export default function SiteHeader() {
     <header className={`site-header template-header ${isHome ? "header-home" : "header-inner"}`}>
       <div className="header-navigation">
         <div className="primary-menu">
-          <a className="brand-mark nav-brand" href="/" aria-label="Sắc Cố Đô">
-            <img src="/assets/anh-new/logo.png" alt="Sắc Cố Đô" />
+          <a className="brand-mark nav-brand" href="/" aria-label={t("header.brand")}>
+            <img src="/assets/anh-new/logo.png" alt={t("header.brand")} />
           </a>
 
-          <nav className={`site-nav ${menuOpen ? "is-open" : ""}`} aria-label="Điều hướng chính">
-            <a className="mobile-logo" href="/" onClick={() => setMenuOpen(false)} aria-label="Sắc Cố Đô">
-              <img src="/assets/anh-new/logo.png" alt="Sắc Cố Đô" />
+          <nav className={`site-nav ${menuOpen ? "is-open" : ""}`} aria-label="Main navigation">
+            <a className="mobile-logo" href="/" onClick={() => setMenuOpen(false)} aria-label={t("header.brand")}>
+              <img src="/assets/anh-new/logo.png" alt={t("header.brand")} />
             </a>
-            
-            <div 
+
+            <button
+              className="mobile-menu-close"
+              type="button"
+              aria-label={t("header.actions.closeMenu")}
+              onClick={() => {
+                setMenuOpen(false);
+                setDropdownOpen(false);
+              }}
+            >
+              <span />
+              <span />
+            </button>
+
+            <div
               className={`dropdown-container ${dropdownOpen ? "is-open" : ""}`}
               onMouseEnter={() => setDropdownOpen(true)}
               onMouseLeave={() => setDropdownOpen(false)}
-              onClick={() => setDropdownOpen(!dropdownOpen)}
             >
-              <a 
+              <a
                 className={`menu-link ${pathname === "/" ? "is-active" : ""}`}
                 href="/"
-                onClick={(e) => {
-                  if (window.innerWidth <= 1024) {
-                    e.preventDefault();
-                  } else {
-                    setMenuOpen(false);
-                  }
+                onClick={() => {
+                  setMenuOpen(false);
+                  setDropdownOpen(false);
                 }}
               >
-                Trang chủ <span className="dropdown-caret" style={{ display: "inline-block" }}>▼</span>
+                {t("header.nav.home")}
               </a>
-              <div 
-                className={`header-dropdown-menu ${dropdownOpen ? "active" : ""}`}
+              <button
+                className="dropdown-toggle-button"
+                type="button"
+                aria-label={t("header.actions.openLocations")}
+                aria-expanded={dropdownOpen}
+                onClick={() => setDropdownOpen((value) => !value)}
               >
+                <span className="dropdown-caret" style={{ display: "inline-block" }}>
+                  ▼
+                </span>
+              </button>
+              <div className={`header-dropdown-menu ${dropdownOpen ? "active" : ""}`}>
                 {locationDropdownItems.map((loc) => (
-                  <a 
-                    key={loc.href} 
-                    href={loc.href} 
+                  <a
+                    key={loc.href}
+                    href={loc.href}
                     className="dropdown-item"
                     onClick={() => {
                       setMenuOpen(false);
                       setDropdownOpen(false);
                     }}
                   >
-                    {loc.label}
+                    {t(loc.labelKey)}
                   </a>
                 ))}
               </div>
@@ -108,42 +145,92 @@ export default function SiteHeader() {
                 key={item.href}
                 onClick={() => setMenuOpen(false)}
               >
-                {item.label}
+                {t(item.labelKey)}
               </a>
             ))}
           </nav>
 
           <div className="nav-right-item">
-            <a className="header-icon-button" href="/hanh-trinh" aria-label="Tìm hành trình">
-              <img src="/assets/ic-search.svg" alt="" aria-hidden="true" />
-            </a>
-            <a className="header-icon-button" href="/ve-chung-toi" aria-label="Thông tin dự án">
-              <img src="/assets/ic-language.svg" alt="" aria-hidden="true" />
-            </a>
-            <a className="header-icon-button header-cart-link" href="/gio-hang" aria-label="Giỏ hàng">
+            <div className={`header-dropdown-control language-switcher ${languageOpen ? "is-open" : ""}`}>
+              <button
+                className="header-icon-button"
+                type="button"
+                aria-label={t("header.actions.language")}
+                aria-expanded={languageOpen}
+                onClick={() => {
+                  setLanguageOpen((value) => !value);
+                  setAccountOpen(false);
+                }}
+              >
+                <img src="/assets/ic-language.svg" alt="" aria-hidden="true" />
+              </button>
+              <div className="header-popover-menu">
+                {locales.map((item) => (
+                  <button
+                    className={`header-popover-item ${locale === item ? "is-active" : ""}`}
+                    type="button"
+                    key={item}
+                    onClick={() => {
+                      setLocale(item);
+                      setLanguageOpen(false);
+                    }}
+                  >
+                    {t(`language.${item}`)}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <a className="header-icon-button header-cart-link" href="/gio-hang" aria-label={t("header.actions.cart")}>
               <img src="/assets/ic-gio-hang.svg" alt="" aria-hidden="true" />
             </a>
             {mounted && user ? (
-              <>
-                <a className="header-account-link" href="/cua-toi">
-                  {accountName}
-                </a>
-                <button className="header-logout-button" type="button" onClick={handleLogout}>
-                  Đăng xuất
+              <div className={`header-dropdown-control account-menu ${accountOpen ? "is-open" : ""}`}>
+                <button
+                  className="header-avatar-button"
+                  type="button"
+                  aria-label={t("header.account.open")}
+                  aria-expanded={accountOpen}
+                  onClick={() => {
+                    setAccountOpen((value) => !value);
+                    setLanguageOpen(false);
+                  }}
+                >
+                  {accountPhoto ? (
+                    <img src={accountPhoto} alt="" aria-hidden="true" />
+                  ) : (
+                    <span>{getInitials(accountName)}</span>
+                  )}
                 </button>
-              </>
+                <div className="header-popover-menu account-popover">
+                  <div className="account-popover-summary">
+                    <strong>{accountName}</strong>
+                    {user?.email ? <small>{user.email}</small> : null}
+                  </div>
+                  <a className="header-popover-item" href="/cua-toi">
+                    {t("header.account.profile")}
+                  </a>
+                  <button className="header-popover-item danger" type="button" onClick={handleLogout}>
+                    {t("header.account.logout")}
+                  </button>
+                </div>
+              </div>
             ) : (
-              <a className="header-account-link" href="/dang-nhap">
-                Đăng nhập
-              </a>
+              <>
+                <a className="header-account-link" href="/dang-nhap">
+                  {t("header.account.login")}
+                </a>
+                <a className="header-avatar-button header-login-avatar" href="/dang-nhap" aria-label={t("header.account.login")}>
+                  <span>U</span>
+                </a>
+              </>
             )}
             <a className="header-cta" href="/kich-hoat">
-              Bắt đầu
+              {t("header.actions.start")}
             </a>
             <button
               className={`navbar-toggler ${menuOpen ? "is-open" : ""}`}
               type="button"
-              aria-label="Mở menu"
+              aria-label={t("header.actions.openMenu")}
               aria-expanded={menuOpen}
               onClick={() => setMenuOpen((value) => !value)}
             >

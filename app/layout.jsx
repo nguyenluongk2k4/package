@@ -1,6 +1,7 @@
 import "./globals.css";
 import ScrollReveal from "../components/sac-co-do/ScrollReveal";
 import { FirebaseAuthProvider } from "../components/sac-co-do/FirebaseAuthProvider";
+import { I18nProvider } from "../components/sac-co-do/I18nProvider";
 import { ToastProvider } from "../components/sac-co-do/ToastProvider";
 
 export const metadata = {
@@ -35,10 +36,12 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         <FirebaseAuthProvider>
-          <ToastProvider>
-            {children}
-            <ScrollReveal />
-          </ToastProvider>
+          <I18nProvider>
+            <ToastProvider>
+              {children}
+              <ScrollReveal />
+            </ToastProvider>
+          </I18nProvider>
         </FirebaseAuthProvider>
       </body>
     </html>
