@@ -1,5 +1,7 @@
 "use client";
 
+"use client";
+
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useFirebaseAuth } from "./FirebaseAuthProvider";
@@ -7,10 +9,10 @@ import { useI18n } from "./I18nProvider";
 import { useToast } from "./ToastProvider";
 
 const navLinks = [
+  { href: "/ve-chung-toi", labelKey: "header.nav.about" },
   { href: "/hanh-trinh", labelKey: "header.nav.journey" },
   { href: "/ho-chieu", labelKey: "header.nav.passport" },
   { href: "/san-pham", labelKey: "header.nav.products" },
-  { href: "/ve-chung-toi", labelKey: "header.nav.about" },
 ];
 
 const locationDropdownItems = [

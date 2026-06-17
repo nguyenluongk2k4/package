@@ -170,6 +170,42 @@ export default function HomePage() {
       }
     });
 
+    // Ninh Binh Story entrance animation
+    gsap.from(".story-img-left", {
+      opacity: 0,
+      x: -40,
+      duration: 1.1,
+      ease: "power2.out",
+      scrollTrigger: {
+        trigger: ".ninh-binh-story-section",
+        start: "top 80%",
+      }
+    });
+
+    gsap.from(".story-img-right", {
+      opacity: 0,
+      x: -30,
+      duration: 1.1,
+      ease: "power2.out",
+      delay: 0.15,
+      scrollTrigger: {
+        trigger: ".ninh-binh-story-section",
+        start: "top 80%",
+      }
+    });
+
+    gsap.from(".ninh-binh-story-content > *", {
+      opacity: 0,
+      x: 40,
+      stagger: 0.15,
+      duration: 0.8,
+      ease: "power2.out",
+      scrollTrigger: {
+        trigger: ".ninh-binh-story-section",
+        start: "top 80%",
+      }
+    });
+
     // Horizontal cards for locations
     gsap.from(".location-horizontal-card", {
       opacity: 0,
@@ -240,9 +276,31 @@ export default function HomePage() {
             </div>
           </div>
         </section>
-
-        {/* Passport Options Section */}
-        <PassportVersionSection className="content-section" />
+        {/* Ninh Binh Story Section */}
+        <section className="content-section ninh-binh-story-section">
+          <div className="ninh-binh-story-container">
+            <div className="ninh-binh-story-images">
+              <div className="story-img-left">
+                <img src="/assets/ninh-binh-culture.png" alt="Cố Đô Hoa Lư cổ kính" loading="lazy" />
+              </div>
+              <div className="story-img-right">
+                <img src="/assets/ninh-binh-story.png" alt="Tuyệt Tác Di Sản Ninh Bình" loading="lazy" />
+              </div>
+            </div>
+            <div className="ninh-binh-story-content">
+              <span className="pill" style={{ width: "fit-content", marginBottom: "6px" }}>ĐÔ THỊ DI SẢN MỚI</span>
+              <h2 className="story-title">
+                Tuyệt Tác Di Sản Ninh Bình: Một Điểm Đến, Triệu Trải Nghiệm Đi Qua Ba Vùng Đất Cố Đô
+              </h2>
+              <p className="story-paragraph">
+                Ninh Bình mới sau khi hợp nhất toàn diện từ ba tỉnh Hà Nam, Nam Định và Ninh Bình đã vươn mình trở thành một "siêu đô thị di sản" sở hữu quy mô và tầm vóc vượt trội tại cửa ngõ phía Nam đồng bằng sông Hồng. Với diện tích mở rộng lên gần 3.943 km<sup>2</sup> cùng quy mô dân số hơn 4,4 triệu người, tỉnh Ninh Bình mới không chỉ giải quyết được bài toán không gian phát triển mà còn tối ưu hóa được thế mạnh của ba vùng đất: từ chiều sâu văn hóa - giáo dục của đất học Thành Nam, sự năng động công nghiệp của Hà Nam, cho đến thương hiệu du lịch toàn cầu của cố đô Hoa Lư.
+              </p>
+              <p className="story-paragraph">
+                Tỉnh sở hữu vị trí chiến lược kết nối hoàn hảo với thủ đô Hà Nội và các vùng kinh tế trọng điểm qua mạng lưới cao tốc đồng bộ, đồng thời mở toang cánh cửa hướng ra đại dương nhờ Khu kinh tế Ninh Cơ và hệ thống cảng biển phát triển. Sự cộng hưởng từ chuỗi du lịch tâm linh – sinh thái tầm cỡ quốc tế như Tràng An, Tam Chúc, kết hợp cùng các khu công nghiệp công nghệ cao và logistics ven biển đang tạo nên bệ phóng vững chắc cho Ninh Bình. Vận hành theo mô hình chính quyền địa phương hai cấp tinh gọn và hiện đại, Ninh Bình mới đang tăng tốc mạnh mẽ trên hành trình trở thành thành phố trực thuộc Trung ương – một đô thị di sản xanh, thông minh, giàu bản sắc và là cực tăng trưởng mới đầy năng động của cả nước.
+              </p>
+            </div>
+          </div>
+        </section>
 
         {/* 6 Locations Redesign (Horizontal Cards) */}
         <section className="content-section" id="tram-trai-nghiem">
@@ -276,6 +334,9 @@ export default function HomePage() {
             ))}
           </div>
         </section>
+
+        {/* Passport Options Section */}
+        <PassportVersionSection className="content-section" />
 
         {/* Interactive Location Circles & Loop Gallery (Heritage Moments) */}
         <section className="content-section interactive-gallery-section" style={{ paddingBottom: 0 }}>
