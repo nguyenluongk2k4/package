@@ -3124,13 +3124,8 @@ html.reveal-ready .reveal-target.is-revealed {
   box-shadow: none;
 }
 
-.journey-route-map-card.card-ht1 {
-  min-height: 650px;
-}
-
-.journey-route-map-card.card-ht2 {
-  min-height: 400px;
-  margin-top: 64px;
+.journey-route-map-card.card-ht-combined {
+  min-height: 950px;
 }
 
 .journey-route-map-card::before,
@@ -3177,20 +3172,8 @@ html.reveal-ready .reveal-target.is-revealed {
 
 .journey-route-stage {
   position: absolute;
-  inset: 72px 0 24px;
+  inset: 48px 0 24px;
   z-index: 2;
-}
-
-.journey-route-card-header {
-  text-align: center;
-  padding-top: 24px;
-  position: relative;
-  z-index: 5;
-}
-
-.journey-route-card-header .journey-route-group {
-  position: static;
-  transform: none;
 }
 
 .journey-route-svg {
@@ -3343,6 +3326,54 @@ html.reveal-ready .reveal-target.is-revealed {
   width: clamp(116px, 12vw, 150px);
   color: #173d2f;
   text-align: center;
+}
+
+.journey-route-text-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.journey-route-node.align-bottom .journey-route-text-group {
+  margin-top: 4px;
+}
+
+.journey-route-node.align-left {
+  width: clamp(96px, 10vw, 124px);
+}
+
+.journey-route-node.align-left .journey-route-text-group {
+  position: absolute;
+  right: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%);
+  align-items: flex-end;
+  text-align: right;
+  width: max-content;
+  max-width: 130px;
+}
+
+.journey-route-node.align-left .journey-route-label {
+  margin-top: 0;
+}
+
+.journey-route-node.align-right {
+  width: clamp(96px, 10vw, 124px);
+}
+
+.journey-route-node.align-right .journey-route-text-group {
+  position: absolute;
+  left: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%);
+  align-items: flex-start;
+  text-align: left;
+  width: max-content;
+  max-width: 130px;
+}
+
+.journey-route-node.align-right .journey-route-label {
+  margin-top: 0;
 }
 
 .journey-route-photo {
@@ -3517,13 +3548,8 @@ html.reveal-ready .reveal-target.is-revealed {
     overflow: visible;
   }
 
-  .journey-route-map-card.card-ht1 {
-    min-height: 540px !important;
-  }
-
-  .journey-route-map-card.card-ht2 {
-    min-height: 350px !important;
-    margin-top: 48px !important;
+  .journey-route-map-card.card-ht-combined {
+    min-height: 760px !important;
   }
 
   .journey-route-map-card::before {
@@ -3542,11 +3568,7 @@ html.reveal-ready .reveal-target.is-revealed {
   .journey-route-stage {
     display: block !important;
     position: absolute;
-    inset: 56px 0 20px !important;
-  }
-
-  .journey-route-card-header {
-    padding-top: 14px;
+    inset: 36px 0 20px !important;
   }
 
   .journey-route-mobile-list {
@@ -3556,6 +3578,21 @@ html.reveal-ready .reveal-target.is-revealed {
   /* Thu nhỏ các node địa điểm trên mobile */
   .journey-route-node {
     width: 86px !important;
+  }
+
+  .journey-route-node.align-left,
+  .journey-route-node.align-right {
+    width: 68px !important;
+  }
+
+  .journey-route-node.align-left .journey-route-text-group {
+    right: calc(100% + 6px) !important;
+    max-width: 85px !important;
+  }
+
+  .journey-route-node.align-right .journey-route-text-group {
+    left: calc(100% + 6px) !important;
+    max-width: 85px !important;
   }
 
   .journey-route-photo {
