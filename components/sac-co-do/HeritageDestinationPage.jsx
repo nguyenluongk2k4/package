@@ -85,35 +85,101 @@ function findNarrationVoice(lang) {
   );
 }
 
+function wait(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 function AudioChip({ destination }) {
   const { locale } = useI18n();
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [isLoadingAudio, setIsLoadingAudio] = useState(false);
+  const audioRef = useRef(null);
+  const audioObjectUrlRef = useRef(null);
 
   useEffect(() => {
     return () => {
       if (typeof window !== "undefined" && window.speechSynthesis) {
         window.speechSynthesis.cancel();
       }
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+      if (audioObjectUrlRef.current) {
+        URL.revokeObjectURL(audioObjectUrlRef.current);
+        audioObjectUrlRef.current = null;
+      }
     };
   }, []);
 
-  function handleNarration() {
-    if (typeof window === "undefined" || !window.speechSynthesis) return;
-
-    if (isSpeaking) {
+  function stopNarration() {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      audioRef.current = null;
+    }
+    if (audioObjectUrlRef.current) {
+      URL.revokeObjectURL(audioObjectUrlRef.current);
+      audioObjectUrlRef.current = null;
+    }
+    if (typeof window !== "undefined" && window.speechSynthesis) {
       window.speechSynthesis.cancel();
-      setIsSpeaking(false);
-      return;
+    }
+    setIsSpeaking(false);
+  }
+
+  async function playAudioWithRetry(audioUrl) {
+    let lastError = null;
+
+    for (let attempt = 0; attempt < 5; attempt += 1) {
+      const source = audioUrl.startsWith("blob:") ? audioUrl : `${audioUrl}${audioUrl.includes("?") ? "&" : "?"}t=${Date.now()}`;
+      const audio = new Audio(source);
+      audio.preload = "auto";
+      audioRef.current = audio;
+      audio.onended = () => setIsSpeaking(false);
+      audio.onerror = () => setIsSpeaking(false);
+
+      try {
+        await audio.play();
+        return;
+      } catch (error) {
+        lastError = error;
+        audio.pause();
+        audioRef.current = null;
+        await wait(1200);
+      }
     }
 
-    const activeLocale = getActiveLocale(locale);
-    const lang = activeLocale === "en" ? "en-US" : "vi-VN";
-    const text = activeLocale === "en" ? englishNarration[destination.slug] : buildVietnameseNarration(destination);
+    throw lastError || new Error("Không phát được audio thuyết minh.");
+  }
+
+  async function playFptNarration(text) {
+    setIsLoadingAudio(true);
+    const response = await fetch("/api/tts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text }),
+    });
+
+    if (!response.ok) {
+      const payload = await response.json().catch(() => null);
+      throw new Error(payload.error || "Không tạo được audio thuyết minh.");
+    }
+
+    const audioBlob = await response.blob();
+    const audioUrl = URL.createObjectURL(audioBlob);
+    audioObjectUrlRef.current = audioUrl;
+    setIsSpeaking(true);
+    await playAudioWithRetry(audioUrl);
+  }
+
+  function playEnglishNarration(text) {
+    if (typeof window === "undefined" || !window.speechSynthesis) return;
     const utterance = new SpeechSynthesisUtterance(text);
-    const voice = findNarrationVoice(lang);
-    utterance.lang = lang;
+    utterance.lang = "en-US";
+    const voice = findNarrationVoice("en-US");
     if (voice) utterance.voice = voice;
-    utterance.rate = activeLocale === "en" ? 0.95 : 0.92;
+    utterance.rate = 0.95;
     utterance.onend = () => setIsSpeaking(false);
     utterance.onerror = () => setIsSpeaking(false);
 
@@ -122,14 +188,38 @@ function AudioChip({ destination }) {
     window.speechSynthesis.speak(utterance);
   }
 
+  async function handleNarration() {
+    if (isSpeaking) {
+      stopNarration();
+      return;
+    }
+
+    const activeLocale = getActiveLocale(locale);
+    const text = activeLocale === "en" ? englishNarration[destination.slug] : buildVietnameseNarration(destination);
+
+    try {
+      stopNarration();
+      if (activeLocale === "vi") {
+        await playFptNarration(text);
+      } else {
+        playEnglishNarration(text);
+      }
+    } catch (error) {
+      console.error(error);
+      setIsSpeaking(false);
+    } finally {
+      setIsLoadingAudio(false);
+    }
+  }
+
   return (
-    <button className={`heritage-audio-chip ${isSpeaking ? "is-speaking" : ""}`} type="button" onClick={handleNarration} aria-pressed={isSpeaking}>
-      <span aria-hidden="true">{isSpeaking ? "■" : "▶"}</span>
+    <button className={`heritage-audio-chip ${isSpeaking ? "is-speaking" : ""}`} type="button" onClick={handleNarration} aria-pressed={isSpeaking} disabled={isLoadingAudio}>
+      <span aria-hidden="true">{isLoadingAudio ? "…" : isSpeaking ? "■" : "▶"}</span>
       <div>
         <strong>{locale === "en" ? "Audio Guide" : "Thuyết minh"}</strong>
-        <small>{locale === "en" ? "English narration" : "Giọng đọc tiếng Việt"}</small>
+        <small>{locale === "en" ? "English narration" : "FPT giọng Việt"}</small>
       </div>
-      <em>{isSpeaking ? (locale === "en" ? "Stop" : "Dừng") : (locale === "en" ? "Play" : "Nghe")}</em>
+      <em>{isLoadingAudio ? (locale === "en" ? "Loading" : "Đang tạo") : isSpeaking ? (locale === "en" ? "Stop" : "Dừng") : (locale === "en" ? "Play" : "Nghe")}</em>
     </button>
   );
 }

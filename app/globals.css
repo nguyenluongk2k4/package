@@ -3103,6 +3103,524 @@ html.reveal-ready .reveal-target.is-revealed {
   box-shadow: 0 14px 30px rgba(115, 207, 0, 0.26);
 }
 
+.journey-route-map-section {
+  width: auto;
+  margin: 0 calc(50% - 50vw) 32px;
+  padding: clamp(34px, 5vw, 76px) 16px clamp(42px, 6vw, 88px);
+  background:
+    radial-gradient(circle at 16% 30%, rgba(43, 92, 74, 0.16), transparent 28%),
+    radial-gradient(circle at 84% 18%, rgba(191, 138, 67, 0.14), transparent 24%),
+    linear-gradient(180deg, #f5eedf 0%, #efe1c7 100%);
+}
+
+.journey-route-map-card {
+  position: relative;
+  width: min(1180px, 100%);
+  margin-inline: auto;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.journey-route-map-card.card-ht1 {
+  min-height: 650px;
+}
+
+.journey-route-map-card.card-ht2 {
+  min-height: 400px;
+  margin-top: 64px;
+}
+
+.journey-route-map-card::before,
+.journey-route-map-card::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+.journey-route-map-card::before {
+  display: none;
+}
+
+.journey-route-map-card::after {
+  display: none;
+}
+
+.journey-route-heading {
+  position: relative;
+  z-index: 2;
+  max-width: 760px;
+  margin: 0 auto;
+  padding-inline: 18px;
+  text-align: center;
+}
+
+.journey-route-heading p {
+  margin: 0 0 10px;
+  color: #7a4b23;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.journey-route-heading h2 {
+  margin: 0;
+  color: #173d2f;
+  font-family: "Baloo 2", sans-serif;
+  font-size: clamp(28px, 4.6vw, 48px);
+  font-weight: 900;
+  line-height: 1;
+}
+
+.journey-route-stage {
+  position: absolute;
+  inset: 72px 0 24px;
+  z-index: 2;
+}
+
+.journey-route-card-header {
+  text-align: center;
+  padding-top: 24px;
+  position: relative;
+  z-index: 5;
+}
+
+.journey-route-card-header .journey-route-group {
+  position: static;
+  transform: none;
+}
+
+.journey-route-svg {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.journey-map-asset-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.journey-map-asset {
+  position: absolute;
+  left: var(--asset-x);
+  top: var(--asset-y);
+  width: var(--asset-width);
+  max-width: none;
+  height: auto;
+  object-fit: contain;
+  opacity: 1;
+  transform: translate(-50%, -50%);
+  user-select: none;
+}
+
+.journey-map-asset.asset-sun {
+  z-index: 1;
+  filter: saturate(0.95) drop-shadow(0 10px 18px rgba(176, 111, 30, 0.12));
+  transform: translate(-50%, -50%) rotate(-8deg);
+}
+
+.journey-map-asset.asset-gate-left {
+  z-index: 1;
+  filter: saturate(0.92) drop-shadow(0 12px 20px rgba(96, 53, 20, 0.14));
+}
+
+.journey-map-asset.asset-mountain-back {
+  z-index: 1;
+  filter: saturate(0.85) brightness(0.98) drop-shadow(0 15px 20px rgba(31, 56, 41, 0.12));
+}
+
+.journey-map-asset.asset-mountain-front {
+  z-index: 2;
+  filter: saturate(0.92) drop-shadow(0 18px 24px rgba(31, 56, 41, 0.14));
+}
+
+.journey-map-asset.asset-boat-1,
+.journey-map-asset.asset-boat-2,
+.journey-map-asset.asset-boat-3 {
+  z-index: 2;
+  filter: saturate(0.95) drop-shadow(0 8px 12px rgba(48, 57, 36, 0.12));
+}
+
+.journey-route-path {
+  fill: none;
+  stroke-width: 1.05;
+  stroke-linecap: round;
+  stroke-dasharray: 2.4 2.6;
+  filter: drop-shadow(0 2px 0 rgba(255, 248, 231, 0.65));
+}
+
+.journey-route-path.journey-route-path-green {
+  stroke: #0c573f;
+}
+
+.journey-route-path.journey-route-path-brown {
+  stroke: #8a4d28;
+}
+
+.journey-route-group,
+.journey-route-chip,
+.journey-route-node {
+  position: absolute;
+  left: var(--route-x);
+  top: var(--route-y);
+  transform: translate(-50%, -50%);
+}
+
+.journey-route-group {
+  z-index: 8;
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 18px;
+  border-radius: 999px;
+  color: #fff6dc;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  box-shadow: 0 12px 26px rgba(42, 40, 25, 0.15);
+}
+
+.journey-route-group-green {
+  background: #0e573e;
+}
+
+.journey-route-group-brown {
+  background: #8a4d28;
+}
+
+.journey-route-chip {
+  z-index: 10;
+  display: grid;
+  min-width: 78px;
+  justify-items: center;
+  gap: 1px;
+  padding: 6px 10px;
+  border: 1px solid rgba(25, 82, 61, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 248, 231, 0.9);
+  color: #134936;
+  font-size: 11px;
+  line-height: 1.05;
+  box-shadow: 0 8px 18px rgba(52, 45, 27, 0.12);
+}
+
+.journey-route-chip strong,
+.journey-route-chip small {
+  display: block;
+}
+
+.journey-route-chip small {
+  color: #6d5b3f;
+  font-weight: 800;
+}
+
+.journey-route-car {
+  position: absolute;
+  left: 50%;
+  bottom: -22px;
+  width: 18px;
+  height: 18px;
+  color: #123f31;
+  transform: translateX(-50%);
+  background: #fff8e7;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px #fff8e7;
+}
+
+.journey-route-node {
+  z-index: 5;
+  width: clamp(116px, 12vw, 150px);
+  color: #173d2f;
+  text-align: center;
+}
+
+.journey-route-photo {
+  display: block;
+  width: clamp(96px, 10vw, 124px);
+  aspect-ratio: 1;
+  margin-inline: auto;
+  overflow: hidden;
+  border: 5px solid #fff3d8;
+  border-radius: 50%;
+  background: #d9c59f;
+  box-shadow:
+    0 0 0 1px rgba(19, 73, 54, 0.2),
+    0 14px 24px rgba(44, 55, 35, 0.2);
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.journey-route-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.journey-route-node:hover .journey-route-photo,
+.journey-route-node:focus-visible .journey-route-photo {
+  transform: translateY(-3px) scale(1.04);
+  box-shadow:
+    0 0 0 2px rgba(19, 73, 54, 0.24),
+    0 18px 30px rgba(44, 55, 35, 0.26);
+}
+
+.journey-route-node:focus-visible {
+  outline: 3px solid rgba(218, 171, 76, 0.42);
+  outline-offset: 8px;
+  border-radius: 999px;
+}
+
+.journey-route-label {
+  display: inline-flex;
+  min-height: 30px;
+  align-items: center;
+  justify-content: center;
+  margin-top: -7px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: #11553d;
+  color: #fff6dc;
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1;
+  box-shadow: 0 8px 16px rgba(29, 50, 35, 0.16);
+}
+
+.journey-route-note {
+  display: block;
+  margin-top: 6px;
+  color: #705b39;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.journey-route-node.is-featured {
+  width: clamp(150px, 15vw, 190px);
+}
+
+.journey-route-node.is-featured .journey-route-photo {
+  width: clamp(128px, 13vw, 160px);
+}
+
+.journey-route-node.is-featured .journey-route-label {
+  background: #8a4d28;
+}
+
+.journey-route-node.is-featured .journey-route-note {
+  margin-top: 4px;
+}
+
+.journey-route-footnote {
+  position: relative;
+  left: auto;
+  bottom: auto;
+  margin: 32px auto 0;
+  transform: none;
+  z-index: 6;
+  display: grid;
+  width: min(340px, 78%);
+  gap: 4px;
+  padding: 14px 18px;
+  border: 1px solid rgba(112, 91, 57, 0.18);
+  border-radius: 10px;
+  background: rgba(255, 248, 231, 0.82);
+  color: #5e4c34;
+  font-size: 12px;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.journey-route-footnote strong {
+  color: #173d2f;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.journey-route-mobile-list {
+  display: none;
+}
+
+@media (max-width: 1100px) and (min-width: 761px) {
+  .journey-route-map-card {
+    min-height: 680px;
+  }
+
+  .journey-route-stage {
+    inset: 126px 0 94px;
+  }
+
+  .journey-route-node {
+    width: 118px;
+  }
+
+  .journey-route-photo {
+    width: 96px;
+  }
+
+  .journey-route-node.is-featured {
+    width: 146px;
+  }
+
+  .journey-route-node.is-featured .journey-route-photo {
+    width: 118px;
+  }
+
+  .journey-route-label {
+    min-height: 28px;
+    padding-inline: 10px;
+    font-size: 11px;
+  }
+
+  .journey-route-note {
+    font-size: 9px;
+  }
+
+  .journey-map-asset.asset-gate-left {
+    width: 13%;
+  }
+
+  .journey-map-asset.asset-mountain-back {
+    width: 18%;
+  }
+
+  .journey-map-asset.asset-mountain-front {
+    width: 16%;
+  }
+
+  .journey-map-asset.asset-boat-1 { width: 8%; }
+  .journey-map-asset.asset-boat-2 { width: 7%; }
+  .journey-map-asset.asset-boat-3 { width: 6%; }
+}
+
+@media (max-width: 760px) {
+  .journey-route-map-section {
+    margin-bottom: 24px;
+    padding: 28px 12px 36px;
+  }
+
+  .journey-route-map-card {
+    padding: 0;
+    background: transparent;
+    position: relative;
+    overflow: visible;
+  }
+
+  .journey-route-map-card.card-ht1 {
+    min-height: 540px !important;
+  }
+
+  .journey-route-map-card.card-ht2 {
+    min-height: 350px !important;
+    margin-top: 48px !important;
+  }
+
+  .journey-route-map-card::before {
+    inset: 10px;
+  }
+
+  .journey-route-heading {
+    margin-top: 0;
+    padding-inline: 0;
+  }
+
+  .journey-route-heading h2 {
+    font-size: 28px;
+  }
+
+  .journey-route-stage {
+    display: block !important;
+    position: absolute;
+    inset: 56px 0 20px !important;
+  }
+
+  .journey-route-card-header {
+    padding-top: 14px;
+  }
+
+  .journey-route-mobile-list {
+    display: none !important;
+  }
+
+  /* Thu nhỏ các node địa điểm trên mobile */
+  .journey-route-node {
+    width: 86px !important;
+  }
+
+  .journey-route-photo {
+    width: 68px !important;
+    border-width: 3px !important;
+    box-shadow: 0 8px 15px rgba(44, 55, 35, 0.18) !important;
+  }
+
+  .journey-route-node.is-featured {
+    width: 102px !important;
+  }
+
+  .journey-route-node.is-featured .journey-route-photo {
+    width: 80px !important;
+  }
+
+  .journey-route-label {
+    font-size: 9px !important;
+    padding: 0 6px !important;
+    min-height: 20px !important;
+    margin-top: -5px !important;
+  }
+
+  .journey-route-note {
+    font-size: 7.5px !important;
+  }
+
+  /* Thu nhỏ chip lộ trình xe ô tô */
+  .journey-route-chip {
+    min-width: 58px !important;
+    padding: 3px 5px !important;
+    font-size: 8px !important;
+  }
+
+  .journey-route-car {
+    width: 11px !important;
+    height: 11px !important;
+    bottom: -14px !important;
+    box-shadow: 0 0 0 1.5px #fff8e7 !important;
+  }
+
+  .journey-route-group {
+    min-height: 24px !important;
+    padding: 0 10px !important;
+    font-size: 8px !important;
+  }
+
+  /* Tối ưu các asset trang trí trên di động */
+  .journey-map-asset.asset-gate-left {
+    width: 13% !important;
+  }
+
+  .journey-map-asset.asset-mountain-front {
+    width: 15% !important;
+  }
+
+  /* Ẩn bớt các asset khác để tránh đè lấn trên màn hình nhỏ */
+  .journey-map-asset.asset-mountain-back,
+  .journey-map-asset.asset-boat-1,
+  .journey-map-asset.asset-boat-2,
+  .journey-map-asset.asset-boat-3 {
+    display: none !important;
+  }
+}
+
 .cart-glyph {
   position: relative;
   width: 18px;
