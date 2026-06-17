@@ -30,7 +30,7 @@ html {
 
 body {
   margin: 0;
-  overflow-x: hidden;
+  overflow-x: clip; /* clip ≠ hidden: does NOT create scroll container, so sticky still works */
   background:
     radial-gradient(circle at 10% 0%, rgba(120, 208, 0, 0.14), transparent 32rem),
     linear-gradient(180deg, #ffffff 0%, var(--paper) 52%, #eef8ea 100%);
@@ -2441,9 +2441,9 @@ html.reveal-ready .reveal-target.is-revealed {
   margin: 0;
   color: #063823;
   font-family: "Baloo 2", "Be Vietnam Pro", sans-serif;
-  font-size: clamp(26px, 2.4vw, 36px);
-  font-weight: 900;
-  line-height: 1.05;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.2;
 }
 
 .heritage-cart-state p {
@@ -2555,23 +2555,25 @@ html.reveal-ready .reveal-target.is-revealed {
 
 .heritage-cart-promo {
   display: grid;
-  grid-template-columns: 96px minmax(0, 1fr) 170px;
-  gap: 28px;
+  grid-template-columns: 64px minmax(0, 1fr) auto;
+  gap: 20px;
   align-items: center;
-  min-height: 150px;
-  padding: 32px 44px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #ffd987, #ffde97);
+  min-height: 90px;
+  padding: 20px 28px;
+  border-radius: 12px;
+  background: rgba(255, 255, 252, 0.9);
+  border: 1px solid rgba(16, 76, 39, 0.14);
+  box-shadow: 0 2px 12px rgba(6, 56, 35, 0.06);
   color: #063823;
 }
 
 .heritage-cart-promo-icon {
   display: grid;
-  width: 86px;
-  height: 86px;
+  width: 48px;
+  height: 48px;
   place-items: center;
-  border-radius: 18px;
-  background: rgba(255, 207, 113, 0.48);
+  border-radius: 12px;
+  background: rgba(16, 76, 39, 0.07);
 }
 
 .heritage-cart-promo-icon img {
@@ -2580,32 +2582,40 @@ html.reveal-ready .reveal-target.is-revealed {
 }
 
 .heritage-cart-promo h2 {
-  margin: 0 0 8px;
+  margin: 0 0 6px;
   color: #063823;
-  font-size: clamp(20px, 1.8vw, 28px);
-  font-weight: 1000;
-  letter-spacing: 0.03em;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
 }
 
 .heritage-cart-promo p {
   margin: 0;
   color: #244034;
-  font-size: clamp(18px, 1.8vw, 30px);
-  font-weight: 800;
-  line-height: 1.5;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.55;
 }
 
 .heritage-cart-promo button {
   justify-self: end;
-  width: 150px;
-  min-height: 76px;
-  border: 0;
-  border-bottom: 4px solid #8a6418;
+  width: 120px;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1.5px solid rgba(16, 76, 39, 0.3);
+  border-radius: 999px;
   background: transparent;
-  color: #76551a;
-  font-size: clamp(18px, 1.6vw, 24px);
-  font-weight: 900;
-  line-height: 1.3;
+  color: #063823;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s, color 0.2s;
+}
+
+.heritage-cart-promo button:hover {
+  background: #063823;
+  color: #ffffff;
 }
 
 .heritage-cart-summary {
@@ -2733,48 +2743,122 @@ html.reveal-ready .reveal-target.is-revealed {
 }
 
 .heritage-cart-suggestions {
+  width: 100%;
+  margin-top: clamp(60px, 8vw, 120px);
+  padding: clamp(48px, 6vw, 80px) 0;
+  background: rgba(244, 250, 246, 0.7);
+  border-top: 1px solid rgba(16, 76, 39, 0.08);
+  border-bottom: 1px solid rgba(16, 76, 39, 0.08);
+  overflow: hidden;
+}
+
+.heritage-cart-suggestions-inner {
   width: min(1180px, calc(100% - 32px));
   margin-inline: auto;
-  margin-top: clamp(78px, 10vw, 140px);
+  margin-bottom: 32px;
 }
 
 .heritage-cart-suggestions h2 {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin: 0 0 28px;
+  margin: 0;
   color: #063823;
   font-family: "Baloo 2", "Be Vietnam Pro", sans-serif;
-  font-size: clamp(26px, 2.4vw, 36px);
+  font-size: clamp(20px, 2vw, 28px);
   font-weight: 900;
 }
 
 .heritage-cart-suggestions h2::before {
   content: "";
-  width: 38px;
+  flex-shrink: 0;
+  width: 32px;
   height: 2px;
   background: #8a6418;
 }
 
-.heritage-suggestion-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 22px;
+/* Marquee track — full-bleed fluid */
+.cart-marquee-track {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
+}
+
+.cart-marquee-inner {
+  display: flex;
+  gap: clamp(18px, 1.6vw, 28px);
+  width: max-content;
+  padding: 8px clamp(18px, 3vw, 48px) 16px;
+  animation: cart-marquee-scroll 32s linear infinite;
+}
+
+.cart-marquee-track:hover .cart-marquee-inner {
+  animation-play-state: paused;
+}
+
+@keyframes cart-marquee-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* Card inside marquee — proper card styling */
+.cart-marquee-inner .heritage-suggestion-card {
+  width: clamp(238px, calc((100vw - 160px) / 4.25), 430px);
+  flex-shrink: 0;
 }
 
 .heritage-suggestion-card {
-  display: grid;
-  gap: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  height: clamp(330px, 32vw, 470px);
   min-width: 0;
+  text-decoration: none;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid rgba(16, 76, 39, 0.1);
+  box-shadow: 0 2px 12px rgba(6, 56, 35, 0.07);
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.heritage-suggestion-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 28px rgba(6, 56, 35, 0.14);
+}
+
+.heritage-suggestion-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-height: 0;
+  padding: clamp(14px, 1.4vw, 22px) clamp(16px, 1.6vw, 24px) clamp(16px, 1.7vw, 26px);
+}
+
+.heritage-suggestion-badge {
+  display: inline-block;
+  width: fit-content;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(16, 76, 39, 0.09);
+  color: #063823;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
 }
 
 .heritage-suggestion-media {
   display: grid;
   width: 100%;
-  aspect-ratio: 0.86;
+  aspect-ratio: 1.08;
+  flex: 0 0 auto;
   place-items: center;
   overflow: hidden;
-  border-radius: 4px;
   background: #eef2ee;
 }
 
@@ -2798,13 +2882,21 @@ html.reveal-ready .reveal-target.is-revealed {
 .heritage-suggestion-card h3 {
   margin: 0;
   color: #063823;
-  font-size: clamp(17px, 1.5vw, 21px);
+  font-size: clamp(18px, 1.45vw, 24px);
+  line-height: 1.12;
   font-weight: 900;
+  display: -webkit-box;
+  min-height: 2.24em;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 .heritage-suggestion-card p {
-  margin: -8px 0 0;
+  margin: auto 0 0;
   color: #8a6418;
+  font-size: clamp(16px, 1.15vw, 20px);
+  line-height: 1.1;
   font-weight: 900;
 }
 
@@ -12568,5 +12660,75 @@ html.reveal-ready .reveal-target.is-revealed {
     right: 20px;
     width: 42px;
     height: 42px;
+  }
+}
+
+/* ─── macOS Pill Morph — scroll-driven (--scroll-t: 0→1) ───────────── */
+/*
+ * --scroll-t is set by JS in SiteHeader.jsx (0→1 over 200px of scroll)
+ * 0 = top of page  → full-width rectangle header
+ * 1 = scrolled 200px → floating pill like macOS, centered
+ *
+ * KEY FIX: Use padding-inline on .header-navigation (not margin on .primary-menu)
+ * so the pill shrinks SYMMETRICALLY from both sides (not shifting right).
+ */
+
+.site-header {
+  /* Full-bleed background fades out as pill takes over */
+  background: rgba(255, 255, 255, calc(0.96 - var(--scroll-t, 0) * 0.96)) !important;
+  backdrop-filter: blur(calc((1 - var(--scroll-t, 0)) * 16px)) !important;
+  -webkit-backdrop-filter: blur(calc((1 - var(--scroll-t, 0)) * 16px)) !important;
+  border-bottom-color: rgba(23, 97, 51, calc(0.1 * (1 - var(--scroll-t, 0)))) !important;
+  box-shadow: none !important;
+}
+
+/*
+ * Navigation WRAPPER gets symmetrical horizontal padding → pill shrinks from center.
+ * Top/bottom padding adds breathing room around the floating pill.
+ */
+.site-header .header-navigation {
+  padding-inline: calc(var(--scroll-t, 0) * 20px) !important;
+  padding-top: calc(var(--scroll-t, 0) * 10px) !important;
+  padding-bottom: calc(var(--scroll-t, 0) * 8px) !important;
+  box-sizing: border-box;
+}
+
+/* Primary menu pill morphs visually */
+.site-header .primary-menu {
+  /* border-radius: 0 → 999px */
+  border-radius: calc(var(--scroll-t, 0) * 999px) !important;
+
+  /* NO margin here — padding-inline on parent handles the centering */
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+
+  /* Height tightens slightly */
+  min-height: calc(82px - var(--scroll-t, 0) * 14px) !important;
+
+  /* Background fades in on pill */
+  background: rgba(255, 255, 255, calc(var(--scroll-t, 0) * 0.92)) !important;
+
+  /* Border appears as pill forms */
+  border: 1px solid rgba(23, 97, 51, calc(var(--scroll-t, 0) * 0.14)) !important;
+
+  /* Shadow lifts */
+  box-shadow:
+    0 calc(var(--scroll-t, 0) * 8px) calc(var(--scroll-t, 0) * 32px) rgba(18, 55, 32, calc(var(--scroll-t, 0) * 0.13)),
+    0 calc(var(--scroll-t, 0) * 1px) calc(var(--scroll-t, 0) * 6px) rgba(0, 0, 0, calc(var(--scroll-t, 0) * 0.05)) !important;
+
+  /* Blur on pill itself */
+  backdrop-filter: blur(calc(var(--scroll-t, 0) * 22px)) !important;
+  -webkit-backdrop-filter: blur(calc(var(--scroll-t, 0) * 22px)) !important;
+
+  /* GPU compositing hint */
+  will-change: border-radius, box-shadow, background;
+}
+
+/* Mobile: less padding */
+@media (max-width: 768px) {
+  .site-header .header-navigation {
+    padding-inline: calc(var(--scroll-t, 0) * 10px) !important;
+    padding-top: calc(var(--scroll-t, 0) * 8px) !important;
+    padding-bottom: calc(var(--scroll-t, 0) * 6px) !important;
   }
 }

@@ -1,9 +1,7 @@
 "use client";
 
-"use client";
-
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFirebaseAuth } from "./FirebaseAuthProvider";
 import { useI18n } from "./I18nProvider";
 import { useToast } from "./ToastProvider";
@@ -45,8 +43,24 @@ export default function SiteHeader() {
   const accountName = profile?.displayName || user?.displayName || user?.email?.split("@")[0] || "User";
   const accountPhoto = profile?.photoURL || user?.photoURL;
 
+  const headerRef = useRef(null);
+
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  // Scroll-driven morph: sets --scroll-t (0→1) over first 200px
+  useEffect(() => {
+    const THRESHOLD = 200;
+    const onScroll = () => {
+      const t = Math.min(window.scrollY / THRESHOLD, 1);
+      if (headerRef.current) {
+        headerRef.current.style.setProperty("--scroll-t", t.toFixed(3));
+      }
+    };
+    onScroll(); // set initial value
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   useEffect(() => {
@@ -72,7 +86,10 @@ export default function SiteHeader() {
   }
 
   return (
-    <header className={`site-header template-header ${isHome ? "header-home" : "header-inner"}`}>
+    <header
+      ref={headerRef}
+      className={`site-header template-header ${isHome ? "header-home" : "header-inner"}`}
+    >
       <div className="header-navigation">
         <div className="primary-menu">
           <a className="brand-mark nav-brand" href="/" aria-label={t("header.brand")}>

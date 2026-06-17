@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { collection, deleteDoc, doc, onSnapshot, serverTimestamp, updateDoc } from "firebase/firestore";
-import { gallery, souvenirProducts, stations } from "../../data/sac-co-do";
+import { gallery, stations } from "../../data/sac-co-do";
+import { hardcodedProducts } from "./hardcodedProducts";
 import SectionTitle from "./SectionTitle";
 import SiteFooter from "./SiteFooter";
 import SiteHeader from "./SiteHeader";
@@ -20,36 +21,6 @@ export function CartPage() {
   const shippingFee = items.length > 0 ? 35000 : 0;
   const discount = 0;
   const total = subtotal + shippingFee - discount;
-  const suggestedItems = [
-    {
-      id: "ve-thuyen-trang-an",
-      name: "Vé Thuyền Tràng An",
-      price: "250.000đ",
-      image: stations[0]?.image,
-      href: "/hanh-trinh/trang-an",
-    },
-    {
-      id: "tra-sen-co-do",
-      name: "Trà Sen Cố Đô",
-      price: "180.000đ",
-      image: "/assets/gowilds/assets/images/gallery/act-1.jpg",
-      href: "/san-pham/com-chay-dang-tui",
-    },
-    {
-      id: "combo-qua-tang",
-      name: "Combo Quà Tặng",
-      price: "Liên hệ",
-      image: "",
-      href: "/san-pham/com-chay-ruoc-dam-vi",
-    },
-    {
-      id: "cam-nang-ninh-binh",
-      name: "Cẩm Nang Ninh Bình",
-      price: "Miễn phí",
-      image: "",
-      href: "/hanh-trinh",
-    },
-  ];
 
   function formatVnd(value) {
     return new Intl.NumberFormat("vi-VN").format(value) + "đ";
@@ -205,17 +176,6 @@ export function CartPage() {
                 </article>
               ))}
             </div>
-
-            <article className="heritage-cart-promo">
-              <div className="heritage-cart-promo-icon">
-                <img src="/assets/ic-uu-dai.svg" alt="" aria-hidden="true" />
-              </div>
-              <div>
-                <h2>Ưu đãi dành riêng cho bạn</h2>
-                <p>Thành viên sở hữu Heritage Passport ép cọc giảm ngay 15% trên tổng hóa đơn.</p>
-              </div>
-              <button type="button">Áp dụng ngay</button>
-            </article>
           </div>
 
           <aside className="heritage-cart-summary" aria-label="Tổng đơn hàng">
@@ -252,21 +212,33 @@ export function CartPage() {
         </section>
 
         <section className="heritage-cart-suggestions" aria-labelledby="cart-suggestion-title">
-          <h2 id="cart-suggestion-title">Gợi ý thêm cho hành trình của bạn</h2>
-          <div className="heritage-suggestion-grid">
-            {suggestedItems.map((item) => (
-              <a className="heritage-suggestion-card" href={item.href} key={item.id}>
-                <div className="heritage-suggestion-media">
-                  {item.image ? (
-                    <img src={item.image} alt={item.name} loading="lazy" decoding="async" />
-                  ) : (
-                    <span aria-hidden="true">{item.id === "combo-qua-tang" ? "+" : "□"}</span>
-                  )}
-                </div>
-                <h3>{item.name}</h3>
-                <p>{item.price}</p>
-              </a>
-            ))}
+          <div className="heritage-cart-suggestions-inner">
+            <h2 id="cart-suggestion-title">Gợi ý thêm cho hành trình của bạn</h2>
+          </div>
+          <div className="cart-marquee-track">
+            <div className="cart-marquee-inner">
+              {[...hardcodedProducts, ...hardcodedProducts].map((item, idx) => (
+                <a
+                  className="heritage-suggestion-card"
+                  href={item.href || `/san-pham/${item.slug || item.id}`}
+                  key={`${item.id}-${idx}`}
+                  aria-label={item.name}
+                >
+                  <div className="heritage-suggestion-media">
+                    {item.image ? (
+                      <img src={item.image} alt={item.name} loading="lazy" decoding="async" />
+                    ) : (
+                      <span aria-hidden="true">🏺</span>
+                    )}
+                  </div>
+                  <div className="heritage-suggestion-info">
+                    {item.badge && <span className="heritage-suggestion-badge">{item.badge}</span>}
+                    <h3>{item.name}</h3>
+                    <p>{item.priceFormatted}</p>
+                  </div>
+                </a>
+              ))}
+            </div>
           </div>
         </section>
       </main>
