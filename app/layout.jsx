@@ -1,5 +1,6 @@
 import "./globals.css";
 import ScrollReveal from "../components/sac-co-do/ScrollReveal";
+import ScrollToTop from "../components/sac-co-do/ScrollToTop";
 import { FirebaseAuthProvider } from "../components/sac-co-do/FirebaseAuthProvider";
 import { I18nProvider } from "../components/sac-co-do/I18nProvider";
 import { ToastProvider } from "../components/sac-co-do/ToastProvider";
@@ -40,6 +41,7 @@ export default function RootLayout({ children }) {
             <ToastProvider>
               {children}
               <ScrollReveal />
+              <ScrollToTop />
             </ToastProvider>
           </I18nProvider>
         </FirebaseAuthProvider>
