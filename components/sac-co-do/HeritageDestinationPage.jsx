@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import SiteFooter from "./SiteFooter";
 import SiteHeader from "./SiteHeader";
 import { useI18n } from "./I18nProvider";
@@ -42,9 +43,9 @@ function DestinationNav({ activeSlug }) {
   return (
     <div className="heritage-destination-nav" aria-label="Danh sách địa danh">
       {heritageDestinations.map((item) => (
-        <a className={item.slug === activeSlug ? "is-active" : ""} href={`/dia-danh/${item.slug}`} key={item.slug}>
+        <Link className={item.slug === activeSlug ? "is-active" : ""} href={`/dia-danh/${item.slug}`} key={item.slug}>
           {item.navName}
-        </a>
+        </Link>
       ))}
     </div>
   );
@@ -379,12 +380,12 @@ function Closing({ destination, circleImage = false }) {
         <h2>{destination.closingTitle}</h2>
         <p>{destination.closingText}</p>
         <p className="heritage-destination-closing-actions">
-          <a className="heritage-destination-dark-button" href="/hanh-trinh">
+          <Link className="heritage-destination-dark-button" href="/hanh-trinh">
             Bắt đầu hành trình
-          </a>
-          <a className="heritage-destination-outline-button" href="/ho-chieu">
+          </Link>
+          <Link className="heritage-destination-outline-button" href="/ho-chieu">
             Tải bản đồ
-          </a>
+          </Link>
         </p>
       </div>
       {circleImage ? (
