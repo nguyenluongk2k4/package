@@ -5458,6 +5458,72 @@ html.reveal-ready .reveal-target.is-revealed {
   text-align: center;
 }
 
+.heritage-story-split {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 54px;
+  align-items: center;
+}
+
+.heritage-story-split-text {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.heritage-story-split-text .heritage-story-kicker {
+  margin: 0 0 10px;
+  color: #f4ca73;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.heritage-story-split-text h2 {
+  margin: 0 0 20px;
+  color: #ffffff;
+  font-family: "Baloo 2", "Be Vietnam Pro", sans-serif;
+  font-size: clamp(26px, 3vw, 42px);
+  line-height: 1.16;
+  text-align: left;
+  max-width: none;
+}
+
+.heritage-story-split-images {
+  display: grid;
+  grid-template-columns: 0.82fr 1.18fr;
+  gap: 16px;
+  height: 420px;
+}
+
+.heritage-story-split-images .story-img-left,
+.heritage-story-split-images .story-img-right {
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 2px solid rgba(244, 202, 115, 0.25);
+}
+
+.heritage-story-split-images .story-img-left img,
+.heritage-story-split-images .story-img-right img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (max-width: 900px) {
+  .heritage-story-split {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .heritage-story-split-images {
+    grid-template-columns: 1fr 1fr;
+    height: 280px;
+  }
+}
+
 .heritage-destination-story-text {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -12441,4 +12507,17 @@ html.reveal-ready .reveal-target.is-revealed {
   .about-values-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* Light Essay Page layout wrapper to match DarkStory layout exactly */
+.heritage-story-light {
+  background: rgba(255, 255, 255, 0.4);
+  color: var(--ink);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.heritage-story-light-inner {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: clamp(64px, 7vw, 100px) 0;
 }

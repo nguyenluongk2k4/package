@@ -235,7 +235,7 @@ function Hero({ destination }) {
         <span>{destination.subtitle}</span>
         <AudioChip destination={destination} />
         <div className="heritage-destination-actions">
-          <a href="#cau-chuyen">Khám phá hành trình</a>
+          <a href={`/hanh-trinh/${destination.slug}`}>Khám phá hành trình</a>
           <a href="#thu-vien-anh">Xem thư viện ảnh</a>
         </div>
       </div>
@@ -268,16 +268,32 @@ function IntroSplit({ destination, reverse = false }) {
 }
 
 function DarkStory({ destination, compact = false }) {
+  const imageLeft = destination.storyImage1 || destination.featureImage;
+  const imageRight = destination.storyImage2 || destination.gallery[0]?.src || destination.heroImage;
+
   return (
     <section className={`heritage-destination-story ${compact ? "is-compact" : ""}`} aria-label={`Câu chuyện ${destination.name}`}>
       <div className="heritage-destination-story-inner">
-        <p>{destination.name}</p>
-        <h2>{destination.storyTitle}</h2>
-        <div className="heritage-destination-story-text">
-          {destination.storyParagraphs.map((paragraph) => (
-            <p key={paragraph}>{paragraph}</p>
-          ))}
+        <div className="heritage-story-split">
+          <div className="heritage-story-split-images">
+            <div className="story-img-left">
+              <img src={imageLeft} alt={destination.name} loading="lazy" />
+            </div>
+            <div className="story-img-right">
+              <img src={imageRight} alt={destination.storyTitle} loading="lazy" />
+            </div>
+          </div>
+          <div className="heritage-story-split-text">
+            <p className="heritage-story-kicker">{destination.name}</p>
+            <h2>{destination.storyTitle}</h2>
+            <div className="heritage-destination-story-text-vertical" style={{ display: "flex", flexDirection: "column", gap: "16px", color: "rgba(255, 255, 255, 0.75)" }}>
+              {destination.storyParagraphs.map((paragraph) => (
+                <p key={paragraph} style={{ margin: 0, lineHeight: "1.7" }}>{paragraph}</p>
+              ))}
+            </div>
+          </div>
         </div>
+
         <div className="heritage-destination-highlights">
           {destination.highlights.map((item) => (
             <article key={`${item.number}-${item.title}`}>
@@ -324,14 +340,33 @@ function Gallery({ destination, variant = "mosaic" }) {
 }
 
 function LightEssay({ destination }) {
+  const imageLeft = destination.storyImage1 || destination.featureImage;
+  const imageRight = destination.storyImage2 || destination.gallery[0]?.src || destination.heroImage;
+
   return (
-    <section className="heritage-light-essay">
-      <p className="heritage-destination-kicker">{destination.name}</p>
-      <h2>{destination.storyTitle}</h2>
-      <div>
-        {destination.storyParagraphs.map((paragraph) => (
-          <p key={paragraph}>{paragraph}</p>
-        ))}
+    <section className="heritage-story-light">
+      <div className="heritage-story-light-inner">
+        <div className="heritage-story-split" style={{ color: "var(--ink)" }}>
+          <div className="heritage-story-split-images">
+            <div className="story-img-left" style={{ border: "2px solid rgba(16, 76, 39, 0.2)" }}>
+              <img src={imageLeft} alt={destination.name} loading="lazy" />
+            </div>
+            <div className="story-img-right" style={{ border: "2px solid rgba(16, 76, 39, 0.2)" }}>
+              <img src={imageRight} alt={destination.storyTitle} loading="lazy" />
+            </div>
+          </div>
+          <div className="heritage-story-split-text">
+            <p className="heritage-destination-kicker">{destination.name}</p>
+            <h2 style={{ color: "var(--brand)", fontFamily: "var(--font-heading, 'Baloo 2'), sans-serif", fontSize: "clamp(26px, 3vw, 42px)", fontWeight: "800", marginTop: 0, marginBottom: "20px", textAlign: "left" }}>
+              {destination.storyTitle}
+            </h2>
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px", color: "var(--ink)", lineHeight: "1.7" }}>
+              {destination.storyParagraphs.map((paragraph) => (
+                <p key={paragraph} style={{ margin: 0 }}>{paragraph}</p>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );
