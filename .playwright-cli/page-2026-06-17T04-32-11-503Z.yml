@@ -1,0 +1,186 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e4]:
+      - link "Sắc Cố Đô" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - img "Sắc Cố Đô" [ref=e6]
+      - navigation "Main navigation" [ref=e7]:
+        - generic [ref=e8]:
+          - link "Trang chủ" [ref=e9] [cursor=pointer]:
+            - /url: /
+          - button "Mở danh sách địa danh" [ref=e10] [cursor=pointer]:
+            - generic [ref=e11]: ▼
+        - link "Hành trình" [ref=e12] [cursor=pointer]:
+          - /url: /hanh-trinh
+        - link "Hộ Chiếu" [ref=e13] [cursor=pointer]:
+          - /url: /ho-chieu
+        - link "Sản phẩm" [ref=e14] [cursor=pointer]:
+          - /url: /san-pham
+        - link "Giới thiệu" [ref=e15] [cursor=pointer]:
+          - /url: /ve-chung-toi
+      - generic [ref=e16]:
+        - button "Đổi ngôn ngữ" [ref=e18] [cursor=pointer]:
+          - img [ref=e19]
+        - link "Giỏ hàng" [ref=e20] [cursor=pointer]:
+          - /url: /gio-hang
+          - img [ref=e21]
+        - link "Đăng nhập" [ref=e22] [cursor=pointer]:
+          - /url: /dang-nhap
+        - link "Bắt đầu" [ref=e23] [cursor=pointer]:
+          - /url: /kich-hoat
+  - main [ref=e24]:
+    - region "Tràng An - Hành trình giữa miền di sản ngàn năm" [ref=e25]:
+      - img [ref=e26]
+      - generic "Danh sách địa danh" [ref=e27]:
+        - link "TRÀNG AN" [ref=e28] [cursor=pointer]:
+          - /url: /dia-danh/trang-an
+      - generic [ref=e29]:
+        - paragraph [ref=e30]: Di sản văn hóa và thiên nhiên thế giới
+        - heading "Tràng An - Hành trình giữa miền di sản ngàn năm" [level=1] [ref=e31]
+        - generic [ref=e32]:
+          - link "Khám phá hành trình" [ref=e33] [cursor=pointer]:
+            - /url: "#cau-chuyen"
+          - link "Xem thư viện ảnh" [ref=e34] [cursor=pointer]:
+            - /url: "#thu-vien-anh"
+      - link "Cuộn xuống nội dung" [ref=e35] [cursor=pointer]:
+        - /url: "#cau-chuyen"
+    - generic [ref=e37]:
+      - article [ref=e38]:
+        - paragraph [ref=e39]: Kỳ quan thiên nhiên
+        - heading "Vịnh Hạ Long trên cạn - bản giao hưởng đá và nước" [level=2] [ref=e40]
+        - paragraph [ref=e41]: Được UNESCO công nhận là Di sản Văn hóa và Thiên nhiên Thế giới vào năm 2014, Tràng An không chỉ là niềm tự hào của Ninh Bình mà còn là di sản hỗn hợp đầu tiên của Việt Nam được ghi danh vào Danh mục Di sản Thế giới.
+        - paragraph [ref=e42]: Hàng triệu năm trước, nơi đây từng là vùng biển cổ rộng lớn. Trải qua sự biến đổi của địa chất và thời gian, thiên nhiên đã tạo nên một quần thể núi đá vôi kỳ vĩ cùng hệ thống hang động xuyên thủy độc đáo hiếm có trên thế giới.
+        - paragraph [ref=e43]: Những dãy núi xanh trùng điệp soi bóng xuống dòng nước trong vắt đã tạo nên khung cảnh được nhiều du khách ưu ái gọi là Vịnh Hạ Long trên cạn.
+        - link "Nhìn ngắm di sản" [ref=e44] [cursor=pointer]:
+          - /url: "#thu-vien-anh"
+      - figure "UNESCO vinh danh năm 2014 là di sản hỗn hợp đầu tiên tại Đông Nam Á." [ref=e45]:
+        - img "Tràng An" [ref=e46]
+        - generic [ref=e47]: UNESCO vinh danh năm 2014 là di sản hỗn hợp đầu tiên tại Đông Nam Á.
+    - region "Câu chuyện Tràng An" [ref=e48]:
+      - generic [ref=e49]:
+        - paragraph [ref=e50]: Tràng An
+        - heading "Biểu tượng thiên nhiên, văn hóa của Ninh Bình" [level=2] [ref=e51]
+        - generic [ref=e52]:
+          - paragraph [ref=e53]: Nhưng Tràng An không chỉ đẹp bởi thiên nhiên. Vùng đất này còn gắn liền với lịch sử hình thành và phát triển của kinh đô Hoa Lư xưa. Trong thời kỳ nhà Đinh và nhà Tiền Lê, những dãy núi đá vôi hiểm trở cùng hệ thống sông ngòi tự nhiên đã trở thành bức tường thành vững chắc bảo vệ kinh đô đầu tiên của nước Đại Cồ Việt.
+          - paragraph [ref=e54]: Trải nghiệm đặc biệt nhất tại Tràng An chính là hành trình ngồi thuyền len lỏi qua những dòng sông xanh ngọc bích, đi qua các hang động tự nhiên như Hang Sáng, Hang Tối, Hang Nấu Rượu hay Hang Địa Linh.
+          - paragraph [ref=e55]: Không chỉ là điểm đến dành cho những người yêu thiên nhiên, Tràng An còn là nơi giúp du khách tìm lại sự bình yên giữa nhịp sống hiện đại. Tiếng mái chèo khẽ lướt trên mặt nước, tiếng chim hót vang vọng giữa núi rừng và khung cảnh yên bình của vùng đất cố đô khiến bất cứ ai đặt chân đến đây cũng muốn chậm lại.
+          - paragraph [ref=e56]: Đối với Sắc Cố Đô, Tràng An không chỉ là một điểm đến, mà còn là nơi khởi đầu cho hành trình khám phá di sản. Mỗi con thuyền, mỗi hang động và mỗi câu chuyện lịch sử nơi đây đều là những dấu ấn đặc biệt, góp phần tạo nên ký ức khó quên trong lòng du khách khi đến với Ninh Bình.
+        - generic [ref=e57]:
+          - article [ref=e58]:
+            - generic [ref=e59]: "01."
+            - heading "Lớp bảo vệ tự nhiên" [level=3] [ref=e60]
+            - paragraph [ref=e61]: Những vách núi dựng đứng và hệ thống hang động xuyên thủy tạo thành một quần thể sông núi độc đáo, vừa ngoạn mục vừa giàu tính sinh thái.
+          - article [ref=e62]:
+            - generic [ref=e63]: "02."
+            - heading "Dấu Trần linh thiêng" [level=3] [ref=e64]
+            - paragraph [ref=e65]: Những ngôi đền cổ, dấu tích Hoa Lư và ký ức triều đại khiến hành trình trên thuyền không chỉ là ngắm cảnh mà còn là bước vào lịch sử.
+          - article [ref=e66]:
+            - generic [ref=e67]: "03."
+            - heading "Di chỉ khảo cổ" [level=3] [ref=e68]
+            - paragraph [ref=e69]: Các phát hiện khảo cổ làm dày thêm tầng giá trị của quần thể, cho thấy Tràng An chứa đựng nhiều dấu vết cư trú và văn hóa lâu đời.
+    - generic [ref=e70]:
+      - generic [ref=e71]:
+        - generic [ref=e72]:
+          - paragraph [ref=e73]: Góc nhìn di sản
+          - heading "Hành trình xuyên lòng núi" [level=2] [ref=e74]
+        - link "Làm mới thư viện ảnh" [ref=e75] [cursor=pointer]:
+          - /url: /dia-danh/trang-an
+          - text: ↻
+      - generic [ref=e76]:
+        - figure "Hang Sáng - vẻ đẹp lập lánh" [ref=e77]:
+          - img "Hang Sáng - vẻ đẹp lập lánh" [ref=e78]
+          - generic [ref=e79]: Hang Sáng - vẻ đẹp lập lánh
+        - figure "Kiến trúc cổ kính" [ref=e80]:
+          - img "Kiến trúc cổ kính" [ref=e81]
+          - generic [ref=e82]: Kiến trúc cổ kính
+        - figure "Sắc sen trên miền nước" [ref=e83]:
+          - img "Sắc sen trên miền nước" [ref=e84]
+          - generic [ref=e85]: Sắc sen trên miền nước
+        - figure "Làn ánh sáng sớm" [ref=e86]:
+          - img "Làn ánh sáng sớm" [ref=e87]
+          - generic [ref=e88]: Làn ánh sáng sớm
+        - figure "Dòng nước xanh giữa núi" [ref=e89]:
+          - img "Dòng nước xanh giữa núi" [ref=e90]
+          - generic [ref=e91]: Dòng nước xanh giữa núi
+        - figure "Hoàng hôn trên Cố Đô" [ref=e92]:
+          - img "Hoàng hôn trên Cố Đô" [ref=e93]
+          - generic [ref=e94]: Hoàng hôn trên Cố Đô
+        - figure "Bến thuyền Tràng An" [ref=e95]:
+          - img "Bến thuyền Tràng An" [ref=e96]
+          - generic [ref=e97]: Bến thuyền Tràng An
+        - figure "Hang Tối - ánh sáng cuối đường" [ref=e98]:
+          - img "Hang Tối - ánh sáng cuối đường" [ref=e99]
+          - generic [ref=e100]: Hang Tối - ánh sáng cuối đường
+        - figure "Núi đá vôi trùng điệp" [ref=e101]:
+          - img "Núi đá vôi trùng điệp" [ref=e102]
+          - generic [ref=e103]: Núi đá vôi trùng điệp
+        - figure "Mảng xanh di sản" [ref=e104]:
+          - img "Mảng xanh di sản" [ref=e105]
+          - generic [ref=e106]: Mảng xanh di sản
+        - figure "Lối nước qua thung" [ref=e107]:
+          - img "Lối nước qua thung" [ref=e108]
+          - generic [ref=e109]: Lối nước qua thung
+        - figure "Một góc Tràng An yên bình" [ref=e110]:
+          - img "Một góc Tràng An yên bình" [ref=e111]
+          - generic [ref=e112]: Một góc Tràng An yên bình
+    - generic [ref=e113]:
+      - heading "Tìm lại vẻ bình yên trong trầm tích xanh" [level=2] [ref=e114]
+      - paragraph [ref=e115]: Rời xa nhịp sống náo nhiệt, Tràng An chào đón bạn bằng sự tĩnh lặng của núi và nhịp mái chèo khua nước nhẹ nhàng. Đây là nơi thời gian như ngừng lại để bạn kết nối với chính mình.
+      - generic [ref=e116]:
+        - link "Lên kế hoạch ngay" [ref=e117] [cursor=pointer]:
+          - /url: /hanh-trinh/trang-an
+        - link "Tải Audio Guide" [ref=e118] [cursor=pointer]:
+          - /url: /ho-chieu
+  - contentinfo [ref=e119]:
+    - generic [ref=e120]:
+      - generic [ref=e121]:
+        - generic [ref=e122]:
+          - paragraph [ref=e123]: Sắc Cố Đô
+          - heading "Pop-up passport Ninh Bình" [level=2] [ref=e124]
+          - paragraph [ref=e125]: Một cuốn sổ lưu niệm mở ra hành trình đóng dấu, check-in QR và lưu ảnh tại các điểm văn hóa tiêu biểu của Ninh Bình.
+        - generic [ref=e126]:
+          - heading "Liên hệ" [level=3] [ref=e127]
+          - generic [ref=e128]:
+            - paragraph [ref=e129]:
+              - strong [ref=e130]: "Địa chỉ:"
+              - text: Ninh Bình, Việt Nam
+            - paragraph [ref=e131]:
+              - strong [ref=e132]: "Hotline:"
+              - text: 0987 654 321
+            - paragraph [ref=e133]:
+              - strong [ref=e134]: "Email:"
+              - text: contact@saccodo.vn
+          - generic [ref=e135]:
+            - link "FB" [ref=e136] [cursor=pointer]:
+              - /url: https://facebook.com
+            - link "IG" [ref=e137] [cursor=pointer]:
+              - /url: https://instagram.com
+            - link "TT" [ref=e138] [cursor=pointer]:
+              - /url: https://tiktok.com
+            - link "YT" [ref=e139] [cursor=pointer]:
+              - /url: https://youtube.com
+        - generic [ref=e140]:
+          - heading "Đường dẫn nhanh" [level=3] [ref=e141]
+          - generic [ref=e142]:
+            - link "Trang chủ" [ref=e143] [cursor=pointer]:
+              - /url: /
+            - link "Hành trình" [ref=e144] [cursor=pointer]:
+              - /url: /hanh-trinh
+            - link "Hộ Chiếu" [ref=e145] [cursor=pointer]:
+              - /url: /ho-chieu
+            - link "Sản phẩm" [ref=e146] [cursor=pointer]:
+              - /url: /san-pham
+            - link "Kích hoạt" [ref=e147] [cursor=pointer]:
+              - /url: /kich-hoat
+            - link "Giới thiệu" [ref=e148] [cursor=pointer]:
+              - /url: /ve-chung-toi
+      - generic [ref=e149]:
+        - generic [ref=e150]: © 2026 Sắc Cố Đô. All rights reserved.
+        - generic [ref=e151]:
+          - link "Điều khoản bảo mật" [ref=e152] [cursor=pointer]:
+            - /url: /ve-chung-toi
+          - link "Hỗ trợ" [ref=e153] [cursor=pointer]:
+            - /url: /ve-chung-toi
+  - button "Open Next.js Dev Tools" [ref=e159] [cursor=pointer]:
+    - img [ref=e160]
+  - alert [ref=e163]

@@ -2,6 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { stations } from "../../data/sac-co-do";
 import { useFirebaseAuth } from "./FirebaseAuthProvider";
 import { useI18n } from "./I18nProvider";
 import { useToast } from "./ToastProvider";
@@ -14,13 +15,28 @@ const navLinks = [
 ];
 
 const locationDropdownItems = [
-  { href: "/dia-danh/trang-an", labelKey: "header.locations.trangAn" },
-  { href: "/dia-danh/hoa-lu", labelKey: "header.locations.hoaLu" },
-  { href: "/dia-danh/bai-dinh", labelKey: "header.locations.baiDinh" },
-  { href: "/dia-danh/pho-co-hoa-lu", labelKey: "header.locations.phoCoHoaLu" },
-  { href: "/dia-danh/tam-coc", labelKey: "header.locations.tamCoc" },
-  { href: "/dia-danh/hang-mua", labelKey: "header.locations.hangMua" },
+  { href: "/hanh-trinh/trang-an", labelKey: "header.locations.trangAn" },
+  { href: "/hanh-trinh/hoa-lu", labelKey: "header.locations.hoaLu" },
+  { href: "/hanh-trinh/bai-dinh", labelKey: "header.locations.baiDinh" },
+  { href: "/hanh-trinh/pho-co-hoa-lu", labelKey: "header.locations.phoCoHoaLu" },
+  { href: "/hanh-trinh/tam-coc", labelKey: "header.locations.tamCoc" },
+  { href: "/hanh-trinh/hang-mua", labelKey: "header.locations.hangMua" },
 ];
+
+const destinationMenuItems = locationDropdownItems.map((item, index) => {
+  const station = stations[index] || {};
+
+  return {
+    ...item,
+    stationId: station.id || item.href.split("/").pop(),
+    name: station.name || "",
+    tag: station.tag || "",
+    hours: station.hours || "",
+    stamp: station.stamp || "",
+    description: station.description || "",
+    image: station.heroImage || station.image || "",
+  };
+});
 
 function getInitials(name = "") {
   const words = name.trim().split(/\s+/).filter(Boolean);
@@ -38,13 +54,30 @@ export default function SiteHeader() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [languageOpen, setLanguageOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
+  const [activeDestinationHref, setActiveDestinationHref] = useState(destinationMenuItems[0]?.href || "/hanh-trinh");
+  const [isCompact, setIsCompact] = useState(false);
   const [mounted, setMounted] = useState(false);
   const isHome = pathname === "/";
   const accountName = profile?.displayName || user?.displayName || user?.email?.split("@")[0] || "User";
   const accountPhoto = profile?.photoURL || user?.photoURL;
+  const currentDestination =
+    destinationMenuItems.find((item) => item.href === activeDestinationHref) || destinationMenuItems[0];
 
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsCompact(window.scrollY > 18);
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
   useEffect(() => {
@@ -52,6 +85,16 @@ export default function SiteHeader() {
     setDropdownOpen(false);
     setLanguageOpen(false);
     setAccountOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    const matchedDestination = destinationMenuItems.find(
+      (item) => pathname === item.href || pathname.startsWith(`${item.href}/`)
+    );
+
+    if (matchedDestination) {
+      setActiveDestinationHref(matchedDestination.href);
+    }
   }, [pathname]);
 
   async function handleLogout() {
@@ -70,7 +113,11 @@ export default function SiteHeader() {
   }
 
   return (
-    <header className={`site-header template-header ${isHome ? "header-home" : "header-inner"}`}>
+    <header
+      className={`site-header template-header ${isHome ? "header-home" : "header-inner"} ${
+        isCompact ? "is-compact" : ""
+      }`}
+    >
       <div className="header-navigation">
         <div className="primary-menu">
           <a className="brand-mark nav-brand" href="/" aria-label={t("header.brand")}>
@@ -111,30 +158,74 @@ export default function SiteHeader() {
                 {t("header.nav.home")}
               </a>
               <button
-                className="dropdown-toggle-button"
+                className="menu-link dropdown-toggle-button"
                 type="button"
-                aria-label={t("header.actions.openLocations")}
+                aria-label={t("header.actions.destinations")}
                 aria-expanded={dropdownOpen}
+                aria-controls="destination-menu-panel"
                 onClick={() => setDropdownOpen((value) => !value)}
+                onFocus={() => setDropdownOpen(true)}
               >
+                <span>{t("header.actions.destinations")}</span>
                 <span className="dropdown-caret" style={{ display: "inline-block" }}>
                   ▼
                 </span>
               </button>
-              <div className={`header-dropdown-menu ${dropdownOpen ? "active" : ""}`}>
-                {locationDropdownItems.map((loc) => (
+              <div id="destination-menu-panel" className={`header-dropdown-menu ${dropdownOpen ? "active" : ""}`}>
+                <div className="header-dropdown-list">
+                  <p className="header-dropdown-eyebrow">{t("header.locations.title")}</p>
+                  <p className="header-dropdown-intro">{t("header.locations.subtitle")}</p>
+                  <div className="header-dropdown-links">
+                    {destinationMenuItems.map((item) => (
+                      <a
+                        key={item.href}
+                        href={item.href}
+                        className={`dropdown-item destination-item ${
+                          currentDestination?.href === item.href ? "is-active" : ""
+                        }`}
+                        onMouseEnter={() => setActiveDestinationHref(item.href)}
+                        onFocus={() => setActiveDestinationHref(item.href)}
+                        onClick={() => {
+                          setMenuOpen(false);
+                          setDropdownOpen(false);
+                        }}
+                      >
+                        <span className="destination-item-title">{t(item.labelKey)}</span>
+                        <span className="destination-item-meta">
+                          <span>{item.tag}</span>
+                          <span>{item.hours}</span>
+                        </span>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+
+                {currentDestination ? (
                   <a
-                    key={loc.href}
-                    href={loc.href}
-                    className="dropdown-item"
+                    className="header-dropdown-preview"
+                    href={currentDestination.href}
+                    onMouseEnter={() => setActiveDestinationHref(currentDestination.href)}
+                    onFocus={() => setActiveDestinationHref(currentDestination.href)}
                     onClick={() => {
                       setMenuOpen(false);
                       setDropdownOpen(false);
                     }}
                   >
-                    {t(loc.labelKey)}
+                    <div className="header-dropdown-preview-media">
+                      <img src={currentDestination.image} alt={t(currentDestination.labelKey)} />
+                    </div>
+                    <div className="header-dropdown-preview-copy">
+                      <p className="header-dropdown-preview-kicker">{currentDestination.tag}</p>
+                      <h3>{t(currentDestination.labelKey)}</h3>
+                      <p>{currentDestination.description}</p>
+                      <div className="header-dropdown-preview-meta">
+                        <span>{currentDestination.stamp}</span>
+                        <span>{currentDestination.hours}</span>
+                      </div>
+                      <span className="header-dropdown-preview-cta">{t("header.locations.explore")}</span>
+                    </div>
                   </a>
-                ))}
+                ) : null}
               </div>
             </div>
 

@@ -14,12 +14,12 @@ const navLinks = [
 ];
 
 const locationDropdownItems = [
-  { href: "/dia-danh/trang-an", labelKey: "header.locations.trangAn" },
-  { href: "/dia-danh/hoa-lu", labelKey: "header.locations.hoaLu" },
-  { href: "/dia-danh/bai-dinh", labelKey: "header.locations.baiDinh" },
-  { href: "/dia-danh/pho-co-hoa-lu", labelKey: "header.locations.phoCoHoaLu" },
-  { href: "/dia-danh/tam-coc", labelKey: "header.locations.tamCoc" },
-  { href: "/dia-danh/hang-mua", labelKey: "header.locations.hangMua" },
+  { href: "/hanh-trinh/trang-an", labelKey: "header.locations.trangAn" },
+  { href: "/hanh-trinh/hoa-lu", labelKey: "header.locations.hoaLu" },
+  { href: "/hanh-trinh/bai-dinh", labelKey: "header.locations.baiDinh" },
+  { href: "/hanh-trinh/pho-co-hoa-lu", labelKey: "header.locations.phoCoHoaLu" },
+  { href: "/hanh-trinh/tam-coc", labelKey: "header.locations.tamCoc" },
+  { href: "/hanh-trinh/hang-mua", labelKey: "header.locations.hangMua" },
 ];
 
 function getInitials(name = "") {

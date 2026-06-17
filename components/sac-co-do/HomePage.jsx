@@ -251,7 +251,7 @@ export default function HomePage() {
 
         {/* Products Showcase */}
         {displayProducts.length > 0 && (
-          <section className="content-section product-showcase-home" id="san-pham-noi-bat">
+          <section className="content-section product-showcase-home" id="vat-pham-di-san">
             <SectionTitle
               eyebrow={t("home.products.eyebrow")}
               title={t("home.products.title")}

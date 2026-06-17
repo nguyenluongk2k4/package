@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 
 /**
  * Helper to extract YouTube video ID from standard, embed, or short URLs.
@@ -23,17 +23,16 @@ export default function HeroMediaSwitcher({
 }) {
   const youtubeId = getYoutubeId(heroVideo);
   const isDirectVideo = heroVideo && !youtubeId;
-  const [mediaState, setMediaState] = useState("image"); // "image" | "video"
-  const nextSectionRef = useRef(null);
+  const [mediaState, setMediaState] = useState(heroVideo ? "video" : "image"); // "image" | "video"
+  const [videoFailed, setVideoFailed] = useState(false);
 
   useEffect(() => {
-    setMediaState("image");
+    setVideoFailed(false);
+    setMediaState(heroVideo ? "video" : "image");
   }, [heroImage, heroVideo]);
 
   // Handle CTA 1 Click: Set to image & scroll to next section
   const handlePrimaryClick = (e) => {
-    setMediaState("image");
-    
     // Smooth scroll to target section (default to locations section)
     const targetId = primaryCTA?.href || "#tram-trai-nghiem";
     const targetElement = document.querySelector(targetId);
@@ -53,7 +52,7 @@ export default function HeroMediaSwitcher({
       {/* 1. Background Media Layer */}
       <div className="hero-media-wrapper">
         {/* State 1: Image Layer */}
-        <div className={`hero-media-layer hero-image-layer ${mediaState === "image" ? "active" : ""}`}>
+        <div className={`hero-media-layer hero-image-layer ${mediaState === "image" || videoFailed ? "active" : ""}`}>
           <img
             src={heroImage}
             alt={title || "Sắc Cố Đô"}
@@ -63,8 +62,8 @@ export default function HeroMediaSwitcher({
         </div>
 
         {/* State 2: Video Layer */}
-        <div className={`hero-media-layer hero-video-layer ${youtubeId ? "is-youtube-video" : ""} ${mediaState === "video" ? "active" : ""}`}>
-          {mediaState === "video" && (
+        <div className={`hero-media-layer hero-video-layer ${youtubeId ? "is-youtube-video" : ""} ${mediaState === "video" && !videoFailed ? "active" : ""}`}>
+          {heroVideo && (
             <>
               {isDirectVideo ? (
                 <video
@@ -73,7 +72,11 @@ export default function HeroMediaSwitcher({
                   muted
                   loop
                   playsInline
+                  preload="auto"
+                  poster={heroImage}
                   className="hero-video-element"
+                  onError={() => setVideoFailed(true)}
+                  onCanPlay={() => setVideoFailed(false)}
                 />
               ) : youtubeId ? (
                 <div className="hero-iframe-container">

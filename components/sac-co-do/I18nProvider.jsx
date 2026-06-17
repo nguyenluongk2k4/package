@@ -18,7 +18,10 @@ export function I18nProvider({ children }) {
     if (savedLocale && dictionaries[savedLocale]) {
       setLocaleState(savedLocale);
       document.documentElement.lang = savedLocale;
+      return;
     }
+
+    document.documentElement.lang = defaultLocale;
   }, []);
 
   const value = useMemo(() => {

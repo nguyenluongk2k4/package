@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { packages } from "../../data/sac-co-do";
-import { getProductBySlugOrId, getPublicProducts } from "../../lib/firebase/catalog";
+import { getHardcodedProductBySlugOrId } from "./hardcodedProducts";
 import { useFirebaseAuth } from "./FirebaseAuthProvider";
 import { collection, doc, increment, serverTimestamp, setDoc } from "firebase/firestore";
 import { useToast } from "./ToastProvider";
@@ -46,47 +45,18 @@ function getImages(product) {
 export default function ProductConfigurator({ productId }) {
   const { user, db } = useFirebaseAuth();
   const { showToast } = useToast();
-  const [catalogProducts, setCatalogProducts] = useState(packages.map(toProductOption));
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [selectedId, setSelectedId] = useState(packages[0]?.id);
   const [activeImage, setActiveImage] = useState(fallbackImages[0]);
   const [quantity, setQuantity] = useState(1);
   const [cartState, setCartState] = useState("idle");
-
-  useEffect(() => {
-    let mounted = true;
-
-    async function loadProducts() {
-      const [products, detail] = await Promise.all([
-        getPublicProducts(),
-        productId ? getProductBySlugOrId(productId) : Promise.resolve(null),
-      ]);
-
-      if (!mounted) return;
-
-      const options = (products.length ? products : packages).map(toProductOption);
-      const selected =
-        detail ||
-        options.find((item) => item.slug === productId || item.id === productId) ||
-        options[0] ||
-        packages[0];
-
-      setCatalogProducts(options);
-      setSelectedProduct(selected ? toProductOption(selected) : null);
-      setSelectedId(selected?.id || options[0]?.id);
-      setActiveImage(getImages(selected)[0] || fallbackImages[0]);
-    }
-
-    loadProducts();
-
-    return () => {
-      mounted = false;
-    };
-  }, [productId]);
+  const [hasDetailModel, setHasDetailModel] = useState(false);
 
   const selected = useMemo(() => {
-    return selectedProduct || catalogProducts.find((item) => item.id === selectedId) || catalogProducts[0] || packages[0];
-  }, [catalogProducts, selectedId, selectedProduct]);
+    return toProductOption(getHardcodedProductBySlugOrId(productId));
+  }, [productId]);
+
+  useEffect(() => {
+    setActiveImage(getImages(selected)[0] || fallbackImages[0]);
+  }, [selected]);
 
   const detailImages = useMemo(() => {
     const images = getImages(selected);
@@ -95,6 +65,26 @@ export default function ProductConfigurator({ productId }) {
 
   const total = useMemo(() => Number(selected?.price || 0) * quantity, [selected?.price, quantity]);
   const model3d = selected?.model3d || {};
+
+  useEffect(() => {
+    if (!model3d.glbUrl) {
+      setHasDetailModel(false);
+      return;
+    }
+
+    let mounted = true;
+    fetch(model3d.glbUrl, { method: "HEAD" })
+      .then((response) => {
+        if (mounted) setHasDetailModel(response.ok);
+      })
+      .catch(() => {
+        if (mounted) setHasDetailModel(false);
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, [model3d.glbUrl]);
 
   async function addToCart() {
     if (!user || !db || !selected) {
@@ -138,7 +128,7 @@ export default function ProductConfigurator({ productId }) {
     <section className="product-detail" aria-label="Chi tiết sản phẩm Sắc Cố Đô">
       <div className="product-gallery-panel">
         <div className="product-main-image">
-          {model3d.glbUrl ? (
+          {hasDetailModel ? (
             <model-viewer
               src={model3d.glbUrl}
               ios-src={model3d.usdzUrl || undefined}
@@ -176,33 +166,6 @@ export default function ProductConfigurator({ productId }) {
           <small>(48 đánh giá của người đi phượt)</small>
         </div>
         <p>{selected?.description || "Sản phẩm di sản Ninh Bình được tuyển chọn cho hành trình Sắc Cố Đô."}</p>
-
-        <div className="option-group">
-          <p>Chọn sản phẩm:</p>
-          {catalogProducts.map((item) => {
-            const active = item.id === selected?.id;
-            return (
-              <button
-                className={`product-option ${active ? "active" : ""}`}
-                type="button"
-                key={item.id}
-                onClick={() => {
-                  setSelectedProduct(null);
-                  setSelectedId(item.id);
-                  setActiveImage(getImages(item)[0] || fallbackImages[0]);
-                }}
-              >
-                <span className="option-radio" aria-hidden="true" />
-                <span className="option-copy">
-                  <strong>{item.shortName || item.name}</strong>
-                  <small>{item.subtitle}</small>
-                </span>
-                {item.badge ? <em>{item.badge}</em> : null}
-                <b>{item.priceFormatted}</b>
-              </button>
-            );
-          })}
-        </div>
 
         <div className="purchase-box">
           <div>

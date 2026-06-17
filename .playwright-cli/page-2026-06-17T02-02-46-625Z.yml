@@ -1,0 +1,177 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e4]:
+      - link "Sắc Cố Đô" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - img "Sắc Cố Đô" [ref=e6]
+      - navigation "Main navigation" [ref=e7]:
+        - generic [ref=e8]:
+          - link "Trang chủ" [ref=e9] [cursor=pointer]:
+            - /url: /
+          - button "Mở danh sách địa danh" [ref=e10] [cursor=pointer]:
+            - generic [ref=e11]: ▼
+        - link "Hành trình" [ref=e12] [cursor=pointer]:
+          - /url: /hanh-trinh
+        - link "Hộ Chiếu" [ref=e13] [cursor=pointer]:
+          - /url: /ho-chieu
+        - link "Sản phẩm" [ref=e14] [cursor=pointer]:
+          - /url: /san-pham
+        - link "Giới thiệu" [ref=e15] [cursor=pointer]:
+          - /url: /ve-chung-toi
+      - generic [ref=e16]:
+        - button "Đổi ngôn ngữ" [ref=e18] [cursor=pointer]:
+          - img [ref=e19]
+        - link "Giỏ hàng" [ref=e20] [cursor=pointer]:
+          - /url: /gio-hang
+          - img [ref=e21]
+        - link "Đăng nhập" [ref=e22] [cursor=pointer]:
+          - /url: /dang-nhap
+        - link "Bắt đầu" [ref=e23] [cursor=pointer]:
+          - /url: /kich-hoat
+  - main [ref=e24]:
+    - region "Sắc Cố Đô" [ref=e25]:
+      - generic [ref=e26]:
+        - paragraph [ref=e27]: Sản phẩm
+        - heading "Sắc Cố Đô" [level=1] [ref=e28]
+        - paragraph [ref=e29]: "4 vật phẩm chủ lực: từ passport hành trình đến các món quà đặc sản Ninh Bình."
+      - generic [ref=e30]:
+        - article [ref=e31]:
+          - link "Xem Pop-up Passport Ninh Bình" [ref=e32] [cursor=pointer]:
+            - /url: /san-pham/pop-up-passport-ninh-binh
+            - img "Pop-up Passport Ninh Bình" [ref=e33]
+          - generic [ref=e34]:
+            - generic [ref=e35]: Sản phẩm chính
+            - heading "Pop-up Passport Ninh Bình" [level=2] [ref=e36]
+            - paragraph [ref=e37]: Cuốn sổ pop-up lưu giữ hành trình đóng dấu, check-in QR và kỷ niệm tại các điểm văn hóa tiêu biểu của Ninh Bình.
+            - generic [ref=e38]:
+              - generic [ref=e39]:
+                - term [ref=e40]: Phân loại
+                - definition [ref=e41]: Sản phẩm du lịch
+              - generic [ref=e42]:
+                - term [ref=e43]: Giá bán
+                - definition [ref=e44]: 150.000đ
+            - generic [ref=e45]:
+              - link "Xem chi tiết" [ref=e46] [cursor=pointer]:
+                - /url: /san-pham/pop-up-passport-ninh-binh
+                - text: Xem chi tiết
+                - img [ref=e47]
+              - button "Thêm vào giỏ" [ref=e48] [cursor=pointer]
+        - article [ref=e49]:
+          - link "Xem Cơm Cháy Cố Đô Dạng Túi" [ref=e50] [cursor=pointer]:
+            - /url: /san-pham/com-chay-dang-tui
+            - img "Cơm Cháy Cố Đô Dạng Túi" [ref=e51]
+          - generic [ref=e52]:
+            - generic [ref=e53]: Bán chạy
+            - heading "Cơm Cháy Cố Đô Dạng Túi" [level=2] [ref=e54]
+            - paragraph [ref=e55]: Miếng cơm cháy giòn rụm, vị mộc dễ ăn, gói gọn hương vị quà quê Ninh Bình cho những chuyến đi ngắn ngày.
+            - generic [ref=e56]:
+              - generic [ref=e57]:
+                - term [ref=e58]: Phân loại
+                - definition [ref=e59]: Đặc sản Ninh Bình
+              - generic [ref=e60]:
+                - term [ref=e61]: Giá bán
+                - definition [ref=e62]: 59.000đ
+            - generic [ref=e63]:
+              - link "Xem chi tiết" [ref=e64] [cursor=pointer]:
+                - /url: /san-pham/com-chay-dang-tui
+                - text: Xem chi tiết
+                - img [ref=e65]
+              - button "Thêm vào giỏ" [ref=e66] [cursor=pointer]
+        - article [ref=e67]:
+          - link "Xem Cơm Cháy Cố Đô Ruốc Đậm Vị" [ref=e68] [cursor=pointer]:
+            - /url: /san-pham/com-chay-ruoc-dam-vi
+            - img "Cơm Cháy Cố Đô Ruốc Đậm Vị" [ref=e69]
+          - generic [ref=e70]:
+            - generic [ref=e71]: Đậm vị
+            - heading "Cơm Cháy Cố Đô Ruốc Đậm Vị" [level=2] [ref=e72]
+            - paragraph [ref=e73]: Lớp ruốc bông mặn ngọt phủ đều trên nền cơm cháy vàng giòn, phù hợp mua làm quà hoặc dùng chung trong nhóm.
+            - generic [ref=e74]:
+              - generic [ref=e75]:
+                - term [ref=e76]: Phân loại
+                - definition [ref=e77]: Đặc sản Ninh Bình
+              - generic [ref=e78]:
+                - term [ref=e79]: Giá bán
+                - definition [ref=e80]: 65.000đ
+            - generic [ref=e81]:
+              - link "Xem chi tiết" [ref=e82] [cursor=pointer]:
+                - /url: /san-pham/com-chay-ruoc-dam-vi
+                - text: Xem chi tiết
+                - img [ref=e83]
+              - button "Thêm vào giỏ" [ref=e84] [cursor=pointer]
+        - article [ref=e85]:
+          - link "Xem Cơm Cháy Cố Đô Vuông Lứt" [ref=e86] [cursor=pointer]:
+            - /url: /san-pham/com-chay-vuong-lut
+            - img "Cơm Cháy Cố Đô Vuông Lứt" [ref=e87]
+          - generic [ref=e88]:
+            - generic [ref=e89]: Gạo lứt
+            - heading "Cơm Cháy Cố Đô Vuông Lứt" [level=2] [ref=e90]
+            - paragraph [ref=e91]: Phiên bản vuông gọn với gạo lứt thơm bùi, giữ được độ giòn đặc trưng và cảm giác nhẹ nhàng khi thưởng thức.
+            - generic [ref=e92]:
+              - generic [ref=e93]:
+                - term [ref=e94]: Phân loại
+                - definition [ref=e95]: Đặc sản Ninh Bình
+              - generic [ref=e96]:
+                - term [ref=e97]: Giá bán
+                - definition [ref=e98]: 54.000đ
+            - generic [ref=e99]:
+              - link "Xem chi tiết" [ref=e100] [cursor=pointer]:
+                - /url: /san-pham/com-chay-vuong-lut
+                - text: Xem chi tiết
+                - img [ref=e101]
+              - button "Thêm vào giỏ" [ref=e102] [cursor=pointer]
+    - generic [ref=e104]:
+      - generic [ref=e105]: Passport Ninh Bình • Cơm cháy dạng túi • Cơm cháy ruốc • Cơm cháy vuông lứt •
+      - generic [ref=e106]: Passport Ninh Bình • Cơm cháy dạng túi • Cơm cháy ruốc • Cơm cháy vuông lứt •
+  - contentinfo [ref=e107]:
+    - generic [ref=e108]:
+      - generic [ref=e109]:
+        - generic [ref=e110]:
+          - paragraph [ref=e111]: Sắc Cố Đô
+          - heading "Pop-up passport Ninh Bình" [level=2] [ref=e112]
+          - paragraph [ref=e113]: Một cuốn sổ lưu niệm mở ra hành trình đóng dấu, check-in QR và lưu ảnh tại các điểm văn hóa tiêu biểu của Ninh Bình.
+        - generic [ref=e114]:
+          - heading "Liên hệ" [level=3] [ref=e115]
+          - generic [ref=e116]:
+            - paragraph [ref=e117]:
+              - strong [ref=e118]: "Địa chỉ:"
+              - text: Ninh Bình, Việt Nam
+            - paragraph [ref=e119]:
+              - strong [ref=e120]: "Hotline:"
+              - text: 0987 654 321
+            - paragraph [ref=e121]:
+              - strong [ref=e122]: "Email:"
+              - text: contact@saccodo.vn
+          - generic [ref=e123]:
+            - link "FB" [ref=e124] [cursor=pointer]:
+              - /url: https://facebook.com
+            - link "IG" [ref=e125] [cursor=pointer]:
+              - /url: https://instagram.com
+            - link "TT" [ref=e126] [cursor=pointer]:
+              - /url: https://tiktok.com
+            - link "YT" [ref=e127] [cursor=pointer]:
+              - /url: https://youtube.com
+        - generic [ref=e128]:
+          - heading "Đường dẫn nhanh" [level=3] [ref=e129]
+          - generic [ref=e130]:
+            - link "Trang chủ" [ref=e131] [cursor=pointer]:
+              - /url: /
+            - link "Hành trình" [ref=e132] [cursor=pointer]:
+              - /url: /hanh-trinh
+            - link "Hộ Chiếu" [ref=e133] [cursor=pointer]:
+              - /url: /ho-chieu
+            - link "Sản phẩm" [ref=e134] [cursor=pointer]:
+              - /url: /san-pham
+            - link "Kích hoạt" [ref=e135] [cursor=pointer]:
+              - /url: /kich-hoat
+            - link "Giới thiệu" [ref=e136] [cursor=pointer]:
+              - /url: /ve-chung-toi
+      - generic [ref=e137]:
+        - generic [ref=e138]: © 2026 Sắc Cố Đô. All rights reserved.
+        - generic [ref=e139]:
+          - link "Điều khoản bảo mật" [ref=e140] [cursor=pointer]:
+            - /url: /ve-chung-toi
+          - link "Hỗ trợ" [ref=e141] [cursor=pointer]:
+            - /url: /ve-chung-toi
+  - button "Open Next.js Dev Tools" [ref=e147] [cursor=pointer]:
+    - img [ref=e148]
+  - alert [ref=e151]

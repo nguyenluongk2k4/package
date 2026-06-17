@@ -3,9 +3,64 @@
 import { collection, doc, increment, serverTimestamp, setDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useFirebaseAuth } from "./FirebaseAuthProvider";
-import { hardcodedProducts } from "./hardcodedProducts";
 import { useI18n } from "./I18nProvider";
 import { useToast } from "./ToastProvider";
+
+const productModelBase = "/assets/san-pham/models";
+
+const featuredProducts = [
+  {
+    id: "passport",
+    slug: "single",
+    name: "Pop-up Passport Ninh Bình",
+    price: 150000,
+    priceFormatted: "150.000đ",
+    badge: "Sản phẩm chính",
+    description: "Cuốn sổ pop-up lưu giữ hành trình đóng dấu, check-in QR và kỷ niệm tại các điểm văn hóa tiêu biểu của Ninh Bình.",
+    image: "/assets/san-pham/remove-bg/passport.png",
+    href: "/san-pham/single",
+  },
+  {
+    id: "com-chay-dang-tui",
+    slug: "com-chay-dang-tui",
+    name: "Cơm Cháy Cố Đô Dạng Túi",
+    price: 59000,
+    priceFormatted: "59.000đ",
+    badge: "Bán chạy",
+    weight: "180g",
+    description: "Miếng cơm cháy giòn rụm, vị mộc dễ ăn, gói gọn hương vị quà quê Ninh Bình cho những chuyến đi ngắn ngày.",
+    image: "/assets/san-pham/remove-bg/Cơm cháy cố đô dạng túi 180g - 59k_goi-Photoroom.png",
+    href: "/san-pham/com-chay-dang-tui",
+  },
+  {
+    id: "com-chay-ruoc-dam-vi",
+    slug: "com-chay-ruoc-dam-vi",
+    name: "Cơm Cháy Cố Đô Ruốc Đậm Vị",
+    price: 65000,
+    priceFormatted: "65.000đ",
+    badge: "Đậm vị",
+    weight: "300g",
+    description: "Lớp ruốc bông mặn ngọt phủ đều trên nền cơm cháy vàng giòn, phù hợp mua làm quà hoặc dùng chung trong nhóm.",
+    image: "/assets/san-pham/remove-bg/Cơm cháy cố đô ruốc đậm vị 300g 65k_goi-Photoroom.png",
+    href: "/san-pham/com-chay-ruoc-dam-vi",
+  },
+  {
+    id: "com-chay-vuong-lut",
+    slug: "com-chay-vuong-lut",
+    name: "Cơm Cháy Cố Đô Vuông Lứt",
+    price: 54000,
+    priceFormatted: "54.000đ",
+    badge: "Gạo lứt",
+    weight: "210g",
+    description: "Phiên bản vuông gọn với gạo lứt thơm bùi, giữ được độ giòn đặc trưng và cảm giác nhẹ nhàng khi thưởng thức.",
+    image: "/assets/san-pham/remove-bg/Cơm cháy cố đô vuông lứt 210g 54k_ goi-Photoroom.png",
+    href: "/san-pham/com-chay-vuong-lut",
+  },
+].map((product) => ({
+  ...product,
+  modelSrc: `${productModelBase}/${product.id}.glb`,
+  iosModelSrc: `${productModelBase}/${product.id}.usdz`,
+}));
 
 export default function PassportVersionSection({ className = "" }) {
   const { t } = useI18n();
@@ -15,12 +70,12 @@ export default function PassportVersionSection({ className = "" }) {
   const [rotation, setRotation] = useState(0);
   const [hasProductModel, setHasProductModel] = useState(false);
   const [cartState, setCartState] = useState("idle");
-  const activeProduct = hardcodedProducts[activeIndex] || hardcodedProducts[0];
+  const activeProduct = featuredProducts[activeIndex] || featuredProducts[0];
 
   useEffect(() => {
     let mounted = true;
 
-    fetch(activeProduct.model3d.glbUrl, { method: "HEAD" })
+    fetch(activeProduct.modelSrc, { method: "HEAD" })
       .then((response) => {
         if (mounted) setHasProductModel(response.ok);
       })
@@ -31,10 +86,10 @@ export default function PassportVersionSection({ className = "" }) {
     return () => {
       mounted = false;
     };
-  }, [activeProduct.model3d.glbUrl]);
+  }, [activeProduct.modelSrc]);
 
   function goToProduct(direction) {
-    setActiveIndex((index) => (index + direction + hardcodedProducts.length) % hardcodedProducts.length);
+    setActiveIndex((index) => (index + direction + featuredProducts.length) % featuredProducts.length);
     setRotation(0);
     setCartState("idle");
   }
@@ -89,6 +144,7 @@ export default function PassportVersionSection({ className = "" }) {
           <div className="passport-version-ribbon">4 lựa chọn nổi bật</div>
           <div className="passport-active-card">
             {activeProduct.badge ? <span className="passport-active-badge">{activeProduct.badge}</span> : null}
+            <p className="passport-active-label">Giá</p>
             <strong className="passport-active-price">{activeProduct.priceFormatted}</strong>
             <h3>{activeProduct.name}</h3>
             <p>{activeProduct.description}</p>
@@ -121,8 +177,8 @@ export default function PassportVersionSection({ className = "" }) {
             {hasProductModel ? (
               <model-viewer
                 class="passport-product-model"
-                src={activeProduct.model3d.glbUrl}
-                ios-src={activeProduct.model3d.usdzUrl}
+                src={activeProduct.modelSrc}
+                ios-src={activeProduct.iosModelSrc}
                 poster={activeProduct.image}
                 camera-controls
                 auto-rotate
@@ -148,7 +204,7 @@ export default function PassportVersionSection({ className = "" }) {
           </button>
 
           <div className="passport-product-dots" aria-label="Chọn sản phẩm">
-            {hardcodedProducts.map((item, index) => (
+            {featuredProducts.map((item, index) => (
               <button
                 className={index === activeIndex ? "is-active" : ""}
                 type="button"
