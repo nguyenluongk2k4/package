@@ -11706,7 +11706,81 @@ html.reveal-ready .reveal-target.is-revealed {
   }
 }
 
-/* Infinite loop ticker */
+/* Infinite loop ticker & Interactive Gallery */
+.interactive-gallery-section {
+  background: transparent !important;
+  padding-bottom: 0 !important;
+}
+
+.destination-circles-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 32px;
+  margin: 40px auto 20px auto;
+  padding: 10px 20px;
+  overflow-x: auto;
+  max-width: 100%;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+.destination-circles-container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.destination-circle-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  gap: 12px;
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+.destination-circle-btn:hover {
+  transform: translateY(-4px);
+}
+
+.circle-image-wrapper {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  padding: 4px;
+  transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 12px rgba(6, 62, 67, 0.06);
+  background: var(--paper-2);
+}
+.circle-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+.destination-circle-btn.active .circle-image-wrapper {
+  border-color: var(--brand);
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(219, 48, 34, 0.15);
+}
+
+.circle-label {
+  font-family: var(--font-heading, "Baloo 2"), sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  transition: color 0.3s ease;
+  text-align: center;
+}
+.destination-circle-btn:hover .circle-label {
+  color: var(--brand);
+}
+.destination-circle-btn.active .circle-label {
+  color: var(--brand);
+}
+
 .infinite-ticker-wrapper {
   overflow: hidden;
   width: 100vw;
@@ -11716,8 +11790,8 @@ html.reveal-ready .reveal-target.is-revealed {
   margin-left: -50vw;
   margin-right: -50vw;
   background: var(--paper-2);
-  padding: 30px 0;
-  margin-top: 54px;
+  padding: 40px 0;
+  margin-top: 20px;
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
 }
@@ -11725,26 +11799,83 @@ html.reveal-ready .reveal-target.is-revealed {
   display: flex;
   white-space: nowrap;
 }
-.ticker-image-item {
-  display: inline-block;
-  width: 260px;
-  height: 160px;
-  margin-right: 20px;
-  border-radius: 14px;
-  overflow: hidden;
-  border: 1px solid var(--line);
-  box-shadow: 0 6px 16px rgba(6, 62, 67, 0.08);
-  background: #ffffff;
+
+.gallery-loop-item {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  width: 220px;
+  margin-right: 24px;
   flex-shrink: 0;
-  transition: transform 0.3s ease;
+  vertical-align: top;
 }
-.ticker-image-item:hover {
-  transform: scale(1.03);
+.gallery-loop-image-wrapper {
+  width: 220px;
+  height: 270px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(6, 62, 67, 0.08);
+  border: 1px solid var(--line);
+  background: #ffffff;
+  transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.4s ease;
 }
-.ticker-image-item img {
+.gallery-loop-image-wrapper img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+.gallery-loop-item:hover .gallery-loop-image-wrapper {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(6, 62, 67, 0.15);
+}
+.gallery-loop-item:hover img {
+  transform: scale(1.06);
+}
+.gallery-loop-caption {
+  margin-top: 14px;
+  font-family: var(--font-heading, "Baloo 2"), sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+  text-align: center;
+  white-space: normal;
+  line-height: 1.4;
+  max-width: 100%;
+  transition: color 0.3s ease;
+}
+.gallery-loop-item:hover .gallery-loop-caption {
+  color: var(--brand);
+}
+
+@media (max-width: 768px) {
+  .destination-circles-container {
+    justify-content: flex-start;
+    gap: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .circle-image-wrapper {
+    width: 70px;
+    height: 70px;
+    padding: 3px;
+  }
+  .circle-label {
+    font-size: 13px;
+  }
+  .gallery-loop-item {
+    width: 170px;
+    margin-right: 18px;
+  }
+  .gallery-loop-image-wrapper {
+    width: 170px;
+    height: 210px;
+    border-radius: 16px;
+  }
+  .gallery-loop-caption {
+    font-size: 12px;
+    margin-top: 10px;
+  }
 }
 
 /* Audio button */

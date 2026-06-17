@@ -12,6 +12,7 @@ import { useI18n } from "./I18nProvider";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { heritageDestinations } from "./heritageDestinations";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -19,6 +20,7 @@ export default function HomePage() {
   const { t } = useI18n();
   const [firebaseStations, setFirebaseStations] = useState(stations);
   const [homeProducts, setHomeProducts] = useState([]);
+  const [activeStationId, setActiveStationId] = useState("trang-an");
   const tickerRef = useRef(null);
   const containerRef = useRef(null);
 
@@ -31,15 +33,47 @@ export default function HomePage() {
     return selected.length ? selected : firebaseStations;
   }, [firebaseStations]);
 
-  const displayProducts = homeProducts;
+  const activeStation = useMemo(() => {
+    return featuredStations.find((s) => s.id === activeStationId) || featuredStations[0];
+  }, [featuredStations, activeStationId]);
 
-  const loopImages = useMemo(() => {
-    const images = featuredStations.map((station) => station.image);
-    console.log("DEBUG: featuredStations length =", featuredStations.length);
-    console.log("DEBUG: featuredStations data =", featuredStations);
-    console.log("DEBUG: loopImages =", images);
-    return images;
-  }, [featuredStations]);
+  const loopGalleryItems = useMemo(() => {
+    if (!activeStation || !activeStation.gallery || activeStation.gallery.length === 0) {
+      return [];
+    }
+    const galleryList = activeStation.gallery;
+    
+    // Repeat the gallery array to ensure we have at least 12 items in a single group
+    // for a seamless GSAP loop without empty space on large screens.
+    const minItems = 12;
+    const repeats = Math.ceil(minItems / galleryList.length);
+    let repeated = [];
+    for (let i = 0; i < repeats; i++) {
+      repeated = [...repeated, ...galleryList];
+    }
+    
+    return repeated.map((imgUrl, index) => ({
+      url: imgUrl,
+      originalIndex: index % galleryList.length,
+    }));
+  }, [activeStation]);
+
+  const getGalleryItemCaption = (imgUrl, station, index) => {
+    const dest = heritageDestinations.find(d => d.slug === station.id);
+    if (dest && dest.gallery) {
+      const filename = imgUrl.substring(imgUrl.lastIndexOf('/') + 1).toLowerCase();
+      const match = dest.gallery.find(item => {
+        const srcPath = typeof item === 'string' ? item : item.src;
+        return srcPath && srcPath.toLowerCase().includes(filename);
+      });
+      if (match && match.caption) {
+        return match.caption;
+      }
+    }
+    return `${station.name} - Góc nhìn ${index + 1}`;
+  };
+
+  const displayProducts = homeProducts;
 
   useEffect(() => {
     let mounted = true;
@@ -75,16 +109,23 @@ export default function HomePage() {
     const track = tickerRef.current;
     if (!track) return;
 
+    // Reset track position to 0 first to ensure scrollWidth is calculated correctly
+    gsap.set(track, { x: 0 });
+
     // Calculate half of scrollWidth since items are duplicated for wrapping
     const totalWidth = track.scrollWidth / 2;
 
-    gsap.to(track, {
+    const anim = gsap.to(track, {
       x: -totalWidth,
       duration: 30,
       ease: "none",
       repeat: -1,
     });
-  }, { scope: tickerRef });
+
+    return () => {
+      anim.kill();
+    };
+  }, { dependencies: [activeStationId, firebaseStations], scope: tickerRef });
 
   // GSAP Entrance Animations
   useGSAP(() => {
@@ -139,19 +180,6 @@ export default function HomePage() {
       scrollTrigger: {
         trigger: ".locations-horizontal-grid",
         start: "top 80%",
-      }
-    });
-
-    // Product cards entrance
-    gsap.from(".product-grid .product-card", {
-      opacity: 0,
-      y: 40,
-      stagger: 0.15,
-      duration: 0.8,
-      ease: "power2.out",
-      scrollTrigger: {
-        trigger: ".product-grid",
-        start: "top 85%",
       }
     });
   }, { scope: containerRef });
@@ -229,7 +257,7 @@ export default function HomePage() {
               <article className="location-horizontal-card" key={station.id}>
                 <div className="location-card-image-wrapper">
                   <img src={station.image} alt={station.name} loading="lazy" decoding="async" />
-                  <a className="location-image-overlay" href={`/hanh-trinh/${station.id}`}>
+                  <a className="location-image-overlay" href={`/dia-danh/${station.id}`}>
                     <span className="location-overlay-btn">{t("home.locations.learnMore")}</span>
                   </a>
                 </div>
@@ -238,7 +266,7 @@ export default function HomePage() {
                   <h3>{station.name}</h3>
                   <p>{station.description}</p>
                   <a 
-                    href={`/hanh-trinh/${station.id}`}
+                    href={`/dia-danh/${station.id}`}
                     style={{ fontWeight: "800", color: "var(--brand)", display: "inline-flex", alignItems: "center", gap: "6px" }}
                   >
                     {t("home.locations.detail")}
@@ -249,48 +277,58 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Products Showcase */}
-        {displayProducts.length > 0 && (
-          <section className="content-section product-showcase-home" id="vat-pham-di-san">
-            <SectionTitle
-              eyebrow={t("home.products.eyebrow")}
-              title={t("home.products.title")}
-              description={t("home.products.description")}
-            />
-            <div className="product-grid">
-              {displayProducts.slice(0, 6).map((product) => (
-                <article className="product-card" key={product.id}>
-                  <img src={product.image} alt={product.name} loading="lazy" decoding="async" />
-                  <div>
-                    <span className="pill">{product.badge || product.category || t("home.products.fallbackBadge")}</span>
-                    <h3 style={{ fontFamily: "Baloo 2", fontWeight: 700 }}>{product.name}</h3>
-                    <p style={{ minHeight: "68px" }}>{product.description}</p>
-                    <strong>{product.priceFormatted}</strong>
-                    <a className="station-checkin-link" href={`/san-pham/${product.slug || product.id}`}>
-                      {t("home.products.detail")}
-                    </a>
+        {/* Interactive Location Circles & Loop Gallery (Heritage Moments) */}
+        <section className="content-section interactive-gallery-section" style={{ paddingBottom: 0 }}>
+          <SectionTitle
+            eyebrow="KHOẢNH KHẮC DI SẢN"
+            title="Góc Nhìn Sắc Cố Đô"
+            description="Nhấn chọn từng địa danh bên dưới để chiêm ngưỡng những thước phim, hình ảnh tuyệt đẹp được lưu lại suốt hành trình khám phá di sản Ninh Bình."
+          />
+
+          <div className="destination-circles-container">
+            {featuredStations.slice(0, 6).map((station) => {
+              const isActive = station.id === activeStationId;
+              return (
+                <button
+                  key={station.id}
+                  className={`destination-circle-btn ${isActive ? "active" : ""}`}
+                  onClick={() => setActiveStationId(station.id)}
+                  type="button"
+                >
+                  <div className="circle-image-wrapper">
+                    <img src={station.image} alt={station.name} loading="lazy" />
                   </div>
-                </article>
+                  <span className="circle-label">{station.name}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="infinite-ticker-wrapper" aria-label={t("home.ticker.aria")} style={{ marginTop: "40px" }}>
+            <div className="infinite-ticker-track" ref={tickerRef}>
+              {/* Group 1 */}
+              {loopGalleryItems.map((item, index) => (
+                <div className="gallery-loop-item" key={`loop1-${index}`}>
+                  <div className="gallery-loop-image-wrapper">
+                    <img src={item.url} alt={`${activeStation.name} gallery`} loading="lazy" />
+                  </div>
+                  <div className="gallery-loop-caption">
+                    {getGalleryItemCaption(item.url, activeStation, item.originalIndex)}
+                  </div>
+                </div>
+              ))}
+              {/* Group 2 (Duplicate for loop seamless overlap) */}
+              {loopGalleryItems.map((item, index) => (
+                <div className="gallery-loop-item" key={`loop2-${index}`}>
+                  <div className="gallery-loop-image-wrapper">
+                    <img src={item.url} alt={`${activeStation.name} gallery`} loading="lazy" />
+                  </div>
+                  <div className="gallery-loop-caption">
+                    {getGalleryItemCaption(item.url, activeStation, item.originalIndex)}
+                  </div>
+                </div>
               ))}
             </div>
-          </section>
-        )}
-
-        {/* Infinite Loop Image Ticker (GSAP Loop at Bottom) */}
-        <section className="infinite-ticker-wrapper" aria-label={t("home.ticker.aria")}>
-          <div className="infinite-ticker-track" ref={tickerRef}>
-            {/* Group 1 */}
-            {loopImages.map((imgSrc, index) => (
-              <div className="ticker-image-item" key={`loop1-${index}`}>
-                <img src={imgSrc} alt={t("home.ticker.alt")} />
-              </div>
-            ))}
-            {/* Group 2 (Duplicate for loop seamless overlap) */}
-            {loopImages.map((imgSrc, index) => (
-              <div className="ticker-image-item" key={`loop2-${index}`}>
-                <img src={imgSrc} alt={t("home.ticker.alt")} />
-              </div>
-            ))}
           </div>
         </section>
       </main>
