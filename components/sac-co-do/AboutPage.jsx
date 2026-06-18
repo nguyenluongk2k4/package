@@ -1,3 +1,6 @@
+"use client";
+
+import { useState, useEffect, useRef } from "react";
 import { Eye, Rocket } from "lucide-react";
 import SiteFooter from "./SiteFooter";
 import SiteHeader from "./SiteHeader";
@@ -32,6 +35,35 @@ const missionPoints = [
   "Góp phần phát triển du lịch bền vững và kinh tế sáng tạo tại Việt Nam.",
 ];
 
+function LazySection({ children, className = "", ariaLabel = "", style = {} }) {
+  const [isIntersecting, setIsIntersecting] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsIntersecting(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "150px" } // Pre-load when section is 150px close to viewport
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <section ref={ref} className={className} aria-label={ariaLabel} style={{ ...style, minHeight: !isIntersecting ? "220px" : "auto" }}>
+      {isIntersecting ? children : <div className="lazy-section-placeholder">Đang tải nội dung di sản...</div>}
+    </section>
+  );
+}
+
 export default function AboutPage() {
   return (
     <>
@@ -63,7 +95,7 @@ export default function AboutPage() {
           </figure>
         </section>
 
-        <section className="about-mission">
+        <LazySection className="about-mission">
           <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
             <div>
               <p className="eyebrow">Mục tiêu & Sứ mệnh</p>
@@ -75,7 +107,7 @@ export default function AboutPage() {
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: "18px", color: "var(--ink)", fontSize: "15px", lineHeight: "1.75" }}>
             <p>
-              Tuy nhiên, giữa nhịp sống hiện đại, nhiều chuyến đi thường chỉ dừng lại ở việc tham quan và check-in. Chúng tôi tin rằng du lịch không chỉ là nhìn ngắm, mà còn là hành trình trải nghiệm, kết nối và lưu giữ những giá trị văn hóa của mỗi vùng đất.
+              Tuy nhiên, giữa nhịp sống hiện đại, many chuyến đi thường chỉ dừng lại ở việc tham quan và check-in. Chúng tôi tin rằng du lịch không chỉ là nhìn ngắm, mà còn là hành trình trải nghiệm, kết nối và lưu giữ những giá trị văn hóa của mỗi vùng đất.
             </p>
             <p>
               Vì vậy, SẮC CỐ ĐÔ ra đời với mong muốn xây dựng một hệ sinh thái trải nghiệm di sản sáng tạo, giúp du khách khám phá Ninh Bình theo cách mới mẻ và có chiều sâu hơn. Thông qua Hộ chiếu Di sản Pop-up, hệ thống sưu tầm dấu mộc tại các điểm đến, những câu chuyện lịch sử được kể lại theo cách gần gũi cùng mạng lưới sản phẩm đặc trưng địa phương được tuyển chọn, chúng tôi hy vọng mỗi chuyến đi sẽ trở thành một hành trình đáng nhớ.
@@ -87,9 +119,9 @@ export default function AboutPage() {
               "Chúng tôi tin rằng mỗi con dấu được sưu tầm, mỗi trang hộ chiếu được lấp đầy và mỗi câu chuyện được lưu giữ đều là những ký ức đẹp của hành trình khám phá."
             </p>
           </div>
-        </section>
+        </LazySection>
 
-        <section className="about-vision-mission" aria-label="Tầm nhìn và Sứ mệnh">
+        <LazySection className="about-vision-mission" ariaLabel="Tầm nhìn và Sứ mệnh">
           <div className="vision-card">
             <h2 style={{ display: "flex", alignItems: "center", gap: "10px" }}>
               <Eye size={26} style={{ color: "var(--brand)", flexShrink: 0 }} /> Tầm Nhìn
@@ -109,9 +141,9 @@ export default function AboutPage() {
               ))}
             </ul>
           </div>
-        </section>
+        </LazySection>
 
-        <section style={{ marginTop: "64px" }} aria-label="Giá trị cốt lõi">
+        <LazySection style={{ marginTop: "64px" }} ariaLabel="Giá trị cốt lõi">
           <div style={{ textAlign: "center", marginBottom: "32px" }}>
             <p className="eyebrow" style={{ display: "inline-block" }}>Nền tảng</p>
             <h2 style={{ fontFamily: "var(--font-heading, 'Baloo 2'), sans-serif", color: "var(--ink)", fontSize: "36px", fontWeight: "800", marginTop: "8px" }}>
@@ -130,9 +162,10 @@ export default function AboutPage() {
               </article>
             ))}
           </div>
-        </section>
+        </LazySection>
       </main>
       <SiteFooter />
     </>
   );
 }
+

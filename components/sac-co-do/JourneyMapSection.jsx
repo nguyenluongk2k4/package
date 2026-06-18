@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect, useRef } from "react";
 import { CarFront } from "lucide-react";
 import { stations } from "../../data/sac-co-do";
 
@@ -49,6 +50,55 @@ const routePaths = [
   { id: "split-to-hang-mua", d: "M50 72 C40 76 30 80 25 86", distance: "5 km", time: "12 phút", x: 33, y: 77, tone: "brown" },
   { id: "split-to-bai-dinh", d: "M50 72 C60 76 70 80 75 86", distance: "12 km", time: "20 phút", x: 67, y: 77, tone: "brown" },
 ];
+
+function MapNode({ node }) {
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef(null);
+  const station = stationById(node.id);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "60px" } // Trì hoãn nhẹ cho đến khi đi gần vào khung nhìn
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <a
+      ref={ref}
+      className={`journey-route-node align-${node.align || "bottom"}${node.featured ? " is-featured" : ""}${isVisible ? " is-loaded" : " is-placeholder"}`}
+      href={`/hanh-trinh/${node.id}`}
+      style={{ "--route-x": `${node.x}%`, "--route-y": `${node.y}%` }}
+    >
+      {isVisible ? (
+        <>
+          <span className="journey-route-photo animate-fade-in">
+            <img src={station.image} alt={node.label} loading="lazy" decoding="async" />
+          </span>
+          <span className="journey-route-text-group animate-slide-up">
+            <span className="journey-route-label">{node.label}</span>
+            <span className="journey-route-note">{node.note}</span>
+          </span>
+        </>
+      ) : (
+        <span className="journey-route-node-placeholder">
+          <span className="placeholder-pulse" />
+        </span>
+      )}
+    </a>
+  );
+}
 
 export default function JourneyMapSection() {
   return (
@@ -113,25 +163,10 @@ export default function JourneyMapSection() {
             );
           })}
 
-          {routeNodes.map((node) => {
-            const station = stationById(node.id);
-            return (
-              <a
-                key={node.id}
-                className={`journey-route-node align-${node.align || "bottom"}${node.featured ? " is-featured" : ""}`}
-                href={`/hanh-trinh/${node.id}`}
-                style={{ "--route-x": `${node.x}%`, "--route-y": `${node.y}%` }}
-              >
-                <span className="journey-route-photo">
-                  <img src={station.image} alt={node.label} loading="lazy" decoding="async" />
-                </span>
-                <span className="journey-route-text-group">
-                  <span className="journey-route-label">{node.label}</span>
-                  <span className="journey-route-note">{node.note}</span>
-                </span>
-              </a>
-            );
-          })}
+          {routeNodes.map((node) => (
+            <MapNode key={node.id} node={node} />
+          ))}
+
         </div>
       </div>
 

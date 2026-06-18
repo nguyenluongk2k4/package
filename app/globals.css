@@ -12732,3 +12732,386 @@ html.reveal-ready .reveal-target.is-revealed {
     padding-bottom: calc(var(--scroll-t, 0) * 6px) !important;
   }
 }
+
+/* ─── Mega Menu (Sắc Cố Đô) ─── */
+
+/* Backdrop dim */
+.mega-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 39;
+  background: rgba(0, 0, 0, 0.38);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  pointer-events: none;
+}
+
+.mega-backdrop.is-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* When mega open, header sits above backdrop */
+.site-header.mega-is-open {
+  z-index: 41 !important;
+}
+
+/* primary-menu: position:relative so mega-panel-body drops absolutely below */
+.primary-menu {
+  position: relative;
+  overflow: visible;
+  transition:
+    border-radius 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.35s ease;
+}
+
+/* When mega panel is open: square off bottom corners to join with panel */
+.primary-menu.mega-open {
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  border-bottom-color: transparent !important;
+}
+
+/* Mega trigger button (Trang chủ ▾) */
+.mega-trigger {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  border: 0;
+  background: transparent;
+  font-weight: 900;
+  font-family: inherit;
+  font-size: inherit;
+  color: var(--ink);
+  padding: 0 13px;
+  min-height: 68px;
+  transition: color 0.2s;
+}
+
+.mega-trigger.is-mega-active {
+  color: var(--brand, #104c27);
+}
+
+.mega-caret {
+  display: inline-block;
+  font-size: 10px;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0.6;
+}
+
+.mega-caret.is-up {
+  transform: rotate(180deg);
+}
+
+/* -- Mega panel body - position:absolute, drops flush below the sticky pill -- */
+.mega-panel-body {
+  position: absolute;
+  top: 100%;           /* flush to bottom of pill, no gap */
+  left: 0;
+  right: 0;
+  z-index: 200;
+
+  display: grid;
+  grid-template-columns: 240px 1fr;
+
+  background: #ffffff;
+  border-radius: 0 0 20px 20px;  /* top corners flat (joins pill), bottom rounded */
+  box-shadow:
+    0 24px 64px rgba(6, 56, 35, 0.2),
+    0 4px 16px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(16, 76, 39, 0.1);
+  border-top: none;             /* no double border at join */
+  overflow: hidden;
+
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px) scale(0.99);
+  pointer-events: none;
+  transition:
+    opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    visibility 0.3s ease,
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mega-panel-body.is-open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+/* Left sidebar */
+.mega-sidebar {
+  padding: 24px 0 28px 8px;
+  border-right: 1px solid rgba(16, 76, 39, 0.1);
+  overflow-y: auto;
+}
+
+.mega-sidebar-label {
+  margin: 0 0 12px 14px;
+  color: rgba(6, 56, 35, 0.4);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+}
+
+.mega-sidebar-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mega-sidebar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  padding: 10px 14px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.mega-sidebar-item:hover {
+  background: rgba(16, 76, 39, 0.06);
+}
+
+.mega-sidebar-item.is-active {
+  background: rgba(16, 76, 39, 0.1);
+}
+
+.mega-sidebar-name {
+  color: #063823;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.mega-sidebar-desc {
+  margin-top: 3px;
+  color: rgba(6, 56, 35, 0.55);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+/* Right content */
+.mega-content {
+  padding: 24px 28px 28px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.mega-content-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.mega-content-tag {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: rgba(16, 76, 39, 0.09);
+  color: #063823;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.mega-content-title {
+  margin: 0 0 6px;
+  color: #063823;
+  font-family: "Baloo 2", "Be Vietnam Pro", sans-serif;
+  font-size: clamp(20px, 2vw, 26px);
+  font-weight: 900;
+  line-height: 1.1;
+}
+
+.mega-content-desc {
+  margin: 0 0 8px;
+  max-width: 480px;
+  color: rgba(6, 56, 35, 0.65);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.mega-content-meta {
+  display: flex;
+  gap: 18px;
+  color: rgba(6, 56, 35, 0.55);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.mega-content-cta {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: #063823;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 800;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.mega-content-cta:hover {
+  background: #0a5030;
+  transform: translateX(2px);
+}
+
+/* Image grid */
+.mega-image-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-rows: 100px 100px;
+  gap: 8px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.mega-image-cell {
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.mega-image-cell.is-featured {
+  grid-row: span 2;
+}
+
+.mega-image-cell img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.mega-image-cell:hover img {
+  transform: scale(1.04);
+}
+
+/* Disable scroll-morph header transition background when mega is open */
+.site-header.mega-is-open .site-header,
+.site-header.mega-is-open {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  box-shadow: none !important;
+  border-bottom: none !important;
+}
+
+/* 
+ * MEGA-OPEN OVERRIDE FOR MORPH BORDER-RADIUS
+ * Override the !important border-radius calc when the mega panel is active
+ * so the pill's bottom corners stay square to connect with the panel.
+ */
+.site-header .primary-menu.mega-open {
+  border-radius: calc(var(--scroll-t, 0) * 20px) calc(var(--scroll-t, 0) * 20px) 0 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+/* ─── Lazy Loading Optimization ─── */
+
+/* About Page Lazy Section placeholders */
+.lazy-section-placeholder {
+  min-height: 200px;
+  background: rgba(16, 76, 39, 0.02);
+  border-radius: 16px;
+  border: 1px dashed rgba(16, 76, 39, 0.1);
+  margin: 40px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(16, 76, 39, 0.3);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* Journey Map Node placeholder & pulse animation */
+.journey-route-node-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  background: var(--brand, #104c27);
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 0 12px rgba(16, 76, 39, 0.4);
+  transform: translate(-50%, -50%); /* Center over position */
+}
+
+.placeholder-pulse {
+  width: 8px;
+  height: 8px;
+  background: var(--brand-2, #d19f37);
+  border-radius: 50%;
+  animation: pulse-node 1.8s infinite ease-in-out;
+}
+
+@keyframes pulse-node {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 1;
+    box-shadow: 0 0 10px var(--brand-2, #d19f37);
+  }
+  100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+}
+
+/* Transitions for loaded nodes */
+.animate-fade-in {
+  animation: lazyFadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animate-slide-up {
+  animation: lazySlideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes lazyFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes lazySlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
