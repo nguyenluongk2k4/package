@@ -1,509 +1,477 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  Clock,
+  MapPin,
+  Tag as TagIcon,
+  Lightbulb,
+  Smartphone,
+  ArrowRight,
+  QrCode,
+  X,
+} from "lucide-react";
 import { stations } from "../../data/sac-co-do";
 import { getStationBySlugOrId } from "../../lib/firebase/catalog";
 import SiteFooter from "./SiteFooter";
 import SiteHeader from "./SiteHeader";
-import { gsap } from "gsap";
-import { useGSAP } from "@gsap/react";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-gsap.registerPlugin(useGSAP, ScrollTrigger);
+// ─── Nội dung gợi ý vị trí QR cho từng trạm ───
 
-const detailAssetBase = "/assets/chi-tiet-hanh-trinh";
-
-const stationDetailCopy = {
+const qrGuide = {
   "trang-an": {
-    stationCode: "TRANG-AN-04",
-    badge: "Di sản kép UNESCO",
-    headline: "Hồn nước giữa miền đá vôi",
-    intro:
-      "Tràng An mở ra hành trình bằng nhịp chèo chậm trên mặt nước xanh. Mỗi hang động, bến đền và vách núi đều giữ một lớp ký ức của vùng cố đô.",
-    history: [
-      "Được UNESCO công nhận là Di sản Văn hóa và Thiên nhiên Thế giới năm 2014.",
-      "Hệ thống hang động xuyên thủy nối các thung lũng đá vôi bằng những dòng nước trong.",
+    qrLocation: "Bến thuyền Tràng An — cột mốc bên trái lối lên thuyền",
+    qrDescription:
+      "Mã QR được đặt tại cột mốc gần khu vực soát vé / lên thuyền, bên trái lối vào bến.",
+    qrDetails: [
+      "QR nằm trên bảng gỗ nhỏ gần cột mốc đá đầu bến",
+      "Cao khoảng 1.2m so với mặt đất, dễ quét",
+      "Có logo Sắc Cố Đô bên cạnh",
     ],
-    chapters: [
-      { label: "Chặng 1", title: "Bến thuyền Tràng An", description: "Khởi đầu hành trình trên dòng sông Ngô Đồng xanh biếc." },
-      { label: "Chặng 2", title: "Đền Trình", description: "Dừng lại trước không gian linh thiêng ẩn mình bên vách đá." },
-      { label: "Chặng 3", title: "Hang Địa Linh", description: "Đi xuyên lớp đá vôi để mở khóa dấu mốc đầu tiên." },
+    hints: [
+      "Vào khu vực bến thuyền Tràng An (cổng chính)",
+      "Đi thẳng tới khu vực xếp hàng chờ lên thuyền",
+      "Nhìn về phía cột mốc bên trái, cạnh bảng nội quy",
+      "QR code được dán trên bảng gỗ nhỏ",
     ],
+    tips: "Nên đi buổi sáng để tránh đông. Mang giày chống trượt, mặc áo phao đầy đủ.",
   },
   "hoa-lu": {
-    stationCode: "HOA-LU-02",
-    badge: "Kinh đô đầu tiên",
-    headline: "Dấu son triều đại",
-    intro:
-      "Hoa Lư kể chuyện bằng mái ngói rêu phong, nền thành cũ và những khoảng sân yên tĩnh. Đây là trạm dành cho người muốn chạm vào chiều sâu lịch sử Ninh Bình.",
-    history: [
-      "Từng là kinh đô của nhà nước phong kiến trung ương tập quyền đầu tiên tại Việt Nam.",
-      "Không gian đền thờ vua Đinh, vua Lê gợi lại cấu trúc quyền lực và văn hóa hơn một nghìn năm trước.",
+    qrLocation: "Cổng thành Hoa Lư — bên phải cổng chính",
+    qrDescription:
+      "Mã QR được đặt tại tường thành bên phải cổng chính vào khu đền, gần bảng thông tin di tích.",
+    qrDetails: [
+      "QR gắn trên tường gạch cổ, trong khung kính bảo vệ",
+      "Ngang tầm mắt, dễ thấy",
+      "Có đèn LED nhỏ chiếu sáng vào buổi tối",
     ],
-    chapters: [
-      { label: "Chặng 1", title: "Cổng thành xưa", description: "Bước qua lớp đá cổ để bắt đầu câu chuyện cố đô." },
-      { label: "Chặng 2", title: "Đền vua Đinh", description: "Nghe lớp ký ức về một triều đại mở nước." },
-      { label: "Chặng 3", title: "Sân rồng Hoa Lư", description: "Đóng dấu cổng thành vào passport hành trình." },
+    hints: [
+      "Đi qua cổng chính Hoa Lư (cổng tam quan)",
+      "Rẽ phải ngay sau khi vào cổng",
+      "Đi dọc tường thành khoảng 10m",
+      "QR ở ngay cạnh bảng thông tin di tích",
     ],
+    tips: "Khu vực có mái che, QR được bảo vệ khỏi mưa. Giữ trật tự khi quét.",
   },
   "bai-dinh": {
-    stationCode: "BAI-DINH-03",
-    badge: "Tâm linh đại cảnh",
-    headline: "Tiếng chuông trong thung núi",
-    intro:
-      "Bái Đính là khoảng lặng rộng lớn của hành trình. Những hành lang dài, tượng Phật và âm chuông tạo nên một trạm trải nghiệm chậm rãi, trang nghiêm.",
-    history: [
-      "Quần thể chùa có quy mô lớn, kết nối kiến trúc mới với không gian chùa cổ trên núi.",
-      "Các hành lang La Hán và tháp chuông là điểm dừng giàu biểu tượng cho trải nghiệm AR.",
+    qrLocation: "Hành lang La Hán — đoạn giữa, gần lối sang tháp chuông",
+    qrDescription:
+      "Mã QR được đặt tại cột đá đầu tiên của đoạn hành lang La Hán phía Tây, gần lối rẽ lên tháp chuông.",
+    qrDetails: [
+      "QR được khắc/chế tác trên bề mặt đá tự nhiên của cột hành lang",
+      "Có khung đồng nhỏ viền quanh",
+      "Bên cạnh có biểu tượng Sắc Cố Đô nhỏ",
     ],
-    chapters: [
-      { label: "Chặng 1", title: "Cổng Tam Quan", description: "Bắt đầu lộ trình trong không gian kiến trúc lớn." },
-      { label: "Chặng 2", title: "Hành lang La Hán", description: "Đi giữa những lớp tượng và câu chuyện tu tập." },
-      { label: "Chặng 3", title: "Tháp chuông", description: "Mở dấu chuông đồng cho passport tâm linh." },
+    hints: [
+      "Vào cổng Tam Quan chùa Bái Đính",
+      "Đi thẳng qua điện Tam Thế",
+      "Rẽ trái vào hành lang La Hán",
+      "Đi khoảng 50m, tới cột đá thứ 7 bên tay phải",
+      "QR nằm trên thân cột, ngang tầm mắt",
     ],
+    tips: "Khuôn viên rộng, đi bộ nhiều. Ăn mặc lịch sự. QR có khung kính bảo vệ.",
   },
   "pho-co-hoa-lu": {
-    stationCode: "PHO-CO-05",
-    badge: "Đêm phố di sản",
-    headline: "Ánh đèn trên mặt hồ",
-    intro:
-      "Phố Cổ Hoa Lư mang màu sắc mềm và gần gũi hơn: đèn lồng, mặt nước, gian hàng thủ công và những góc ảnh lưu niệm sau hoàng hôn.",
-    history: [
-      "Không gian phố tái hiện chất liệu văn hóa truyền thống trong nhịp tham quan hiện đại.",
-      "Đây là trạm lý tưởng để kích hoạt photobooth, chia sẻ ảnh và nhận dấu đèn phố.",
+    qrLocation: "Cầu đá Kỳ Lân — đầu cầu phía Đông",
+    qrDescription:
+      "Mã QR đặt tại lan can cầu đá Kỳ Lân (phía Đông), nơi có góc nhìn ra hồ và dãy đèn lồng.",
+    qrDetails: [
+      "QR gắn trên mặt lan can đá, phẳng, dễ quét",
+      "Có đèn LED vàng chiếu sáng ban đêm",
+      "Gần biển tên 'Cầu Kỳ Lân'",
     ],
-    chapters: [
-      { label: "Chặng 1", title: "Cầu đá Kỳ Lân", description: "Ngắm mặt hồ phản chiếu dãy đèn lồng." },
-      { label: "Chặng 2", title: "Dãy gian hàng", description: "Gặp chất liệu thủ công và món quà địa phương." },
-      { label: "Chặng 3", title: "Sân khấu đêm", description: "Đóng dấu đèn phố sau khung giờ lên đèn." },
+    hints: [
+      "Vào khu phố đi bộ Phố Cổ Hoa Lư",
+      "Đi về phía cầu Kỳ Lân (cầu đá bắc qua hồ)",
+      "Lên cầu, đi về đầu cầu phía Đông (gần quảng trường)",
+      "QR trên lan can đá bên phải, ngay cạnh biển tên cầu",
     ],
+    tips: "Đẹp nhất sau 18:00 khi lên đèn. QR có đèn LED nên quét được cả buổi tối.",
   },
   "tam-coc": {
-    stationCode: "TAM-COC-06",
-    badge: "Sông núi mùa lúa",
-    headline: "Ba hang giữa cánh đồng",
-    intro:
-      "Tam Cốc - Bích Động là phần dịu nhất của tuyến đi: thuyền lướt qua đồng lúa, núi đá dựng hai bên và những hang nước thấp mở ra từng khúc cảnh.",
-    history: [
-      "Tên Tam Cốc gắn với ba hang xuyên núi: Hang Cả, Hang Hai và Hang Ba.",
-      "Bích Động bổ sung lớp trải nghiệm chùa động, đưa hành trình từ sông nước lên không gian núi.",
+    qrLocation: "Bến Văn Lâm — khu vực chờ thuyền, gần cây cổ thụ",
+    qrDescription:
+      "Mã QR đặt trên thân cây cổ thụ gần bến thuyền Văn Lâm, phía bên phải lối xuống thuyền.",
+    qrDetails: [
+      "QR được đặt trong khung gỗ nhỏ đóng trên thân cây",
+      "Cao khoảng 1.5m, dễ quét",
+      "Có mái che nhỏ bằng lá",
     ],
-    chapters: [
-      { label: "Chặng 1", title: "Bến Văn Lâm", description: "Lên thuyền và bắt đầu lộ trình qua đồng lúa." },
-      { label: "Chặng 2", title: "Hang Cả", description: "Đi vào đoạn hang dài nhất của tuyến Tam Cốc." },
-      { label: "Chặng 3", title: "Bích Động", description: "Mở dấu thuyền lúa trong không gian chùa động." },
+    hints: [
+      "Vào bến thuyền Văn Lâm (điểm xuất phát Tam Cốc)",
+      "Đi qua khu vực mua vé",
+      "Trước khi xuống bến, nhìn bên phải",
+      "Cây cổ thụ lớn có tán rộng — QR trên thân cây",
     ],
+    tips: "Quét QR trước khi lên thuyền. Mùa lúa chín (tháng 5-6, 9-10) cảnh đẹp nhất.",
   },
   "hang-mua": {
-    stationCode: "HANG-MUA-07",
-    badge: "Tầm nhìn toàn cảnh",
-    headline: "Nấc thang lên đỉnh rồng",
-    intro:
-      "Hang Múa là trạm nhiều năng lượng nhất: leo bậc đá, nhìn xuống thung lũng Tam Cốc và hoàn thành hành trình bằng dấu mốc long đỉnh.",
-    history: [
-      "Điểm ngắm cảnh nổi bật với tuyến bậc đá dẫn lên đỉnh núi hình rồng.",
-      "Từ đỉnh cao có thể quan sát nhịp sông, đồng lúa và các khối núi đá vôi đặc trưng Ninh Bình.",
+    qrLocation: "Chân núi Múa — cột gỗ đầu lối leo núi",
+    qrDescription:
+      "Mã QR đặt tại cột gỗ đầu lối leo núi, phía bên trái ngay sau cổng soát vé.",
+    qrDetails: [
+      "QR trên cột gỗ tròn cao khoảng 1.3m",
+      "Có logo Sắc Cố Đô trên đỉnh cột",
+      "Có thể quét cả trước khi leo và sau khi xuống",
     ],
-    chapters: [
-      { label: "Chặng 1", title: "Chân núi Múa", description: "Chuẩn bị tuyến leo và kiểm tra passport." },
-      { label: "Chặng 2", title: "Đường bậc đá", description: "Theo từng nấc lên cao để mở góc nhìn rộng hơn." },
-      { label: "Chặng 3", title: "Đỉnh rồng", description: "Hoàn thành dấu long đỉnh và nhận ưu đãi cuối chặng." },
+    hints: [
+      "Vào cổng Hang Múa, qua khu vực soát vé",
+      "Trước mặt là bậc đá lên núi",
+      "Cột gỗ bên trái lối đi, ngay đầu bậc thang đầu tiên",
+      "QR quay mặt về phía lối vào",
     ],
+    tips: "QR có thể quét cả trước và sau khi leo. Nên đi sớm hoặc chiều muộn tránh nắng.",
   },
 };
 
-const stationFallbackCopy = {
-  "trang-an": {
-    name: "Tràng An",
-    tag: "Non nước",
-    stamp: "Dấu sóng đá vôi",
-    description: "Không gian di sản với núi đá vôi và dòng nước xanh, phù hợp làm trạm mở đầu của hành trình.",
-  },
-  "hoa-lu": {
-    name: "Cố Đô Hoa Lư",
-    tag: "Kinh đô xưa",
-    stamp: "Dấu cổng thành",
-    description: "Dấu mốc lịch sử của vùng đất cố đô, nơi cuốn passport bắt đầu kể chuyện bằng ký ức triều đại.",
-  },
-  "bai-dinh": {
-    name: "Chùa Bái Đính",
-    tag: "Tâm linh",
-    stamp: "Dấu chuông đồng",
-    description: "Một trạm lắng và rộng, dành cho trải nghiệm đóng dấu sau khi đi qua hành lang văn hóa tâm linh.",
-  },
-  "pho-co-hoa-lu": {
-    name: "Phố Cổ Hoa Lư",
-    tag: "Đêm phố",
-    stamp: "Dấu đèn phố",
-    description: "Sắc đèn, mái ngói và nhịp dạo chơi chậm rãi, phù hợp cho check-in và photobooth kỷ niệm.",
-  },
-  "tam-coc": {
-    name: "Tam Cốc - Bích Động",
-    tag: "Sông núi",
-    stamp: "Dấu thuyền lúa",
-    description: "Một lát cắt mềm mại của Ninh Bình, nơi trải nghiệm giấy pop-up gặp cảnh quan ngoài đời.",
-  },
-  "hang-mua": {
-    name: "Hang Múa",
-    tag: "Tầm nhìn",
-    stamp: "Dấu long đỉnh",
-    description: "Trạm kết giàu năng lượng với góc nhìn toàn cảnh, mở khóa phần thưởng sau khi hoàn thành hành trình.",
-  },
-};
+function getGuide(stationId) {
+  return qrGuide[stationId] || qrGuide["trang-an"];
+}
 
-function normalizeChapter(chapter) {
-  if (Array.isArray(chapter)) {
-    return {
-      label: chapter[0] || "",
-      title: chapter[1] || "",
-      description: chapter[2] || "",
-    };
+// ─── Helper ảnh ───
+
+function heroImageFor(station, stationId) {
+  if (station?.heroImage || station?.image) {
+    return station.heroImage || station.image;
   }
 
-  return {
-    label: chapter?.label || "",
-    title: chapter?.title || "",
-    description: chapter?.description || "",
+  const id = station?.id || stationId;
+  const map = {
+    "trang-an": "/assets/dia-danh/trang-an/TA1.jpg",
+    "hoa-lu": "/assets/dia-danh/co-do-hoa-lu/CDHL 5.webp",
+    "bai-dinh": "/assets/dia-danh/bai-dinh/Chùa Bái Đính 1.jpg",
+    "pho-co-hoa-lu": "/assets/dia-danh/pho-co-hoa-lu/PCHL1.jpg",
+    "tam-coc": "/assets/dia-danh/tam-coc-bich-dong/TC1.jpg",
+    "hang-mua": "/assets/dia-danh/hang-mua/HM1.jpg",
   };
+  return map[id] || "/assets/dia-danh/trang-an/TA1.jpg";
 }
 
-function normalizeDetail(detail) {
-  return {
-    ...detail,
-    history: Array.isArray(detail.history) ? detail.history.filter(Boolean) : [],
-    chapters: Array.isArray(detail.chapters) ? detail.chapters.map(normalizeChapter) : [],
+function galleryImageFor(station, stationId) {
+  const g = station?.gallery;
+  if (g && g.length > 1) return g[1];
+  if (g && g.length > 0) return g[0];
+  const id = station?.id || stationId;
+  const map = {
+    "trang-an": "/assets/dia-danh/trang-an/TA2.jpg",
+    "hoa-lu": "/assets/dia-danh/co-do-hoa-lu/CĐHL 1.jpg",
+    "bai-dinh": "/assets/dia-danh/bai-dinh/Chùa Bái Đính 2.jpg",
+    "pho-co-hoa-lu": "/assets/dia-danh/pho-co-hoa-lu/PCHL 2.jpg",
+    "tam-coc": "/assets/dia-danh/tam-coc-bich-dong/TC2.jpg",
+    "hang-mua": "/assets/dia-danh/hang-mua/HM2.jpg",
   };
+  return map[id] || heroImageFor(station, stationId);
 }
 
-function withCleanFallback(station) {
-  return {
-    ...station,
-    ...(stationFallbackCopy[station?.id] || {}),
+function stepImageFor(station, stationId, index) {
+  const gallery = station?.gallery || [];
+  if (gallery.length) return gallery[index % gallery.length];
+
+  const id = station?.id || stationId;
+  const fallback = {
+    "trang-an": ["/assets/dia-danh/trang-an/TA1.jpg", "/assets/dia-danh/trang-an/TA2.jpg", "/assets/dia-danh/trang-an/TA3.jpg", "/assets/dia-danh/trang-an/TA10.jpg"],
+    "hoa-lu": ["/assets/dia-danh/co-do-hoa-lu/CDHL 5.webp", "/assets/dia-danh/co-do-hoa-lu/CĐHL 1.jpg", "/assets/dia-danh/co-do-hoa-lu/CĐHL 2.jpg", "/assets/dia-danh/co-do-hoa-lu/CĐHL 3.jpg"],
+    "bai-dinh": ["/assets/dia-danh/bai-dinh/Chùa Bái Đính 1.jpg", "/assets/dia-danh/bai-dinh/Chùa Bái Đính 2.jpg", "/assets/dia-danh/bai-dinh/Chùa Bái Đính 3.jpg", "/assets/dia-danh/bai-dinh/Chùa bái đính 4.jpg"],
+    "pho-co-hoa-lu": ["/assets/dia-danh/pho-co-hoa-lu/PCHL1.jpg", "/assets/dia-danh/pho-co-hoa-lu/PCHL 2.jpg", "/assets/dia-danh/pho-co-hoa-lu/PCHL 3.jpg", "/assets/dia-danh/pho-co-hoa-lu/IMG_1021.JPG"],
+    "tam-coc": ["/assets/dia-danh/tam-coc-bich-dong/TC1.jpg", "/assets/dia-danh/tam-coc-bich-dong/TC2.jpg", "/assets/dia-danh/tam-coc-bich-dong/TC4.jpg", "/assets/dia-danh/tam-coc-bich-dong/TC5.jpg"],
+    "hang-mua": ["/assets/dia-danh/hang-mua/HM1.jpg", "/assets/dia-danh/hang-mua/HM2.jpg", "/assets/dia-danh/hang-mua/HM3.jpg", "/assets/dia-danh/hang-mua/HM4.jpg"],
   };
+
+  return (fallback[id] || fallback["trang-an"])[index % 4];
 }
 
-function getDetail(station) {
-  return normalizeDetail({
-    ...(stationDetailCopy[station.id] || stationDetailCopy["trang-an"]),
-    ...(station.detail || {}),
-  });
-}
-
-export function getStationById(stationId) {
-  return stations.find((station) => station.id === stationId);
-}
+// ─── Component chính ───
 
 export default function JourneyDetailPage({ station, stationId }) {
-  const [activeStation, setActiveStation] = useState(withCleanFallback(station));
-  const [isPlayingSound, setIsPlayingSound] = useState(false);
-  const containerRef = useRef(null);
-  
-  const detail = getDetail(activeStation);
+  const router = useRouter();
+  const [activeStation, setActiveStation] = useState(station);
+  const [showQrDialog, setShowQrDialog] = useState(false);
+  const videoRef = useRef(null);
+  const streamRef = useRef(null);
+  const detectorRef = useRef(null);
+  const [cameraError, setCameraError] = useState("");
+  const guide = getGuide(stationId || station?.id);
 
   useEffect(() => {
     let mounted = true;
 
     async function loadStation() {
-      const firebaseStation = await getStationBySlugOrId(stationId || station?.slug || station?.id);
-      if (mounted && firebaseStation) {
-        setActiveStation(withCleanFallback(firebaseStation));
+      const fbStation = await getStationBySlugOrId(stationId || station?.slug || station?.id);
+      if (mounted && fbStation) {
+        setActiveStation(fbStation);
       }
     }
 
     loadStation();
-
-    return () => {
-      mounted = false;
-    };
+    return () => { mounted = false; };
   }, [station?.id, station?.slug, stationId]);
 
-  // Cleanup synthesis on unmount
-  useEffect(() => {
-    return () => {
-      if (typeof window !== "undefined" && window.speechSynthesis) {
-        window.speechSynthesis.cancel();
+  const st = activeStation || station;
+  const img = heroImageFor(activeStation || station, stationId);
+  const sid = st?.id || stationId;
+  const checkinSlug = st?.slug || st?.id || stationId;
+  const expectedQrValue = `SAC-CODO:${sid}`;
+
+  // ── Camera / QR scan ──
+  const startCamera = useCallback(async () => {
+    try {
+      setCameraError("");
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "environment", width: { ideal: 640 }, height: { ideal: 480 } },
+      });
+      streamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        await videoRef.current.play();
       }
-    };
+    } catch {
+      setCameraError("Không thể mở camera. Vui lòng kiểm tra quyền truy cập.");
+    }
   }, []);
 
-  // Text-To-Speech Vietnamese audio play
-  const handlePlaySound = () => {
-    if (typeof window === "undefined" || !window.speechSynthesis) return;
-
-    if (isPlayingSound) {
-      window.speechSynthesis.cancel();
-      setIsPlayingSound(false);
-    } else {
-      window.speechSynthesis.cancel();
-      const textToSpeak = `${activeStation.name}. ${detail.headline}. ${detail.intro}`;
-      const utterance = new SpeechSynthesisUtterance(textToSpeak);
-      utterance.lang = "vi-VN";
-      utterance.onend = () => setIsPlayingSound(false);
-      utterance.onerror = () => setIsPlayingSound(false);
-      setIsPlayingSound(true);
-      window.speechSynthesis.speak(utterance);
+  const stopCamera = useCallback(() => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((t) => t.stop());
+      streamRef.current = null;
     }
-  };
+  }, []);
 
-  // GSAP scroll anim trigger for chapters
-  useGSAP(() => {
-    gsap.from(".journey-detail-chapters article", {
-      opacity: 0,
-      y: 30,
-      stagger: 0.15,
-      duration: 0.8,
-      ease: "power2.out",
-      scrollTrigger: {
-        trigger: ".journey-detail-chapters",
-        start: "top 85%",
-      },
-    });
-  }, { scope: containerRef });
+  // Bật/tắt camera khi dialog mở/đóng
+  useEffect(() => {
+    if (showQrDialog) {
+      startCamera();
+    } else {
+      stopCamera();
+    }
+    return stopCamera;
+  }, [showQrDialog, startCamera, stopCamera]);
+
+  // Poll scan mỗi 800ms bằng BarcodeDetector nếu có
+  useEffect(() => {
+    if (!showQrDialog) return;
+    let mounted = true;
+
+    async function pollScan() {
+      if (!window.BarcodeDetector) return;
+      if (!detectorRef.current) {
+        try {
+          detectorRef.current = new window.BarcodeDetector({ formats: ["qr_code"] });
+        } catch {
+          return;
+        }
+      }
+      const video = videoRef.current;
+      if (!video || video.readyState < 2) return;
+
+      try {
+        const barcodes = await detectorRef.current.detect(video);
+        for (const barcode of barcodes) {
+          const raw = barcode.rawValue.trim();
+          if (raw === expectedQrValue) {
+            if (!mounted) return;
+            stopCamera();
+            setShowQrDialog(false);
+            router.push(`/checkin/${checkinSlug}`);
+            return;
+          }
+        }
+      } catch {
+        // ignore
+      }
+    }
+
+    const interval = setInterval(pollScan, 800);
+    return () => { mounted = false; clearInterval(interval); };
+  }, [showQrDialog, expectedQrValue, checkinSlug, router, stopCamera]);
+
+  function handleQrConfirm() {
+    stopCamera();
+    setShowQrDialog(false);
+    router.push(`/checkin/${checkinSlug}`);
+  }
 
   return (
     <>
       <SiteHeader />
-      <main className="journey-detail-page" ref={containerRef}>
-        <a className="journey-detail-back" href="/hanh-trinh">
-          Quay lại hành trình
-        </a>
+      <main>
+        {/* Hero Banner — style như trang hanh-trinh */}
+        <section className="page-title-banner">
+          <img src={img} alt={st?.name || ""} />
+          <div>
+            <p className="eyebrow">{st?.tag || "Trạm văn hóa"}</p>
+            <h1>{st?.name || "Địa điểm"}</h1>
+            <p>{st?.description || ""}</p>
+          </div>
+        </section>
 
-        <div className="journey-detail-layout">
-          <div className="journey-detail-main">
-            <section className="journey-detail-hero">
-              <img src={activeStation.heroImage || activeStation.image} alt={activeStation.name} loading="eager" decoding="async" />
-              <div className="journey-detail-hero-stamp" aria-hidden="true">
-                <span>{activeStation.stamp}</span>
-              </div>
-              <div className="journey-detail-hero-copy">
-                <span>{detail.badge}</span>
-                <h1>{activeStation.name}</h1>
-                <div className="journey-detail-hero-meta">
-                  <p className="journey-detail-hero-location">
-                    <img src={`${detailAssetBase}/desktop-icon/ic-dia-diem.svg`} alt="" aria-hidden="true" />
-                    {activeStation.tag}
-                  </p>
-                  <p className="journey-detail-hero-time">
-                    <img src={`${detailAssetBase}/mobile-icon/ic-time.svg`} alt="" aria-hidden="true" />
-                    {activeStation.hours}
-                  </p>
-                </div>
-                
-                {/* Narrate TTS Button */}
-                <button 
-                  className="audio-narrate-btn" 
-                  type="button" 
-                  onClick={handlePlaySound}
-                  style={{ marginTop: "16px", cursor: "pointer" }}
-                >
-                  <span style={{ fontSize: "16px" }}>{isPlayingSound ? "⏹" : "🔊"}</span>
-                  {isPlayingSound ? "Dừng thuyết minh" : "Phát thuyết minh"}
-                </button>
-              </div>
-            </section>
-
-            <section className="journey-detail-content-grid">
-              <article className="journey-detail-story">
-                <h2>{detail.headline}</h2>
-                <p>{detail.intro}</p>
-              </article>
-
-              <article className="journey-detail-history-card">
-                <h2>Thông tin lịch sử</h2>
-                {detail.history.map((item, index) => (
-                  <p key={`${item}-${index}`}>
-                    <img
-                      src={`${detailAssetBase}/desktop-icon/${index === 0 ? "ic-certificate.svg" : "ic-nui.svg"}`}
-                      alt=""
-                      aria-hidden="true"
-                    />
-                    {item}
-                  </p>
-                ))}
-              </article>
-            </section>
-
-            {/* Dynamic sections based on location ID */}
-            {activeStation.id === "hoa-lu" && (
-              <section className="detail-custom-section">
-                <h2 style={{ fontFamily: "Baloo 2", fontSize: "28px", margin: "24px 0 12px" }}>Góc khám phá</h2>
-                <div className="detail-custom-cards-grid">
-                  <div className="detail-custom-card">
-                    <h4>Cổng thành xưa</h4>
-                    <p>Cánh cổng thành vững chãi nhuốm màu thời gian, ghi lại dấu ấn quân sự độc đáo thời Đinh-Lê.</p>
-                  </div>
-                  <div className="detail-custom-card">
-                    <h4>Đền vua Đinh</h4>
-                    <p>Nơi linh thiêng tưởng nhớ triều đại của vị hoàng đế dẹp loạn 12 sứ quân, thống nhất đất nước.</p>
-                  </div>
-                  <div className="detail-custom-card">
-                    <h4>Đền vua Lê</h4>
-                    <p>Di tích lịch sử tôn kính vua Lê Đại Hành, ngắm nhìn kiến trúc điêu khắc chạm trổ gỗ cổ xưa.</p>
-                  </div>
-                </div>
-              </section>
-            )}
-
-            {activeStation.id === "bai-dinh" && (
-              <section className="detail-custom-section">
-                <h2 style={{ fontFamily: "Baloo 2", fontSize: "28px", margin: "24px 0 12px" }}>Trải nghiệm nên thử</h2>
-                <div className="detail-custom-cards-grid">
-                  <div className="detail-custom-card">
-                    <h4>Hành lang La Hán</h4>
-                    <p>Con đường dài ấn tượng trưng bày hàng trăm pho tượng La Hán tạc bằng đá nguyên khối tinh xảo.</p>
-                  </div>
-                  <div className="detail-custom-card">
-                    <h4>Tháp chuông</h4>
-                    <p>Tháp chuông 3 tầng mái, nơi treo quả chuông đồng lớn nhất Việt Nam vang vọng thung lũng núi.</p>
-                  </div>
-                  <div className="detail-custom-card">
-                    <h4>Điện Tam Thế</h4>
-                    <p>Công trình kiến trúc nguy nga, tráng lệ ngự trên đỉnh đồi với góc nhìn bao quát toàn bộ cảnh chùa.</p>
-                  </div>
-                </div>
-              </section>
-            )}
-
-            {activeStation.id === "pho-co-hoa-lu" && (
-              <section className="detail-custom-section">
-                <div className="detail-photobooth-promo">
-                  <span style={{ fontSize: "36px" }}>📸</span>
-                  <div>
-                    <h4>Trạm Photobooth Kỷ Niệm</h4>
-                    <p style={{ color: "var(--ink)", opacity: 0.9 }}>
-                      Hãy chụp ảnh và kích hoạt khung hình Photobooth đặc quyền tại Phố Cổ Hoa Lư! Chia sẻ bức ảnh kỷ niệm về đêm phố rực rỡ ánh đèn lên mạng xã hội và nhận phần quà nhỏ tại quầy trải nghiệm.
-                    </p>
-                  </div>
-                </div>
-              </section>
-            )}
-
-            {activeStation.id === "tam-coc" && (
-              <section className="detail-custom-section">
-                <h2 style={{ fontFamily: "Baloo 2", fontSize: "28px", margin: "24px 0 12px" }}>Khoảnh khắc nên lưu</h2>
-                <div className="detail-custom-cards-grid">
-                  <div className="detail-custom-card">
-                    <h4>Bến thuyền Văn Lâm</h4>
-                    <p>Khởi đầu chuyến ngao du, ngắm dòng thuyền chèo chân mộc mạc đặc trưng vùng chiêm trũng.</p>
-                  </div>
-                  <div className="detail-custom-card">
-                    <h4>Đồng lúa sông Ngô Đồng</h4>
-                    <p>Dòng sông uốn lượn giữa hai vách đá vôi, nổi bật với sắc vàng rực của cánh đồng lúa chín mùa hè.</p>
-                  </div>
-                  <div className="detail-custom-card">
-                    <h4>Hệ thống hang xuyên thủy</h4>
-                    <p>Đi qua Hang Cả, Hang Hai, Hang Ba mát lạnh để chiêm ngưỡng các thạch nhũ tự nhiên kỳ vĩ.</p>
-                  </div>
-                </div>
-              </section>
-            )}
-
-            {activeStation.id === "hang-mua" && (
-              <section className="detail-custom-section">
-                <div className="detail-hang-mua-progress">
-                  <h3 style={{ fontFamily: "Baloo 2", fontSize: "24px", color: "var(--brand)" }}>
-                    Xin chúc mừng! Bạn đã chinh phục điểm cuối hành trình
-                  </h3>
-                  <p style={{ color: "var(--muted)", margin: "8px 0 16px" }}>
-                    Tất cả 6 trạm trải nghiệm đã được ghi dấu ấn thành công vào cuốn hộ chiếu di sản Sắc Cố Đô.
-                  </p>
-                  <div className="detail-stamps-summary-grid">
-                    <div className="detail-stamp-badge collected">Tràng An</div>
-                    <div className="detail-stamp-badge collected">Hoa Lư</div>
-                    <div className="detail-stamp-badge collected">Bái Đính</div>
-                    <div className="detail-stamp-badge collected">Phố Cổ</div>
-                    <div className="detail-stamp-badge collected">Tam Cốc</div>
-                    <div className="detail-stamp-badge collected">Hang Múa</div>
-                  </div>
-                  <div style={{ display: "flex", gap: "12px", justifyContent: "center", marginTop: "24px" }}>
-                    <a className="btn primary" href="/ho-chieu">
-                      Xem Hộ Chiếu của tôi
-                    </a>
-                    <a className="btn ghost" href="/phan-thuong" style={{ border: "1px solid var(--brand)", color: "var(--brand)" }}>
-                      🎁 Nhận phần thưởng
-                    </a>
-                  </div>
-                </div>
-              </section>
-            )}
-
-            <section className="journey-detail-route">
-              <div className="journey-detail-route-line" aria-hidden="true" />
-              <h2>Hành trình khám phá</h2>
-              <div className="journey-detail-chapters">
-                {detail.chapters.map(({ label, title, description }, index) => (
-                  <article key={`${label}-${title}-${index}`}>
-                    <span>{label}</span>
-                    <h3>{title}</h3>
-                    <p>{description}</p>
-                  </article>
-                ))}
-              </div>
-            </section>
+        <div className="page-shell">
+          {/* Thông tin nhanh */}
+          <div className="qr-grid-3">
+            <div className="qr-info-item">
+              <Clock size={18} className="qr-info-icon" />
+              <strong>Giờ mở cửa</strong>
+              <span>{st?.hours || "07:00 - 17:00"}</span>
+            </div>
+            <div className="qr-info-item">
+              <MapPin size={18} className="qr-info-icon" />
+              <strong>Khu vực</strong>
+              <span>{st?.tag || "Non nước"}</span>
+            </div>
+            <div className="qr-info-item">
+              <TagIcon size={18} className="qr-info-icon" />
+              <strong>Dấu mốc</strong>
+              <span>{st?.stamp || "Dấu"}</span>
+            </div>
           </div>
 
-          <aside className="journey-detail-side">
-            <section className="journey-detail-station-card">
-              <div className="journey-detail-stamp">
-                <img src={`${detailAssetBase}/desktop-icon/ic-lau-dai.svg`} alt="" aria-hidden="true" />
-              </div>
-              <p className="journey-detail-eyebrow">Trạm dừng chân</p>
-              <h2>{activeStation.name} Station</h2>
+          {/* Bước 1: Vị trí đặt QR */}
+          <section className="qr-section">
+            <span className="qr-badge">Bước 1</span>
+            <h2>Tìm vị trí đặt mã QR</h2>
+            <p className="qr-subtitle">
+              Mỗi trạm có một mã QR riêng — hãy tìm đúng vị trí dưới đây để bắt đầu trải nghiệm.
+            </p>
 
-              <dl>
-                <div>
-                  <dt>Giờ mở cửa</dt>
-                  <dd>{activeStation.hours}</dd>
+            <div className="qr-location-layout">
+              <div className="qr-location-copy">
+                <div className="qr-location-main">
+                  <QrCode size={32} className="qr-location-icon" strokeWidth={1.8} />
+                  <div>
+                    <strong>Vị trí QR:</strong>
+                    <p>{guide.qrLocation}</p>
+                  </div>
                 </div>
-                <div>
-                  <dt>Trạng thái</dt>
-                  <dd className="is-open">Đang hoạt động</dd>
-                </div>
-              </dl>
-
-              <div className="journey-detail-ar-guide">
-                <h3>Hướng dẫn check-in AR</h3>
-                {[
-                  "Bật dịch vụ định vị trên thiết bị di động.",
-                  "Quét mã QR tại trạm để truy cập cổng thực tế ảo.",
-                  "Hướng camera về phía khu vực được đánh dấu.",
-                  "Chạm vào màn hình để tương tác và đóng dấu.",
-                ].map((step, index) => (
-                  <p key={step}>
-                    <span>{index + 1}</span>
-                    {step}
-                  </p>
-                ))}
+                <p className="qr-location-desc">{guide.qrDescription}</p>
+                <ul className="qr-detail-list">
+                  {guide.qrDetails.map((d, i) => (
+                    <li key={i}>{d}</li>
+                  ))}
+                </ul>
               </div>
 
-              <div className="journey-detail-qr">
-                <img src={`${detailAssetBase}/desktop-icon/qr-mockup.svg`} alt={`QR trải nghiệm ${activeStation.name}`} loading="lazy" decoding="async" />
+              <div className="qr-media-row">
+                <img
+                  className="qr-location-photo"
+                  src={galleryImageFor(st, sid)}
+                  alt={`Vị trí đặt QR tại ${st?.name}`}
+                  loading="lazy"
+                />
               </div>
+            </div>
+          </section>
 
-              <a className="journey-detail-primary-action" href={`/checkin/${activeStation.slug || activeStation.id}`}>
-                <img src={`${detailAssetBase}/desktop-icon/ic-mo-trai-nghiem-qr.svg`} alt="" aria-hidden="true" />
-                Mở trải nghiệm AR
-              </a>
+          {/* Bước 2: Cách tìm QR */}
+          <section className="qr-section">
+            <span className="qr-badge">Bước 2</span>
+            <h2>Cách tìm QR</h2>
+            <p className="qr-subtitle">
+              Đi theo các bước sau để đến đúng vị trí đặt mã QR.
+            </p>
 
-              <form className="journey-detail-code-form">
-                <strong>Không mở được AR?</strong>
-                <label htmlFor="station-code">Nhập mã ngay tại quầy để nhận dấu trực tiếp vào hộ chiếu di sản.</label>
-                <div>
-                  <input id="station-code" type="text" placeholder="Nhập mã xác thực" />
-                  <button type="button" aria-label="Đóng dấu passport">
-                    <img src="/assets/view-ar/desktop-app/ic-dong-dau-passport.svg" alt="" aria-hidden="true" />
-                  </button>
-                </div>
-              </form>
-            </section>
+            <div className="qr-step-map" aria-label="Bản đồ chỉ đường tới mã QR">
+              <svg className="qr-step-route-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+                {guide.hints.slice(0, -1).map((_, i) => {
+                  const y1 = 12 + i * (76 / Math.max(guide.hints.length - 1, 1));
+                  const y2 = 12 + (i + 1) * (76 / Math.max(guide.hints.length - 1, 1));
+                  const x1 = i % 2 === 0 ? 24 : 76;
+                  const x2 = (i + 1) % 2 === 0 ? 24 : 76;
+                  return (
+                    <path
+                      key={`route-${i}`}
+                      className="qr-step-route-line"
+                      d={`M${x1} ${y1} C50 ${y1 + 3}, 50 ${y2 - 3}, ${x2} ${y2}`}
+                    />
+                  );
+                })}
+              </svg>
 
-            <section className="journey-detail-offer">
-              <strong>Ưu đãi đặc quyền</strong>
-              <p>Hoàn thành bộ dấu {activeStation.name} để nhận món quà di sản đặc biệt tại Trung tâm Du khách.</p>
-            </section>
-          </aside>
+              {guide.hints.map((hint, i) => {
+                const y = 12 + i * (76 / Math.max(guide.hints.length - 1, 1));
+                const x = i % 2 === 0 ? 24 : 76;
+                return (
+                  <article
+                    key={i}
+                    className={`qr-step-map-node ${i % 2 === 0 ? "align-right" : "align-left"}`}
+                    style={{ "--route-x": `${x}%`, "--route-y": `${y}%` }}
+                  >
+                    <span className="qr-step-num">{i + 1}</span>
+                    <img
+                      className="qr-step-image"
+                      src={stepImageFor(st, sid, i)}
+                      alt={`Minh họa bước ${i + 1} tại ${st?.name}`}
+                      loading="lazy"
+                    />
+                    <span className="qr-step-label">{hint}</span>
+                  </article>
+                );
+              })}
+            </div>
+
+            <div className="qr-map-note">
+              <MapPin size={18} strokeWidth={2.4} />
+              <strong>Sơ đồ nhanh:</strong>
+              <span>Xem ảnh bên trên để biết vị trí chính xác</span>
+            </div>
+          </section>
+
+          {/* Lưu ý + CTA */}
+          <section className="qr-section">
+            <span className="qr-badge">Ghi nhớ</span>
+            <h2>Lưu ý khi tới trạm</h2>
+
+            <div className="qr-tips-content">
+              <Lightbulb size={20} className="qr-tips-icon" />
+              <p>{guide.tips}</p>
+              <p className="qr-tip-extra">
+                <strong>Giờ mở cửa:</strong> {st?.hours || "07:00 - 17:00"}
+                {" — "}Nên sắp xếp thời gian tới trong khung giờ này để đảm bảo có thể check-in.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              className="qr-cta"
+              onClick={() => setShowQrDialog(true)}
+            >
+              <Smartphone size={36} className="qr-cta-icon" strokeWidth={1.6} />
+              <span className="qr-cta-text">
+                <strong>Tôi đã đến nơi — Quét QR ngay</strong>
+                <small>Quét đúng mã QR tại trạm để mở AR + Photobooth</small>
+              </span>
+              <ArrowRight size={28} className="qr-cta-arrow" strokeWidth={2.4} />
+            </button>
+          </section>
         </div>
       </main>
+      {showQrDialog ? (
+        <div className="qr-scan-dialog" role="dialog" aria-modal="true" aria-labelledby="qr-scan-title">
+          <div className="qr-scan-backdrop" onClick={() => { stopCamera(); setShowQrDialog(false); }} />
+          <div className="qr-scan-panel">
+            <button className="qr-scan-close" type="button" onClick={() => { stopCamera(); setShowQrDialog(false); }} aria-label="Đóng">
+              <X size={20} />
+            </button>
+            <div className="qr-scan-copy">
+              <span className="qr-badge">Xác thực tại trạm</span>
+              <h2 id="qr-scan-title">Quét mã QR tại {st?.name}</h2>
+              <p>Đưa mã QR của trạm vào giữa khung hình để tự động mở trải nghiệm.</p>
+            </div>
+            <div className="qr-scan-view">
+              <video ref={videoRef} className="qr-scan-camera" autoPlay playsInline muted />
+              <div className="qr-scan-overlay" />
+              {cameraError ? <p className="qr-scan-error">{cameraError}</p> : null}
+            </div>
+            {!window.BarcodeDetector ? (
+              <p className="qr-scan-fallback-note">
+                Trình duyệt của bạn chưa hỗ trợ quét QR tự động.{' '}
+                <button className="qr-scan-confirm" type="button" onClick={handleQrConfirm}>
+                  Vào trải nghiệm ngay
+                </button>
+              </p>
+            ) : null}
+          </div>
+        </div>
+      ) : null}
       <SiteFooter />
     </>
   );

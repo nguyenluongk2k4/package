@@ -4,27 +4,27 @@ import { stations } from "../../../data/sac-co-do";
 const stationMetadata = {
   "trang-an": {
     name: "Tràng An",
-    description: "Không gian di sản với núi đá vôi và dòng nước xanh, phù hợp làm trạm mở đầu của hành trình.",
+    description: "Không gian di sản với núi đá vôi và dòng nước xanh, trạm mở đầu hành trình Sắc Cố Đô.",
   },
   "hoa-lu": {
     name: "Cố Đô Hoa Lư",
-    description: "Dấu mốc lịch sử của vùng đất cố đô, nơi cuốn passport bắt đầu kể chuyện bằng ký ức triều đại.",
+    description: "Dấu mốc lịch sử của vùng đất cố đô — tìm QR tại cổng thành để bắt đầu check-in.",
   },
   "bai-dinh": {
     name: "Chùa Bái Đính",
-    description: "Một trạm lắng và rộng, dành cho trải nghiệm đóng dấu sau khi đi qua hành lang văn hóa tâm linh.",
+    description: "Một trạm lắng và rộng — QR nằm trong hành lang La Hán, gần lối tháp chuông.",
   },
   "pho-co-hoa-lu": {
     name: "Phố Cổ Hoa Lư",
-    description: "Sắc đèn, mái ngói và nhịp dạo chơi chậm rãi, phù hợp cho check-in và photobooth kỷ niệm.",
+    description: "Sắc đèn, mái ngói và nhịp dạo chơi chậm rãi — QR trên lan can cầu Kỳ Lân.",
   },
   "tam-coc": {
     name: "Tam Cốc - Bích Động",
-    description: "Một lát cắt mềm mại của Ninh Bình, nơi trải nghiệm giấy pop-up gặp cảnh quan ngoài đời.",
+    description: "Lát cắt mềm mại của Ninh Bình — QR bên cây cổ thụ ở bến Văn Lâm.",
   },
   "hang-mua": {
     name: "Hang Múa",
-    description: "Trạm kết giàu năng lượng với góc nhìn toàn cảnh, mở khóa phần thưởng sau khi hoàn thành hành trình.",
+    description: "Trạm kết với góc nhìn toàn cảnh — QR tại cột gỗ đầu lối leo núi.",
   },
 };
 
@@ -45,7 +45,7 @@ export async function generateMetadata({ params }) {
   }
 
   return {
-    title: `${station.name} | Hành trình Sắc Cố Đô`,
+    title: `${station.name} — Tìm QR & Check-in | Hành trình Sắc Cố Đô`,
     description: station.description,
   };
 }

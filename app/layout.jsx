@@ -4,6 +4,7 @@ import ScrollToTop from "../components/sac-co-do/ScrollToTop";
 import { FirebaseAuthProvider } from "../components/sac-co-do/FirebaseAuthProvider";
 import { I18nProvider } from "../components/sac-co-do/I18nProvider";
 import { ToastProvider } from "../components/sac-co-do/ToastProvider";
+import FloatingAccountVerification from "../components/sac-co-do/FloatingAccountVerification";
 
 export const metadata = {
   metadataBase: new URL("https://www.knguyen.shop"),
@@ -40,6 +41,7 @@ export default function RootLayout({ children }) {
           <I18nProvider>
             <ToastProvider>
               {children}
+              <FloatingAccountVerification />
               <ScrollReveal />
               <ScrollToTop />
             </ToastProvider>

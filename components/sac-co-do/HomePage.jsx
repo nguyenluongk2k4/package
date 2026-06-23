@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState, useRef } from "react";
+import Lottie from "lottie-react";
 import { brand, heroSlides, proofStats, stations, steps, souvenirProducts } from "../../data/sac-co-do";
 import { getPublicProducts, getPublicStations } from "../../lib/firebase/catalog";
 import PassportVersionSection from "./PassportVersionSection";
@@ -20,6 +21,7 @@ export default function HomePage() {
   const { t } = useI18n();
   const [firebaseStations, setFirebaseStations] = useState(stations);
   const [homeProducts, setHomeProducts] = useState([]);
+  const [nibiData, setNibiData] = useState(null);
   const [activeStationId, setActiveStationId] = useState("trang-an");
   const tickerRef = useRef(null);
   const containerRef = useRef(null);
@@ -93,6 +95,15 @@ export default function HomePage() {
     }
 
     loadFirebaseCatalog();
+
+    fetch("/ar/nibi.json")
+      .then((res) => res.json())
+      .then((data) => {
+        if (mounted) {
+          setNibiData(data);
+        }
+      })
+      .catch(() => {});
 
     return () => {
       mounted = false;
@@ -247,7 +258,16 @@ export default function HomePage() {
           
           <div className="nibi-guide-card">
             <div className="nibi-guide-row">
-              <img src="/ar/avt-nibi.jpg" alt="Nibi" className="nibi-avatar" />
+              <div className="nibi-avatar" aria-label="Nibi">
+                {nibiData ? (
+                  <Lottie
+                    animationData={nibiData}
+                    loop={true}
+                    autoplay={true}
+                    style={{ width: "100%", height: "100%", background: "#ffffff" }}
+                  />
+                ) : null}
+              </div>
               <div className="nibi-speech">
                 <strong>{t("home.timeline.nibiLabel")}</strong> "{t("home.timeline.nibiAdvice")}"
               </div>
