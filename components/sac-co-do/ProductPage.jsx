@@ -19,7 +19,9 @@ export default function ProductPage() {
           <div className="souvenir-products-grid" data-count={hardcodedProducts.length}>
             {hardcodedProducts.map((product) => (
               <a className="souvenir-product-card" href={product.href} key={product.id} aria-label={`Xem ${product.name}`}>
-                <div className="souvenir-product-media">
+                <div
+                  className={`souvenir-product-media ${product.image?.includes("/remove-bg/") ? "is-contain" : "is-cover"}`}
+                >
                   {product.badge ? <span className="souvenir-product-badge">{product.badge}</span> : null}
                   <img src={product.image} alt={product.name} loading="eager" decoding="async" />
                 </div>
