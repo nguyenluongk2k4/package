@@ -179,6 +179,22 @@ export default function ProductConfigurator({ productId }) {
         </div>
         <p>{selected?.description || "Sản phẩm di sản Ninh Bình được tuyển chọn cho hành trình Sắc Cố Đô."}</p>
 
+        {detailFacts.length ? (
+          <div className="product-facts-panel">
+            <div className="product-facts-header">
+              <span className="product-section-kicker">Chi tiết sản phẩm</span>
+            </div>
+            <dl className="product-facts-list">
+              {detailFacts.map((item) => (
+                <div key={item.label}>
+                  <dt>{item.label}</dt>
+                  <dd>{item.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        ) : null}
+
         <div className="purchase-box">
           <div>
             <small>Số lượng:</small>
@@ -209,23 +225,6 @@ export default function ProductConfigurator({ productId }) {
           <div className="product-story-panel">
             <span className="product-section-kicker">Câu chuyện sản phẩm</span>
             <p>{selected.story}</p>
-          </div>
-        ) : null}
-
-        {detailFacts.length ? (
-          <div className="product-facts-panel">
-            <div className="product-facts-header">
-              <span className="product-section-kicker">Thông tin sản phẩm</span>
-              <strong>{selected?.priceFormatted}</strong>
-            </div>
-            <dl className="product-facts-list">
-              {detailFacts.map((item) => (
-                <div key={item.label}>
-                  <dt>{item.label}</dt>
-                  <dd>{item.value}</dd>
-                </div>
-              ))}
-            </dl>
           </div>
         ) : null}
       </div>
