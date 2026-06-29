@@ -141,6 +141,7 @@ const rawProducts = [
     storage: "Bảo quản nơi khô ráo, thoáng mát, tránh ánh nắng trực tiếp.",
     image: "/assets/san-pham/Mắm tép thanh nguyễn/IMG_7739.JPG",
     homeImage: "/assets/san-pham/remove-bg/thit-chung-mam-tep.png",
+    homeVisualOffsetX: "-12px",
     images: [
       "/assets/san-pham/Mắm tép thanh nguyễn/IMG_7739.JPG",
       "/assets/san-pham/Mắm tép thanh nguyễn/IMG_7747.JPG",
@@ -170,6 +171,7 @@ const rawProducts = [
     storage: "Bảo quản nơi khô ráo, thoáng mát, tránh ánh nắng trực tiếp.",
     image: "/assets/san-pham/ruốc cá rô tổng trường/2.png",
     homeImage: "/assets/san-pham/remove-bg/ruoc.png",
+    homeVisualOffsetX: "-8px",
     images: [
       "/assets/san-pham/ruốc cá rô tổng trường/2.png",
       "/assets/san-pham/ruốc cá rô tổng trường/IMG_7719.JPG",

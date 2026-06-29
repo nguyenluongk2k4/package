@@ -17,6 +17,11 @@ export default function PassportVersionSection({ className = "" }) {
   const [cartState, setCartState] = useState("idle");
   const activeProduct = hardcodedProducts[activeIndex] || hardcodedProducts[0];
   const activeProductVisual = activeProduct?.homeImage || activeProduct?.image;
+  const activeProductVisualStyle = {
+    "--passport-rotation": `${rotation}deg`,
+    "--passport-offset-x": activeProduct?.homeVisualOffsetX || "0px",
+    "--passport-offset-y": activeProduct?.homeVisualOffsetY || "-34px",
+  };
 
   useEffect(() => {
     let mounted = true;
@@ -92,7 +97,6 @@ export default function PassportVersionSection({ className = "" }) {
             {activeProduct.badge ? <span className="passport-active-badge">{activeProduct.badge}</span> : null}
             <strong className="passport-active-price">{activeProduct.priceFormatted}</strong>
             <h3>{activeProduct.name}</h3>
-            <p>{activeProduct.description}</p>
             <div className="passport-active-actions">
               <a className="passport-active-link" href={activeProduct.href}>
                 Xem chi tiết
@@ -131,6 +135,7 @@ export default function PassportVersionSection({ className = "" }) {
                 shadow-intensity="0.65"
                 exposure="1"
                 ar
+                style={activeProductVisualStyle}
               />
             ) : (
               <img
@@ -139,7 +144,7 @@ export default function PassportVersionSection({ className = "" }) {
                 alt={activeProduct.name}
                 loading="eager"
                 decoding="async"
-                style={{ "--passport-rotation": `${rotation}deg` }}
+                style={activeProductVisualStyle}
               />
             )}
           </div>
