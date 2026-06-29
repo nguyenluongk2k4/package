@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { collection, deleteDoc, doc, onSnapshot, serverTimestamp, updateDoc } from "firebase/firestore";
 import { gallery, stations } from "../../data/sac-co-do";
-import { hardcodedProducts } from "./hardcodedProducts";
+import { hardcodedProducts } from "../../data/products";
 import SectionTitle from "./SectionTitle";
 import SiteFooter from "./SiteFooter";
 import SiteHeader from "./SiteHeader";

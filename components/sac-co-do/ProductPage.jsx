@@ -1,6 +1,6 @@
 "use client";
 
-import { hardcodedProducts } from "./hardcodedProducts";
+import { hardcodedProducts } from "../../data/products";
 import SiteFooter from "./SiteFooter";
 import SiteHeader from "./SiteHeader";
 
@@ -13,7 +13,7 @@ export default function ProductPage() {
           <div className="souvenir-products-heading">
             <p className="souvenir-products-kicker">Sản phẩm</p>
             <h1 id="souvenir-products-title">Sắc Cố Đô</h1>
-            <p>4 vật phẩm chủ lực: từ passport hành trình đến các món quà đặc sản Ninh Bình.</p>
+            <p>6 vật phẩm chọn lọc: từ passport hành trình đến các món quà đặc sản mang đậm hương vị Ninh Bình.</p>
           </div>
 
           <div className="souvenir-products-grid" data-count={hardcodedProducts.length}>
@@ -35,7 +35,7 @@ export default function ProductPage() {
         <div className="souvenir-products-marquee" aria-hidden="true">
           <div className="souvenir-products-marquee-track">
             {Array.from({ length: 2 }).map((_, groupIndex) => (
-              <span key={groupIndex}>Passport Ninh Bình • Cơm cháy dạng túi • Cơm cháy ruốc • Cơm cháy vuông lứt •</span>
+              <span key={groupIndex}>Passport Ninh Bình • Cơm cháy dạng túi • Cơm cháy đậm vị • Cơm cháy gạo lứt • Thịt chưng mắm tép • Ruốc cá rô •</span>
             ))}
           </div>
         </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { getHardcodedProductBySlugOrId } from "./hardcodedProducts";
+import { getHardcodedProductBySlugOrId } from "../../data/products";
 import { useFirebaseAuth } from "./FirebaseAuthProvider";
 import { collection, doc, increment, serverTimestamp, setDoc } from "firebase/firestore";
 import { useToast } from "./ToastProvider";
@@ -65,6 +65,18 @@ export default function ProductConfigurator({ productId }) {
 
   const total = useMemo(() => Number(selected?.price || 0) * quantity, [selected?.price, quantity]);
   const model3d = selected?.model3d || {};
+  const detailFacts = useMemo(
+    () =>
+      [
+        { label: "Khối lượng tịnh", value: selected?.weight },
+        { label: "Thành phần", value: selected?.ingredients },
+        { label: "Hướng dẫn sử dụng", value: selected?.usage },
+        { label: "Hạn sử dụng", value: selected?.shelfLife },
+        { label: "Bảo quản", value: selected?.storage },
+        { label: "Lưu ý", value: selected?.note },
+      ].filter((item) => item.value),
+    [selected]
+  );
 
   useEffect(() => {
     if (!model3d.glbUrl) {
@@ -192,6 +204,30 @@ export default function ProductConfigurator({ productId }) {
         </button>
         {cartState === "auth" ? <small className="product-cart-note">Đăng nhập để lưu giỏ hàng trên Firebase.</small> : null}
         {cartState === "saved" ? <small className="product-cart-note">Đã lưu vào giỏ hàng.</small> : null}
+
+        {selected?.story ? (
+          <div className="product-story-panel">
+            <span className="product-section-kicker">Câu chuyện sản phẩm</span>
+            <p>{selected.story}</p>
+          </div>
+        ) : null}
+
+        {detailFacts.length ? (
+          <div className="product-facts-panel">
+            <div className="product-facts-header">
+              <span className="product-section-kicker">Thông tin sản phẩm</span>
+              <strong>{selected?.priceFormatted}</strong>
+            </div>
+            <dl className="product-facts-list">
+              {detailFacts.map((item) => (
+                <div key={item.label}>
+                  <dt>{item.label}</dt>
+                  <dd>{item.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        ) : null}
       </div>
     </section>
   );

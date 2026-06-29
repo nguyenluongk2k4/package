@@ -3,7 +3,7 @@
 import { collection, doc, increment, serverTimestamp, setDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useFirebaseAuth } from "./FirebaseAuthProvider";
-import { hardcodedProducts } from "./hardcodedProducts";
+import { hardcodedProducts } from "../../data/products";
 import { useI18n } from "./I18nProvider";
 import { useToast } from "./ToastProvider";
 
@@ -16,6 +16,7 @@ export default function PassportVersionSection({ className = "" }) {
   const [hasProductModel, setHasProductModel] = useState(false);
   const [cartState, setCartState] = useState("idle");
   const activeProduct = hardcodedProducts[activeIndex] || hardcodedProducts[0];
+  const activeProductVisual = activeProduct?.homeImage || activeProduct?.image;
 
   useEffect(() => {
     let mounted = true;
@@ -86,7 +87,7 @@ export default function PassportVersionSection({ className = "" }) {
             Quà mang về
             <span>từ Cố Đô</span>
           </h2>
-          <div className="passport-version-ribbon">4 lựa chọn nổi bật</div>
+          <div className="passport-version-ribbon">6 lựa chọn nổi bật</div>
           <div className="passport-active-card">
             {activeProduct.badge ? <span className="passport-active-badge">{activeProduct.badge}</span> : null}
             <strong className="passport-active-price">{activeProduct.priceFormatted}</strong>
@@ -123,7 +124,7 @@ export default function PassportVersionSection({ className = "" }) {
                 class="passport-product-model"
                 src={activeProduct.model3d.glbUrl}
                 ios-src={activeProduct.model3d.usdzUrl}
-                poster={activeProduct.image}
+                poster={activeProductVisual}
                 camera-controls
                 auto-rotate
                 interaction-prompt="none"
@@ -134,7 +135,7 @@ export default function PassportVersionSection({ className = "" }) {
             ) : (
               <img
                 className="passport-product-image"
-                src={activeProduct.image}
+                src={activeProductVisual}
                 alt={activeProduct.name}
                 loading="eager"
                 decoding="async"

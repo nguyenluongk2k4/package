@@ -1,5 +1,5 @@
 import ProductDetailPage from "../../../components/sac-co-do/ProductDetailPage";
-import { getHardcodedProductBySlugOrId, hardcodedProducts } from "../../../components/sac-co-do/hardcodedProducts";
+import { getHardcodedProductBySlugOrId, hardcodedProducts } from "../../../data/products";
 import { notFound, redirect } from "next/navigation";
 
 export function generateStaticParams() {

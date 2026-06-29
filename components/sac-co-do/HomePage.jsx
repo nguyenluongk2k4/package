@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState, useRef } from "react";
 import Lottie from "lottie-react";
-import { brand, heroSlides, proofStats, stations, steps, souvenirProducts } from "../../data/sac-co-do";
+import { brand, heroSlides, proofStats, stations, steps } from "../../data/sac-co-do";
 import { getPublicProducts, getPublicStations } from "../../lib/firebase/catalog";
 import PassportVersionSection from "./PassportVersionSection";
 import SectionTitle from "./SectionTitle";
@@ -74,8 +74,6 @@ export default function HomePage() {
     }
     return `${station.name} - Góc nhìn ${index + 1}`;
   };
-
-  const displayProducts = homeProducts;
 
   useEffect(() => {
     let mounted = true;

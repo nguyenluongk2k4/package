@@ -3637,6 +3637,81 @@ html.reveal-ready .reveal-target.is-revealed {
   line-height: 1.8;
 }
 
+.product-section-kicker {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  min-height: 24px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: rgba(16, 76, 39, 0.08);
+  color: #0f5132;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.product-story-panel,
+.product-facts-panel {
+  display: grid;
+  gap: 14px;
+  margin-top: 22px;
+  padding: 22px 24px;
+  border: 1px solid rgba(16, 76, 39, 0.12);
+  border-radius: 18px;
+  background: rgba(247, 252, 251, 0.88);
+}
+
+.product-story-panel p {
+  color: var(--ink);
+}
+
+.product-facts-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.product-facts-header strong {
+  color: #8a6418;
+  font-size: 22px;
+  font-weight: 900;
+}
+
+.product-facts-list {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+}
+
+.product-facts-list div {
+  display: grid;
+  grid-template-columns: minmax(140px, 180px) minmax(0, 1fr);
+  gap: 12px 18px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(16, 76, 39, 0.08);
+}
+
+.product-facts-list div:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.product-facts-list dt {
+  margin: 0;
+  color: #063823;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.product-facts-list dd {
+  margin: 0;
+  color: #355348;
+  line-height: 1.7;
+}
+
 .option-group {
   display: grid;
   gap: 12px;
@@ -4649,6 +4724,11 @@ html.reveal-ready .reveal-target.is-revealed {
 
   .product-thumbs {
     gap: 10px;
+  }
+
+  .product-facts-list div {
+    grid-template-columns: 1fr;
+    gap: 6px;
   }
 
   .journey-detail-page {
