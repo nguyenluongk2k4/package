@@ -42,6 +42,10 @@ function getImages(product) {
   });
 }
 
+function isFallbackProductImage(src) {
+  return typeof src === "string" && src.includes("/remove-bg/");
+}
+
 export default function ProductConfigurator({ productId }) {
   const { user, db } = useFirebaseAuth();
   const { showToast } = useToast();
@@ -65,6 +69,7 @@ export default function ProductConfigurator({ productId }) {
 
   const total = useMemo(() => Number(selected?.price || 0) * quantity, [selected?.price, quantity]);
   const model3d = selected?.model3d || {};
+  const activeImageModeClass = isFallbackProductImage(activeImage?.src) ? "is-contain" : "is-cover";
   const detailFacts = useMemo(
     () =>
       [
@@ -139,7 +144,7 @@ export default function ProductConfigurator({ productId }) {
   return (
     <section className="product-detail" aria-label="Chi tiết sản phẩm Sắc Cố Đô">
       <div className="product-gallery-panel">
-        <div className="product-main-image">
+        <div className={`product-main-image ${activeImageModeClass}`}>
           {hasDetailModel ? (
             <model-viewer
               src={model3d.glbUrl}
@@ -158,7 +163,7 @@ export default function ProductConfigurator({ productId }) {
         <div className="product-thumbs" aria-label="Ảnh sản phẩm">
           {detailImages.map((image) => (
             <button
-              className={image.src === activeImage.src ? "active" : ""}
+              className={`${image.src === activeImage.src ? "active" : ""} ${isFallbackProductImage(image.src) ? "is-contain" : "is-cover"}`.trim()}
               type="button"
               key={image.src}
               onClick={() => setActiveImage(image)}

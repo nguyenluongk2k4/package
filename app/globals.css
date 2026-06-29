@@ -3556,8 +3556,21 @@ html.reveal-ready .reveal-target.is-revealed {
   width: 100%;
   height: 100%;
   max-height: 500px;
+  object-position: center;
+}
+
+.product-main-image.is-contain {
+  background: #f3f6f2;
+}
+
+.product-main-image.is-contain img {
   object-fit: contain;
   padding: clamp(18px, 4vw, 42px);
+}
+
+.product-main-image.is-cover img {
+  object-fit: cover;
+  padding: 0;
 }
 
 .product-thumbs {
@@ -3578,8 +3591,21 @@ html.reveal-ready .reveal-target.is-revealed {
 .product-thumbs img {
   width: 100%;
   height: 100%;
+  object-position: center;
+}
+
+.product-thumbs button.is-contain {
+  background: #eef3ef;
+}
+
+.product-thumbs button.is-contain img {
   object-fit: contain;
   padding: 8px;
+}
+
+.product-thumbs button.is-cover img {
+  object-fit: cover;
+  padding: 0;
 }
 
 .product-thumbs button.active {
