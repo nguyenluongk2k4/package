@@ -14,6 +14,7 @@ import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { heritageDestinations } from "./heritageDestinations";
+import { Leaf, History, Compass } from "lucide-react";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -155,6 +156,42 @@ export default function HomePage() {
       delay: 0.2,
     });
 
+    // About Us entrance animation
+    gsap.from(".about-intro-wrapper > *", {
+      opacity: 0,
+      y: 30,
+      stagger: 0.15,
+      duration: 0.8,
+      ease: "power2.out",
+      scrollTrigger: {
+        trigger: ".home-about-section",
+        start: "top 80%",
+      }
+    });
+
+    gsap.from(".about-bg-decor", {
+      opacity: 0,
+      scale: 0.85,
+      duration: 1.2,
+      ease: "power2.out",
+      scrollTrigger: {
+        trigger: ".home-about-section",
+        start: "top 80%",
+      }
+    });
+
+    gsap.from(".about-pillar-card", {
+      opacity: 0,
+      y: 40,
+      stagger: 0.2,
+      duration: 0.9,
+      ease: "power2.out",
+      scrollTrigger: {
+        trigger: ".about-pillars-grid",
+        start: "top 85%",
+      }
+    });
+
     // Timeline unified card entrance
     gsap.from(".timeline-unified-card", {
       opacity: 0,
@@ -244,7 +281,47 @@ export default function HomePage() {
           secondaryCTA={{ label: t("home.hero.secondaryCta"), imageLabel: t("home.hero.imageCta") }}
         />
 
+        {/* About Us Mini Section */}
+        <section className="home-about-section">
+          {/* Widescreen background clouds decoration */}
+          <div className="about-bg-cloud" aria-hidden="true">
+            <img src="/gon-may.jpg" alt="" />
+          </div>
 
+          <div className="home-about-inner content-section">
+
+            <div className="about-intro-wrapper">
+              <h2 className="about-question">{t("home.about.question")}</h2>
+              <p className="about-desc">{t("home.about.paragraph")}</p>
+            </div>
+            
+            <div className="about-pillars-grid">
+              <div className="about-pillar-card">
+                <div className="card-decor-header">
+                  <img src="/assets/ban-do/lotus-decor.png" className="card-lotus-image" alt="" />
+                </div>
+                <h3 className="pillar-title">{t("home.about.nature.title")}</h3>
+                <p className="pillar-desc">{t("home.about.nature.desc")}</p>
+              </div>
+              
+              <div className="about-pillar-card">
+                <div className="card-decor-header">
+                  <img src="/assets/ban-do/lotus-decor.png" className="card-lotus-image" alt="" />
+                </div>
+                <h3 className="pillar-title">{t("home.about.history.title")}</h3>
+                <p className="pillar-desc">{t("home.about.history.desc")}</p>
+              </div>
+              
+              <div className="about-pillar-card">
+                <div className="card-decor-header">
+                  <img src="/assets/ban-do/lotus-decor.png" className="card-lotus-image" alt="" />
+                </div>
+                <h3 className="pillar-title">{t("home.about.culture.title")}</h3>
+                <p className="pillar-desc">{t("home.about.culture.desc")}</p>
+              </div>
+            </div>
+          </div>
+        </section>
 
         {/* Timeline Redesign with Nibi Guide */}
         <section className="content-section" id="cach-hoat-dong">

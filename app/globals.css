@@ -13891,4 +13891,392 @@ html.reveal-ready .reveal-target.is-revealed {
 }
 
 
+.mega-content-tag {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: rgba(16, 76, 39, 0.09);
+  color: #063823;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.mega-content-title {
+  margin: 0 0 6px;
+  color: #063823;
+  font-family: "Baloo 2", "Be Vietnam Pro", sans-serif;
+  font-size: clamp(20px, 2vw, 26px);
+  font-weight: 900;
+  line-height: 1.1;
+}
+
+.mega-content-desc {
+  margin: 0 0 8px;
+  max-width: 480px;
+  color: rgba(6, 56, 35, 0.65);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.mega-content-meta {
+  display: flex;
+  gap: 18px;
+  color: rgba(6, 56, 35, 0.55);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.mega-content-cta {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: #063823;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 800;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.mega-content-cta:hover {
+  background: #0a5030;
+  transform: translateX(2px);
+}
+
+/* Image grid */
+.mega-image-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-rows: 100px 100px;
+  gap: 8px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.mega-image-cell {
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.mega-image-cell.is-featured {
+  grid-row: span 2;
+}
+
+.mega-image-cell img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.mega-image-cell:hover img {
+  transform: scale(1.04);
+}
+
+/* Disable scroll-morph header transition background when mega is open */
+.site-header.mega-is-open .site-header,
+.site-header.mega-is-open {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  box-shadow: none !important;
+  border-bottom: none !important;
+}
+
+/* 
+ * MEGA-OPEN OVERRIDE FOR MORPH BORDER-RADIUS
+ * Override the !important border-radius calc when the mega panel is active
+ * so the pill's bottom corners stay square to connect with the panel.
+ */
+.site-header .primary-menu.mega-open {
+  border-radius: calc(var(--scroll-t, 0) * 20px) calc(var(--scroll-t, 0) * 20px) 0 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+/* ─── Lazy Loading Optimization ─── */
+
+/* About Page Lazy Section placeholders */
+.lazy-section-placeholder {
+  min-height: 200px;
+  background: rgba(16, 76, 39, 0.02);
+  border-radius: 16px;
+  border: 1px dashed rgba(16, 76, 39, 0.1);
+  margin: 40px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(16, 76, 39, 0.3);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* Journey Map Node placeholder & pulse animation */
+.journey-route-node-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  background: var(--brand, #104c27);
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 0 12px rgba(16, 76, 39, 0.4);
+  transform: translate(-50%, -50%); /* Center over position */
+}
+
+.placeholder-pulse {
+  width: 8px;
+  height: 8px;
+  background: var(--brand-2, #d19f37);
+  border-radius: 50%;
+  animation: pulse-node 1.8s infinite ease-in-out;
+}
+
+@keyframes pulse-node {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 1;
+    box-shadow: 0 0 10px var(--brand-2, #d19f37);
+  }
+  100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+}
+
+/* Transitions for loaded nodes */
+.animate-fade-in {
+  animation: lazyFadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animate-slide-up {
+  animation: lazySlideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes lazyFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes lazySlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
+
+/* Home About Us Section styles */
+.home-about-section {
+  width: 100%;
+  max-width: none;
+  padding: 82px 0 60px;
+  text-align: center;
+  position: relative;
+  overflow: visible; /* allows clouds and Chim Lac to overflow top/bottom boundaries without clipping */
+}
+
+.home-about-inner.content-section {
+  padding-top: 0;
+  padding-bottom: 0;
+  position: relative; /* relative boundary for absolute watermarks */
+  z-index: 1;
+}
+
+/* Widescreen background clouds decoration */
+.about-bg-cloud {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  opacity: 0.95;
+}
+
+.about-bg-cloud img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center top;
+}
+
+/* Background decorations */
+.about-bg-decor {
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  mix-blend-mode: multiply; /* blends white background into cream/off-white background */
+}
+
+.about-bg-decor img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.about-intro-wrapper {
+  max-width: 900px;
+  margin: 0 auto 48px;
+  padding: 0 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.about-intro-wrapper .eyebrow {
+  display: inline-block;
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  color: var(--brand);
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.about-question {
+  font-family: "Baloo 2", "Be Vietnam Pro", sans-serif;
+  font-size: clamp(24px, 3.5vw, 34px);
+  font-weight: 850;
+  color: var(--brand-2);
+  line-height: 1.35;
+  margin-bottom: 24px;
+}
+
+.about-desc {
+  font-family: "Be Vietnam Pro", sans-serif;
+  font-size: 16px;
+  color: var(--ink);
+  line-height: 1.8;
+  text-align: center;
+  max-width: 800px;
+  margin-inline: auto;
+}
+
+/* Fallback for center on small screens */
+@media (max-width: 768px) {
+  .about-desc {
+    text-align: center;
+  }
+}
+
+.about-pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  margin-top: 48px;
+  padding: 0 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.about-pillar-card {
+  background: #ffffff;
+  border: 1.5px solid rgba(16, 76, 39, 0.25);
+  border-radius: 16px;
+  padding: 48px 24px 32px;
+  text-align: center;
+  position: relative;
+  transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), 
+              border-color 0.3s ease, 
+              box-shadow 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+  height: 100%; /* Stretch to equal height of row */
+  display: flex;
+  flex-direction: column;
+}
+
+.about-pillar-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--brand);
+  box-shadow: 0 12px 30px rgba(16, 76, 39, 0.12);
+}
+
+/* Card Decor Header (Lotus Flower Only) */
+.card-decor-header {
+  position: relative;
+  height: 50px;
+  margin-top: -72px; /* Pull it up to overlap the top border precisely */
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.card-lotus-image {
+  width: 85px;
+  height: auto;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+  z-index: 2;
+  transition: transform 0.3s ease;
+}
+
+.about-pillar-card:hover .card-lotus-image {
+  transform: scale(1.1) translateY(-3px);
+}
+
+.pillar-title {
+  font-family: "Baloo 2", "Be Vietnam Pro", sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--brand);
+  margin-bottom: 12px;
+}
+
+.pillar-desc {
+  font-family: "Be Vietnam Pro", sans-serif;
+  font-size: 14.5px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Responsive constraints */
+@media (max-width: 991px) {
+  .about-pillars-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+@media (max-width: 1250px) {
+  .about-bg-decor,
+  .about-bg-cloud {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .about-pillars-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .home-about-section {
+    padding: 60px 0 40px;
+  }
+}
 
