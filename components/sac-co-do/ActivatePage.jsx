@@ -1,43 +1,93 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useFirebaseAuth } from "./FirebaseAuthProvider";
 import { useToast } from "./ToastProvider";
-import { doc, setDoc } from "firebase/firestore";
-import { Camera, ShieldAlert } from "lucide-react";
+import { Camera, ShieldAlert, CheckCircle2 } from "lucide-react";
 import SectionTitle from "./SectionTitle";
 import SiteFooter from "./SiteFooter";
 import SiteHeader from "./SiteHeader";
 
 export default function ActivatePage() {
-  const { user, db, refreshProfile } = useFirebaseAuth();
+  const { user, db, loading, refreshProfile, profile } = useFirebaseAuth();
   const { showToast } = useToast();
   const router = useRouter();
 
-  // Manual input states
+  // Input state
   const [passportCode, setPassportCode] = useState("");
-  const [contact, setContact] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Scanner states
-  const videoRef = useRef(null);
-  const streamRef = useRef(null);
-  const detectorRef = useRef(null);
   const [cameraError, setCameraError] = useState("");
-  const [isScanning, setIsScanning] = useState(false);
-  const [hasBarcodeDetector, setHasBarcodeDetector] = useState(false);
 
-  const expectedQrValue = "SAC-CODO:ACCOUNT-VERIFY";
+  const isActivated = !!profile?.isActivated;
 
-  // Check support safely on client mount
+  // ── Authentication Protection ──
   useEffect(() => {
-    if (typeof window !== "undefined" && window.BarcodeDetector) {
-      setHasBarcodeDetector(true);
+    if (!loading && !user) {
+      showToast("Vui lòng đăng nhập trước khi kích hoạt hộ chiếu di sản!", "error");
+      router.push("/dang-nhap");
     }
-  }, []);
+  }, [user, loading, router, showToast]);
 
-  // ── Activation helper ──
+  // ── Auto-fill passport code if already activated ──
+  useEffect(() => {
+    if (isActivated && profile?.passportCode) {
+      setPassportCode(profile.passportCode);
+    }
+  }, [isActivated, profile]);
+
+  // ── QR Scanner initialization using html5-qrcode ──
+  useEffect(() => {
+    // Only scan if user is logged in AND not activated yet
+    if (!user || isActivated) return;
+    
+    let html5QrCode;
+    let isMounted = true;
+
+    const timer = setTimeout(async () => {
+      try {
+        const { Html5Qrcode } = await import("html5-qrcode");
+        
+        const container = document.getElementById("qr-reader");
+        if (!container || !isMounted) return;
+
+        html5QrCode = new Html5Qrcode("qr-reader");
+        
+        const config = {
+          fps: 12,
+          qrbox: { width: 250, height: 250 }
+        };
+
+        await html5QrCode.start(
+          { facingMode: "environment" },
+          config,
+          (decodedText) => {
+            const cleanCode = decodedText.trim();
+            setPassportCode(cleanCode);
+            showToast(`Phát hiện mã QR: ${cleanCode}`, "info");
+          },
+          () => {
+            // Ignore verbose scan errors
+          }
+        );
+      } catch (err) {
+        console.warn("Failed to initialize html5-qrcode:", err);
+        if (isMounted) {
+          setCameraError("Không thể kích hoạt camera quét QR. Bạn vẫn có thể nhập mã thủ công ở bên phải.");
+        }
+      }
+    }, 500);
+
+    return () => {
+      isMounted = false;
+      clearTimeout(timer);
+      if (html5QrCode && html5QrCode.isScanning) {
+        html5QrCode.stop().catch((err) => console.log("Clean up stop error:", err));
+      }
+    };
+  }, [user, isActivated, showToast]);
+
+  // ── Database Verification & Activation ──
   const performActivation = useCallback(async (code) => {
     if (!user) {
       showToast("Vui lòng đăng nhập trước khi kích hoạt hộ chiếu di sản!", "error");
@@ -49,123 +99,90 @@ export default function ActivatePage() {
       return;
     }
 
+    const cleanCode = code.trim().toUpperCase();
+
     try {
-      const profileRef = doc(db, "users", user.uid);
-      await setDoc(
-        profileRef,
-        {
-          isActivated: true,
-          passportCode: code.toUpperCase(),
-          activatedAt: new Date(),
-        },
-        { merge: true }
-      );
+      const { doc, getDoc, runTransaction, serverTimestamp } = await import("firebase/firestore");
       
-      // Đồng bộ state profile trên client ngay lập tức
+      // 1. Check if activation code exists
+      const codeRef = doc(db, "activationCodes", cleanCode);
+      const codeSnap = await getDoc(codeRef);
+
+      if (!codeSnap.exists()) {
+        showToast(`Mã "${cleanCode}" không tồn tại trên hệ thống! Vui lòng kiểm tra lại.`, "error");
+        return;
+      }
+
+      const codeData = codeSnap.data();
+      if (codeData.status === "used") {
+        showToast("Mã kích hoạt này đã được sử dụng cho tài khoản khác!", "error");
+        return;
+      }
+      if (codeData.status === "inactive") {
+        showToast("Mã kích hoạt này đã bị vô hiệu hóa hoặc thu hồi!", "error");
+        return;
+      }
+
+      // 2. Perform transaction to activate passport and mark code as used
+      const userRef = doc(db, "users", user.uid);
+      await runTransaction(db, async (transaction) => {
+        // Update code status
+        transaction.update(codeRef, {
+          status: "used",
+          usedBy: user.uid,
+          usedEmail: user.email || "",
+          usedAt: serverTimestamp(),
+        });
+
+        // Update user activation profile
+        transaction.update(userRef, {
+          isActivated: true,
+          passportCode: cleanCode,
+          activatedAt: serverTimestamp(),
+        });
+      });
+
+      // Synchronize client profile state instantly
       if (refreshProfile) {
         await refreshProfile();
       }
 
-      showToast("✅ Kích hoạt Hộ chiếu thành công! Đã mở khóa Hành trình di sản.", "success");
+      // Play wooden stamp sound
+      const stampSound = new Audio("https://assets.mixkit.co/active_storage/sfx/2012/2012-84.wav");
+      stampSound.play().catch(() => {});
+
+      showToast("Kích hoạt Hộ chiếu thành công! Đã mở khóa Hành trình di sản.", "success");
+      
       setTimeout(() => {
         router.push("/hanh-trinh");
-      }, 500);
+      }, 1000);
     } catch (error) {
       showToast(error.message || "Đã xảy ra lỗi khi kích hoạt. Vui lòng thử lại.", "error");
     }
   }, [user, db, refreshProfile, showToast, router]);
 
-  // ── Camera Controller ──
-  const startCamera = useCallback(async () => {
-    try {
-      setCameraError("");
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "environment", width: { ideal: 640 }, height: { ideal: 480 } },
-      });
-      streamRef.current = stream;
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        await videoRef.current.play();
-        setIsScanning(true);
-      }
-    } catch (err) {
-      setCameraError("Không thể mở camera. Vui lòng kiểm tra quyền truy cập thiết bị.");
-      setIsScanning(false);
-    }
-  }, []);
-
-  const stopCamera = useCallback(() => {
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach((t) => t.stop());
-      streamRef.current = null;
-    }
-    setIsScanning(false);
-  }, []);
-
-  // Auto-start camera when page loads
-  useEffect(() => {
-    startCamera();
-    return () => {
-      stopCamera();
-    };
-  }, [startCamera, stopCamera]);
-
-  // QR Scanning Poll loop
-  useEffect(() => {
-    if (!isScanning) return;
-    let mounted = true;
-
-    async function pollScan() {
-      if (typeof window === "undefined" || !window.BarcodeDetector) return;
-      if (!detectorRef.current) {
-        try {
-          detectorRef.current = new window.BarcodeDetector({ formats: ["qr_code"] });
-        } catch {
-          return;
-        }
-      }
-      const video = videoRef.current;
-      if (!video || video.readyState < 2) return;
-
-      try {
-        const barcodes = await detectorRef.current.detect(video);
-        for (const barcode of barcodes) {
-          const raw = barcode.rawValue.trim();
-          if (raw === expectedQrValue || raw.startsWith("SCD-")) {
-            if (!mounted) return;
-            stopCamera();
-            performActivation(raw === expectedQrValue ? "SCD-VERIFIED" : raw);
-            return;
-          }
-        }
-      } catch {
-        // ignore
-      }
-    }
-
-    const interval = setInterval(pollScan, 800);
-    return () => {
-      mounted = false;
-      clearInterval(interval);
-    };
-  }, [isScanning, performActivation, stopCamera]);
-
-  // Manual Activate
-  async function handleManualActivate(e) {
+  const handleManualActivate = async (e) => {
     e.preventDefault();
+    if (isActivated) return;
     if (!passportCode.trim()) {
-      showToast("Vui lòng nhập mã passport của bạn!", "error");
+      showToast("Vui lòng nhập hoặc quét mã passport!", "error");
       return;
     }
     setIsSubmitting(true);
     await performActivation(passportCode.trim());
     setIsSubmitting(false);
-  }
+  };
 
-  // Manual verification fallback button if BarcodeDetector is missing
-  async function handleManualConfirmFallback() {
-    stopCamera();
-    await performActivation("SCD-FALLBACK");
+  if (loading || !user) {
+    return (
+      <>
+        <SiteHeader />
+        <main className="page-shell" style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "400px" }}>
+          <div className="spinner" style={{ width: "40px", height: "40px", border: "4px solid rgba(16, 76, 39, 0.1)", borderTopColor: "#104c27", borderRadius: "50%", animation: "spin-loader 1s linear infinite" }} />
+        </main>
+        <SiteFooter />
+      </>
+    );
   }
 
   return (
@@ -175,7 +192,7 @@ export default function ActivatePage() {
         <SectionTitle
           eyebrow="Kích hoạt"
           title="Kích Hoạt Hộ Chiếu Di Sản"
-          description="Đưa mã QR trên Hộ chiếu của bạn vào trước camera để quét tự động, hoặc nhập thông tin thủ công bên dưới."
+          description="Đưa mã QR trên Hộ chiếu của bạn vào trước camera để tự động điền, hoặc nhập thông tin thủ công bên dưới."
         />
 
         <div className="activation-layout content-section">
@@ -185,72 +202,72 @@ export default function ActivatePage() {
               <Camera size={22} style={{ marginRight: "8px", verticalAlign: "middle", color: "#104c27" }} />
               Quét mã QR tự động
             </h3>
-            <p className="scanner-instruction" style={{ fontSize: "14px", color: "#666", margin: "0" }}>
-              Đưa mã QR trước camera của thiết bị để kích hoạt tức thì.
-            </p>
+            {isActivated ? (
+              <p className="scanner-instruction" style={{ fontSize: "14px", color: "#38a169", fontWeight: "bold", margin: "0 0 20px 0" }}>
+                Tài khoản của bạn đã được kích hoạt Hộ chiếu di sản thành công. Camera quét đã tự động tắt để tiết kiệm pin.
+              </p>
+            ) : (
+              <p className="scanner-instruction" style={{ fontSize: "14px", color: "#666", margin: "0 0 20px 0" }}>
+                Đưa mã QR trước camera của thiết bị để quét tự động liên tục.
+              </p>
+            )}
 
-            <div className="scanner-view-container">
-              <video ref={videoRef} className="scanner-camera-feed" autoPlay playsInline muted />
-              {isScanning && <div className="scanner-laser-overlay" />}
+            <div className="scanner-view-container" style={{ position: "relative", minHeight: "260px", background: "#f7f9fa", borderRadius: "12px", overflow: "hidden", display: isActivated ? "none" : "block" }}>
+              <div id="qr-reader" style={{ width: "100%" }} />
               {cameraError && (
-                <div className="scanner-error-display" style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.8)", padding: "20px", textAlign: "center", zIndex: 2 }}>
-                  <ShieldAlert size={36} style={{ marginBottom: "12px", color: "#e74c3c" }} />
-                  <p className="scanner-error-msg" style={{ margin: 0, color: "#fff" }}>{cameraError}</p>
+                <div className="scanner-error-display" style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.85)", padding: "20px", textAlign: "center", zIndex: 2 }}>
+                  <ShieldAlert size={36} style={{ marginBottom: "12px", color: "#e53e3e" }} />
+                  <p className="scanner-error-msg" style={{ margin: 0, color: "#fff", fontSize: "13px" }}>{cameraError}</p>
                 </div>
               )}
             </div>
 
-            {isScanning ? (
-              <span className="scanner-status-text">Đang quét tìm mã QR...</span>
-            ) : (
-              <button type="button" className="btn secondary" onClick={startCamera} style={{ width: "auto", margin: "0 auto" }}>
-                Thử lại camera
-              </button>
-            )}
-
-            {!hasBarcodeDetector && isScanning && (
-              <div className="scanner-fallback-banner" style={{ marginTop: "16px", padding: "12px", background: "rgba(16, 76, 39, 0.05)", borderRadius: "8px" }}>
-                <p style={{ fontSize: "13px", color: "#555", margin: "0 0 10px" }}>
-                  Trình duyệt này không hỗ trợ quét QR tự động.
+            {isActivated && (
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "260px", background: "rgba(16, 76, 39, 0.05)", borderRadius: "12px", padding: "20px", border: "1px solid rgba(16, 76, 39, 0.15)" }}>
+                <CheckCircle2 size={48} style={{ color: "#38a169", marginBottom: "16px" }} />
+                <strong style={{ color: "#104c27", fontSize: "16px" }}>Hộ chiếu đã sẵn sàng!</strong>
+                <p style={{ fontSize: "13px", color: "#555", margin: "8px 0 0 0", textAlign: "center" }}>
+                  Hãy vào mục hành trình để bắt đầu đóng dấu mộc di sản Ninh Bình.
                 </p>
-                <button className="btn secondary" type="button" onClick={handleManualConfirmFallback} style={{ padding: "6px 16px", fontSize: "13px", margin: "0 auto", display: "block" }}>
-                  Kích hoạt nhanh
-                </button>
               </div>
             )}
           </div>
 
-          {/* Right Column: Manual Input Form */}
+          {/* Right Column: Manual Input / Confirmation Form */}
           <div className="activation-manual-panel">
             <h3 style={{ margin: "0 0 10px", color: "#104c27", fontFamily: "var(--font-header, 'Baloo 2', sans-serif)", fontSize: "20px", fontWeight: "700" }}>
-              Nhập thông tin thủ công
+              Thông tin kích hoạt
             </h3>
             <p className="scanner-instruction" style={{ fontSize: "14px", color: "#666", margin: "0" }}>
-              Sử dụng phương thức này nếu camera không hoạt động hoặc không có thiết bị quét.
+              Mã QR sau khi quét được sẽ tự động điền vào ô dưới. Nhấn kích hoạt để xác nhận kích hoạt tài khoản.
             </p>
             
             <form className="activation-form" onSubmit={handleManualActivate} style={{ marginTop: "24px" }}>
               <label>
-                Mã passport
+                Mã kích hoạt hộ chiếu
                 <input
                   type="text"
-                  placeholder="SCD-XXXXX"
+                  placeholder="Ví dụ: SC#7A9X"
                   value={passportCode}
                   onChange={(e) => setPassportCode(e.target.value)}
                   required
+                  disabled={isActivated}
+                  style={{ textTransform: "uppercase", background: isActivated ? "#edf2f7" : "#fff", color: isActivated ? "#4a5568" : "#000" }}
                 />
               </label>
-              <label>
-                Số điện thoại hoặc email đăng ký
-                <input
-                  type="text"
-                  placeholder="Nhập thông tin nhận hành trình"
-                  value={contact}
-                  onChange={(e) => setContact(e.target.value)}
-                />
-              </label>
-              <button className="btn primary" type="submit" disabled={isSubmitting} style={{ width: "100%", marginTop: "16px" }}>
-                {isSubmitting ? "Đang kích hoạt..." : "Kích hoạt hành trình"}
+              <button 
+                className="btn primary" 
+                type="submit" 
+                disabled={isSubmitting || isActivated} 
+                style={{ 
+                  width: "100%", 
+                  marginTop: "16px",
+                  background: isActivated ? "#cbd5e0" : "linear-gradient(135deg, #104c27 0%, #1a743b 100%)",
+                  color: isActivated ? "#718096" : "#fff",
+                  cursor: isActivated ? "not-allowed" : "pointer"
+                }}
+              >
+                {isSubmitting ? "Đang kích hoạt..." : isActivated ? "Tài khoản đã kích hoạt" : "Kích hoạt (Xác nhận OK)"}
               </button>
             </form>
           </div>

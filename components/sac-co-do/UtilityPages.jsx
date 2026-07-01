@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { collection, deleteDoc, doc, onSnapshot, serverTimestamp, updateDoc } from "firebase/firestore";
+import { collection, deleteDoc, doc, onSnapshot, serverTimestamp, updateDoc, getDocs } from "firebase/firestore";
 import { gallery, stations } from "../../data/sac-co-do";
 import { hardcodedProducts } from "../../data/products";
 import SectionTitle from "./SectionTitle";
@@ -268,17 +268,111 @@ export function DashboardPage() {
 }
 
 export function PhotoboothPage() {
+  const { user, db } = useFirebaseAuth();
+  const [photos, setPhotos] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+
+    async function loadPhotos() {
+      // 1. Load from localStorage fallback
+      let localPhotosList = [];
+      if (typeof window !== "undefined") {
+        try {
+          const photosMap = JSON.parse(localStorage.getItem("scd_station_photos") || "{}");
+          localPhotosList = Object.keys(photosMap).map((key) => ({
+            id: key,
+            url: photosMap[key],
+            caption: `Kỷ niệm check-in tại ${stations.find(s => s.id === key)?.name || key}`,
+          }));
+        } catch (_) {}
+      }
+
+      // If not logged in, set local photos and return
+      if (!db || !user) {
+        if (active) {
+          setPhotos(localPhotosList.length > 0 ? localPhotosList : gallery.map((url, idx) => ({ id: `place-${idx}`, url, caption: "Ảnh mẫu Ninh Bình" })));
+          setLoading(false);
+        }
+        return;
+      }
+
+      // 2. Load from Firestore users/{uid}/photoboothPhotos
+      try {
+        const querySnapshot = await getDocs(collection(db, "users", user.uid, "photoboothPhotos"));
+        if (!active) return;
+        
+        const dbPhotos = [];
+        querySnapshot.forEach((docSnapshot) => {
+          const data = docSnapshot.data();
+          dbPhotos.push({
+            id: docSnapshot.id,
+            url: data.url,
+            caption: data.caption || "Ảnh kỷ niệm",
+            createdAt: data.createdAt,
+          });
+        });
+
+        // Sort by createdAt desc
+        dbPhotos.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+
+        // Merge with local photos to ensure nothing is lost
+        const mergedMap = new Map();
+        localPhotosList.forEach((item) => mergedMap.set(item.url, item));
+        dbPhotos.forEach((item) => mergedMap.set(item.url, item));
+
+        const finalPhotos = Array.from(mergedMap.values());
+
+        setPhotos(finalPhotos.length > 0 ? finalPhotos : gallery.map((url, idx) => ({ id: `place-${idx}`, url, caption: "Ảnh mẫu Ninh Bình" })));
+      } catch (err) {
+        console.warn("⚠️ [Photobooth] Lỗi tải ảnh từ Firestore:", err);
+        setPhotos(localPhotosList.length > 0 ? localPhotosList : gallery.map((url, idx) => ({ id: `place-${idx}`, url, caption: "Ảnh mẫu Ninh Bình" })));
+      } finally {
+        if (active) setLoading(false);
+      }
+    }
+
+    loadPhotos();
+    return () => {
+      active = false;
+    };
+  }, [user, db]);
+
   return (
     <UtilityPage
       eyebrow="Photobooth"
-      title="Khung ảnh mở khóa theo từng trạm"
-      description="Sau khi check-in, người dùng có thể dùng frame theo điểm đến để lưu ảnh kỷ niệm."
+      title="Khung ảnh lưu niệm của bạn"
+      description="Sau khi chụp ảnh check-in AR tại các danh thắng, những bức ảnh lưu niệm độc quyền của bạn sẽ được lưu giữ tại đây."
     >
-      <div className="gallery-strip framed">
-        {gallery.map((image) => (
-          <img key={image} src={image} alt="" loading="lazy" decoding="async" />
-        ))}
-      </div>
+      {loading ? (
+        <div className="loading-placeholder-container">
+          <div className="spinner" />
+        </div>
+      ) : (
+        <div className="gallery-strip framed" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "20px" }}>
+          {photos.map((photo) => (
+            <div 
+              key={photo.id} 
+              className="passport-polaroid-frame" 
+              style={{ paddingBottom: "24px" }}
+            >
+              <div className="passport-polaroid-img-wrapper" style={{ height: "85%" }}>
+                <img 
+                  className="passport-polaroid-img" 
+                  src={photo.url} 
+                  alt={photo.caption} 
+                  loading="lazy" 
+                  decoding="async" 
+                />
+              </div>
+              <span className="passport-polaroid-caption" style={{ fontSize: "11px", marginTop: "6px" }}>
+                {photo.caption}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
     </UtilityPage>
   );
 }

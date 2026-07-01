@@ -14545,3 +14545,329 @@ html.reveal-ready .reveal-target.is-revealed {
   100% { transform: rotate(360deg); }
 }
 
+/* Polaroid Photo Frame inside Passport */
+.passport-polaroid-frame {
+  position: relative !important;
+  background: #ffffff !important;
+  padding: 12px 12px 36px 12px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+  border-radius: 4px !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+  width: 100% !important;
+  aspect-ratio: 4/5 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  transition: transform 0.3s ease !important;
+}
+
+.passport-polaroid-frame:hover {
+  transform: scale(1.03) rotate(0deg) !important;
+  z-index: 10 !important;
+}
+
+.passport-polaroid-img-wrapper {
+  width: 100% !important;
+  height: 80% !important;
+  position: relative !important;
+  overflow: hidden !important;
+  background: #f7f5f0 !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+.passport-polaroid-img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
+.passport-polaroid-caption {
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  color: #2b2823 !important;
+  margin-top: 10px !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  width: 90% !important;
+}
+
+.passport-polaroid-date {
+  font-size: 9px !important;
+  color: #8c857b !important;
+  margin-top: 2px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+}
+
+/* AR Check-in Modal Styles */
+.ar-checkin-modal {
+  position: fixed !important;
+  inset: 0 !important;
+  background: rgba(10, 15, 12, 0.9) !important;
+  backdrop-filter: blur(8px) !important;
+  z-index: 9999 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 20px !important;
+  color: #ffffff !important;
+}
+
+.ar-checkin-card {
+  background: #111a14 !important;
+  border: 1px solid rgba(16, 76, 39, 0.3) !important;
+  border-radius: 24px !important;
+  width: 100% !important;
+  max-width: 480px !important;
+  padding: 32px !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.ar-checkin-card::before {
+  content: '' !important;
+  position: absolute !important;
+  top: -50% !important;
+  left: -50% !important;
+  width: 200% !important;
+  height: 200% !important;
+  background: radial-gradient(circle, rgba(16, 76, 39, 0.15) 0%, transparent 70%) !important;
+  pointer-events: none !important;
+}
+
+.ar-checkin-close {
+  position: absolute !important;
+  top: 18px !important;
+  right: 18px !important;
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 50% !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.ar-checkin-close:hover {
+  background: rgba(239, 68, 68, 0.2) !important;
+  border-color: rgba(239, 68, 68, 0.3) !important;
+}
+
+.ar-checkin-header {
+  text-align: center !important;
+  margin-bottom: 24px !important;
+}
+
+.ar-checkin-header h2 {
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  color: #fbd38d !important;
+  margin: 0 0 6px 0 !important;
+}
+
+.ar-checkin-header p {
+  font-size: 13px !important;
+  color: #a0aec0 !important;
+  margin: 0 !important;
+}
+
+.ar-checkin-steps {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 20px !important;
+  margin-bottom: 28px !important;
+}
+
+.ar-checkin-step {
+  display: flex !important;
+  gap: 16px !important;
+  align-items: flex-start !important;
+}
+
+.ar-checkin-step-num {
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 50% !important;
+  background: #104c27 !important;
+  border: 1.5px solid #d69e2e !important;
+  color: #fbd38d !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+}
+
+.ar-checkin-step-content strong {
+  display: block !important;
+  font-size: 14px !important;
+  color: #ffffff !important;
+  margin-bottom: 4px !important;
+}
+
+.ar-checkin-step-content p {
+  font-size: 12px !important;
+  color: #a0aec0 !important;
+  margin: 0 !important;
+  line-height: 1.5 !important;
+}
+
+.ar-checkin-actions {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+}
+
+.ar-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  width: 100% !important;
+  height: 48px !important;
+  border-radius: 14px !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+}
+
+.ar-btn-primary {
+  background: linear-gradient(135deg, #104c27 0%, #156233 100%) !important;
+  border: 1.5px solid #d69e2e !important;
+  color: #fbd38d !important;
+  box-shadow: 0 4px 15px rgba(16, 76, 39, 0.3) !important;
+}
+
+.ar-btn-primary:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 20px rgba(16, 76, 39, 0.4) !important;
+}
+
+.ar-btn-secondary {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+}
+
+.ar-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.ar-btn-disabled {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  color: rgba(255, 255, 255, 0.3) !important;
+  cursor: not-allowed !important;
+}
+
+/* AI Laser Scanner Overlay */
+.lookup-scanner-overlay {
+  position: absolute !important;
+  inset: 0 !important;
+  background: rgba(0, 0, 0, 0.85) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 50 !important;
+}
+
+.lookup-scan-box {
+  width: 260px !important;
+  height: 260px !important;
+  border: 2px solid rgba(16, 76, 39, 0.4) !important;
+  border-radius: 16px !important;
+  position: relative !important;
+  overflow: hidden !important;
+  background: #0d120e !important;
+  box-shadow: 0 0 30px rgba(16, 76, 39, 0.2) !important;
+  margin-bottom: 24px !important;
+}
+
+.lookup-scan-preview {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  opacity: 0.5 !important;
+}
+
+.lookup-laser-line {
+  position: absolute !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 3px !important;
+  background: #10b981 !important;
+  box-shadow: 0 0 8px #10b981, 0 0 15px #10b981 !important;
+  animation: scan-laser 2s linear infinite !important;
+  z-index: 10 !important;
+}
+
+@keyframes scan-laser {
+  0% { top: 0%; }
+  50% { top: 100%; }
+  100% { top: 0%; }
+}
+
+.lookup-status-container {
+  text-align: center !important;
+  width: 80% !important;
+}
+
+.lookup-status-title {
+  color: #fbd38d !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+  margin-bottom: 8px !important;
+}
+
+.lookup-status-log {
+  color: #10b981 !important;
+  font-family: 'Courier New', Courier, monospace !important;
+  font-size: 12px !important;
+  line-height: 1.4 !important;
+  min-height: 36px !important;
+}
+
+.passport-stamp-grid .passport-stop-card {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+}
+
+/* Loading spinner */
+.loading-placeholder-container {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  min-height: 350px !important;
+}
+
+.loading-placeholder-container .spinner {
+  width: 40px !important;
+  height: 40px !important;
+  border: 4px solid rgba(16, 76, 39, 0.1) !important;
+  border-top-color: #104c27 !important;
+  border-radius: 50% !important;
+  animation: spin-loader 1s linear infinite !important;
+}
+
+@keyframes spin-loader {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
