@@ -14274,9 +14274,12 @@ html.reveal-ready .reveal-target.is-revealed {
 }
 
 @media (max-width: 1250px) {
-  .about-bg-decor,
-  .about-bg-cloud {
+  .about-bg-decor {
     display: none;
+  }
+  .about-bg-cloud {
+    display: block !important;
+    opacity: 0.65 !important;
   }
 }
 
@@ -14869,5 +14872,25 @@ html.reveal-ready .reveal-target.is-revealed {
 @keyframes spin-loader {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+/* Responsive mobile menu lock alignment */
+@media (max-width: 991px) {
+  .menu-link.is-locked-link {
+    justify-content: flex-start !important;
+    gap: 10px !important;
+  }
+  .menu-link.is-locked-link .nav-lock-icon {
+    margin-right: 0 !important;
+    color: rgba(6, 62, 67, 0.5) !important;
+  }
+}
+
+/* Ensure cloud decoration stands out on mobile */
+@media (max-width: 768px) {
+  .about-bg-cloud img {
+    object-fit: cover !important;
+    opacity: 0.45 !important;
+  }
 }
 

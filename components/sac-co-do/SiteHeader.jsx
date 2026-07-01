@@ -162,7 +162,7 @@ export default function SiteHeader() {
               const isLocked = item.href === "/hanh-trinh" && (!user || !profile?.isActivated);
               return (
                 <a
-                  className={`menu-link ${pathname === item.href ? "is-active" : ""}`}
+                  className={`menu-link ${pathname === item.href ? "is-active" : ""} ${isLocked ? "is-locked-link" : ""}`}
                   href={item.href}
                   key={item.href}
                   onClick={() => setMenuOpen(false)}
@@ -170,7 +170,7 @@ export default function SiteHeader() {
                   {isLocked ? (
                     <>
                       <Lock size={13} className="nav-lock-icon" />
-                      {t(item.labelKey)}
+                      <span>{t(item.labelKey)}</span>
                     </>
                   ) : (
                     t(item.labelKey)
