@@ -1,12 +1,11 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { stations } from "../../data/sac-co-do";
 import SiteFooter from "./SiteFooter";
 import SiteHeader from "./SiteHeader";
 import { useFirebaseAuth } from "./FirebaseAuthProvider";
-import { useToast } from "./ToastProvider";
-import { collection, getDocs, doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 
 const assetBase = "/assets/ho-chieu-hanh-trinh";
 
@@ -49,8 +48,8 @@ const passportStops = [
   },
 ];
 
-// Helper to render stop card
-function PassportStampCard({ stop, progress, index, onTriggerCheckin }) {
+// Passive stop card representing a stamp in the album
+function PassportStampCard({ stop, progress, index }) {
   const isCompleted = !!progress?.checkedIn;
   const hasPhoto = !!progress?.photoUrl;
   
@@ -84,176 +83,40 @@ function PassportStampCard({ stop, progress, index, onTriggerCheckin }) {
 
       <div className="passport-card-actions" style={{ marginTop: "12px", textAlign: "center" }}>
         {isCompleted ? (
-          <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-            <a className="passport-detail-link" href={`/checkin/${stop.id}`} style={{ justifyContent: "center" }}>
-              Xem chi tiết
-              <img src={`${assetBase}/desktop-icon/ic-xem-chi-tiet.svg`} alt="" aria-hidden="true" />
-            </a>
-            <button 
-              type="button" 
-              className="btn-tiny" 
-              onClick={() => onTriggerCheckin(stop)}
-              style={{ fontSize: "11px", background: "none", border: "none", color: "#104c27", textDecoration: "underline", cursor: "pointer", fontWeight: "bold" }}
-            >
-              {hasPhoto ? "Chụp lại ảnh AR" : "Đính kèm ảnh AR"}
-            </button>
-          </div>
+          <a className="passport-detail-link" href={`/checkin/${stop.id}`} style={{ justifyContent: "center" }}>
+            Xem chi tiết
+            <img src={`${assetBase}/desktop-icon/ic-xem-chi-tiet.svg`} alt="" aria-hidden="true" />
+          </a>
         ) : (
-          <button 
-            type="button" 
-            className="passport-locked-label" 
-            onClick={() => onTriggerCheckin(stop)}
-            style={{ width: "100%", padding: "10px", borderRadius: "10px", background: "#f5f3ef", border: "1px dashed rgba(16, 76, 39, 0.2)", color: "#104c27", fontWeight: "bold", fontSize: "12px", cursor: "pointer" }}
+          <div 
+            style={{ 
+              display: "inline-block", 
+              width: "100%", 
+              padding: "10px", 
+              borderRadius: "10px", 
+              background: "#f9f8f6", 
+              border: "1px dashed #cbd5e0", 
+              color: "#718096", 
+              fontWeight: "bold", 
+              fontSize: "12px", 
+              textAlign: "center",
+              cursor: "default"
+            }}
           >
-            Chụp ảnh Check-in
-          </button>
+            Chưa khám phá
+          </div>
         )}
       </div>
     </article>
   );
 }
 
-// Simulated iOS AR Quick Look Uploader modal
-function ARCheckinModal({ stop, onClose, onUploadSuccess }) {
-  const { showToast } = useToast();
-  const [currentStep, setCurrentStep] = useState(1);
-  const [photoFile, setPhotoFile] = useState(null);
-  const [isUploading, setIsUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const fileInputRef = useRef(null);
-  const modelViewerRef = useRef(null);
-
-  const handleLaunchAR = async () => {
-    const viewer = modelViewerRef.current;
-    if (!viewer) return;
-
-    try {
-      showToast("📢 Đang mở camera AR... Đặt Robot 3D xuống nền phẳng và bấm nút chụp của iPhone để lưu ảnh vào Thư viện nhé!", "info");
-      await viewer.activateAR();
-      setCurrentStep(2);
-    } catch (err) {
-      console.warn("Model viewer launch failed:", err);
-      // Fallback
-      setCurrentStep(2);
-    }
-  };
-
-  const handleFileChange = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setPhotoFile(file);
-    setIsUploading(true);
-    setUploadProgress(0);
-
-    try {
-      const { uploadToCloudinary } = await import("../../lib/cloudinary/client");
-      const uploadResult = await uploadToCloudinary(
-        file, 
-        `sac-co-do/checkin/${stop.id}`,
-        (percent) => setUploadProgress(percent)
-      );
-      
-      const stampSound = new Audio("https://assets.mixkit.co/active_storage/sfx/2012/2012-84.wav");
-      stampSound.play().catch(() => {});
-
-      await onUploadSuccess(stop.id, uploadResult.url);
-    } catch (err) {
-      console.error(err);
-      showToast("❌ Lỗi tải ảnh lên Cloudinary. Vui lòng thử lại!", "error");
-    } finally {
-      setIsUploading(false);
-    }
-  };
-
-  return (
-    <div className="ar-checkin-modal">
-      <div className="ar-checkin-card">
-        <button className="ar-checkin-close" onClick={onClose} disabled={isUploading}>✕</button>
-        
-        <div className="ar-checkin-header">
-          <h2>Check-in AR {stop.title}</h2>
-          <p>Tải ảnh chụp từ trình xem AR để đóng dấu Hộ chiếu</p>
-        </div>
-
-        <div className="ar-checkin-steps">
-          <div className={`ar-checkin-step ${currentStep === 1 ? "" : "opacity-40"}`} style={{ opacity: currentStep === 1 ? 1 : 0.4 }}>
-            <span className="ar-checkin-step-num">1</span>
-            <div className="ar-checkin-step-content">
-              <strong>Mở Camera và Chụp ảnh AR</strong>
-              <p>Mở camera AR bên dưới, đặt hướng dẫn viên 3D vào phong cảnh thực tế và sử dụng nút chụp của iPhone để lưu ảnh vào máy.</p>
-            </div>
-          </div>
-
-          <div className={`ar-checkin-step ${currentStep === 2 ? "" : "opacity-40"}`} style={{ opacity: currentStep === 2 ? 1 : 0.4 }}>
-            <span className="ar-checkin-step-num">2</span>
-            <div className="ar-checkin-step-content">
-              <strong>Chọn ảnh vừa chụp để lưu giữ</strong>
-              <p>Đóng AR, quay lại đây bấm nút Chọn ảnh để tải lên Hộ chiếu của bạn.</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="ar-checkin-actions">
-          {currentStep === 1 ? (
-            <button type="button" className="ar-btn ar-btn-primary" onClick={handleLaunchAR}>
-              📷 Bước 1: Mở Camera AR
-            </button>
-          ) : (
-            <button type="button" className="ar-btn ar-btn-primary" onClick={() => fileInputRef.current?.click()} disabled={isUploading}>
-              📂 Bước 2: Chọn ảnh từ Thư viện
-            </button>
-          )}
-
-          {currentStep === 2 && (
-            <button type="button" className="ar-btn ar-btn-secondary" onClick={() => setCurrentStep(1)} disabled={isUploading}>
-              ↩️ Quay lại Bước 1
-            </button>
-          )}
-        </div>
-
-        <input 
-          type="file" 
-          ref={fileInputRef} 
-          accept="image/*" 
-          onChange={handleFileChange} 
-          style={{ display: "none" }} 
-        />
-
-        <div style={{ width: 0, height: 0, overflow: "hidden", visibility: "hidden" }}>
-          <model-viewer
-            ref={modelViewerRef}
-            src="/ar/sac-co-do-guide-v2.glb"
-            ios-src="/ar/sac-co-do-guide-v2.usdz"
-            ar
-            ar-modes="webxr scene-viewer quick-look"
-            camera-controls
-          />
-        </div>
-
-        {isUploading && (
-          <div className="lookup-scanner-overlay" style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-            <div className="spinner" style={{ width: "50px", height: "50px", border: "4px solid rgba(255, 255, 255, 0.1)", borderTopColor: "#fbd38d", borderRadius: "50%", animation: "spin-loader 1s linear infinite", marginBottom: "20px" }} />
-            <div style={{ color: "#fbd38d", fontSize: "16px", fontWeight: "bold", letterSpacing: "0.05em" }}>
-              ĐANG TẢI ẢNH LÊN... {uploadProgress}%
-            </div>
-            <p style={{ color: "#a0aec0", fontSize: "12px", marginTop: "8px", marginBottom: 0 }}>Vui lòng giữ kết nối mạng ổn định</p>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
 export default function PassportJourneyPage() {
   const { user, db } = useFirebaseAuth();
-  const { showToast } = useToast();
-  
   const [visitedStops, setVisitedStops] = useState({});
   const [loadingStops, setLoadingStops] = useState(true);
-  const [activeCheckinStop, setActiveCheckinStop] = useState(null);
 
-  // Load progress
+  // Load progress stats
   useEffect(() => {
     let active = true;
     if (!db || !user) {
@@ -315,79 +178,6 @@ export default function PassportJourneyPage() {
       active = false;
     };
   }, [user, db]);
-
-  // Handle successful AR photo upload and check-in
-  const handleCheckinSuccess = async (stationId, photoUrl) => {
-    setActiveCheckinStop(null);
-
-    // Play fireworks confetti
-    if (typeof window !== "undefined") {
-      const script = document.createElement("script");
-      script.src = "https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js";
-      script.onload = () => {
-        window.confetti({
-          particleCount: 180,
-          spread: 90,
-          origin: { y: 0.6 }
-        });
-      };
-      document.body.appendChild(script);
-    }
-
-    // 1. Update state locally
-    setVisitedStops((prev) => ({
-      ...prev,
-      [stationId]: {
-        stationId,
-        checkedIn: true,
-        photoUrl,
-      },
-    }));
-
-    // 2. Update localStorage for fallback
-    if (typeof window !== "undefined") {
-      const visitedList = JSON.parse(localStorage.getItem("scd_visited_stations") || "[]");
-      if (!visitedList.includes(stationId)) {
-        visitedList.push(stationId);
-        localStorage.setItem("scd_visited_stations", JSON.stringify(visitedList));
-      }
-      const photosMap = JSON.parse(localStorage.getItem("scd_station_photos") || "{}");
-      photosMap[stationId] = photoUrl;
-      localStorage.setItem("scd_station_photos", JSON.stringify(photosMap));
-    }
-
-    // 3. Write to Firestore
-    if (db && user) {
-      try {
-        const { saveJourneyProgress } = await import("../../lib/firebase/userData");
-        // Save progress to users/{uid}/journeyProgress/{stationId}
-        await saveJourneyProgress({
-          db,
-          uid: user.uid,
-          stationId,
-          stationName: passportStops.find((item) => item.id === stationId)?.title || stationId,
-          source: "ios-ar-quicklook",
-          photoUrl,
-        });
-
-        // Save photobooth record to users/{uid}/photoboothPhotos/{photoId}
-        const photoId = `checkin-${stationId}-${Date.now()}`;
-        const photoRef = doc(db, "users", user.uid, "photoboothPhotos", photoId);
-        await setDoc(photoRef, {
-          stationId,
-          caption: `Kỷ niệm check-in AR tại ${passportStops.find((item) => item.id === stationId)?.title || stationId}`,
-          url: photoUrl,
-          createdAt: serverTimestamp(),
-        });
-        
-        showToast("🎉 Đóng dấu mộc thành công và đã thêm ảnh vào bộ sưu tập Photobooth!", "success");
-      } catch (err) {
-        console.warn("⚠️ [Passport] Lỗi lưu Firestore:", err);
-      }
-    } else {
-      showToast("🎉 Đóng dấu mộc thành công! Hãy đăng nhập để lưu trữ vĩnh viễn.", "success");
-    }
-  };
 
   // Calculations for progress stats
   const totalStops = passportStops.length;
@@ -454,7 +244,6 @@ export default function PassportJourneyPage() {
                 stop={stop} 
                 progress={visitedStops[stop.id]} 
                 index={index} 
-                onTriggerCheckin={setActiveCheckinStop}
               />
             ))}
           </section>
@@ -523,14 +312,6 @@ export default function PassportJourneyPage() {
         </div>
       </main>
       <SiteFooter />
-
-      {activeCheckinStop && (
-        <ARCheckinModal 
-          stop={activeCheckinStop} 
-          onClose={() => setActiveCheckinStop(null)} 
-          onUploadSuccess={handleCheckinSuccess}
-        />
-      )}
     </>
   );
 }
