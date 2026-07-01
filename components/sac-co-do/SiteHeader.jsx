@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { useFirebaseAuth } from "./FirebaseAuthProvider";
 import { useI18n } from "./I18nProvider";
 import { useToast } from "./ToastProvider";
+import { Lock } from "lucide-react";
 
 const navLinks = [
   { href: "/ve-chung-toi", labelKey: "header.nav.about" },
@@ -157,16 +158,26 @@ export default function SiteHeader() {
               </div>
             </div>
 
-            {navLinks.map((item) => (
-              <a
-                className={`menu-link ${pathname === item.href ? "is-active" : ""}`}
-                href={item.href}
-                key={item.href}
-                onClick={() => setMenuOpen(false)}
-              >
-                {t(item.labelKey)}
-              </a>
-            ))}
+            {navLinks.map((item) => {
+              const isLocked = item.href === "/hanh-trinh" && (!user || !profile?.isActivated);
+              return (
+                <a
+                  className={`menu-link ${pathname === item.href ? "is-active" : ""}`}
+                  href={item.href}
+                  key={item.href}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {isLocked ? (
+                    <>
+                      <Lock size={13} className="nav-lock-icon" />
+                      {t(item.labelKey)}
+                    </>
+                  ) : (
+                    t(item.labelKey)
+                  )}
+                </a>
+              );
+            })}
           </nav>
 
           <div className="nav-right-item">
