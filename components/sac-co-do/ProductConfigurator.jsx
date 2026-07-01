@@ -13,11 +13,36 @@ const fallbackImages = [
   { src: "/assets/anh-new/vvv.jpg", label: "Bang mau va logo Sac Co Do" },
 ];
 
+const PRODUCT_OPTIONS = {
+  "passport": [
+    { label: "Cuốn Passport", price: 150000, priceFormatted: "150.000đ", image: "/assets/san-pham/remove-bg/passport.png" }
+  ],
+  "com-chay-dang-tui": [
+    { label: "Túi 216g", price: 59000, priceFormatted: "59.000đ", image: "/assets/san-pham/Cơm cháy cố đô dạng túi 180g - 59k_goi.png" },
+    { label: "Combo 3 túi", price: 165000, priceFormatted: "165.000đ", image: "/assets/san-pham/Cơm cháy nhí/cm cháy nhí.png" }
+  ],
+  "com-chay-ruoc-dam-vi": [
+    { label: "Túi 300g", price: 65000, priceFormatted: "65.000đ", image: "/assets/san-pham/Cơm cháy cố đô ruốc đậm vị 300g 65k_goi.png" },
+    { label: "Túi 180g", price: 45000, priceFormatted: "45.000đ", image: "/assets/san-pham/Cơm cháy đậm vị/cm cháy đậm vị ruốc1.png" }
+  ],
+  "com-chay-vuong-lut": [
+    { label: "Túi 200g", price: 54000, priceFormatted: "54.000đ", image: "/assets/san-pham/Cơm cháy cố đô vuông lứt 210g 54k_ goi.png" }
+  ],
+  "thit-chung-mam-tep-thanh-nguyen": [
+    { label: "Hũ 275g", price: 175000, priceFormatted: "175.000đ", image: "/assets/san-pham/Mắm tép thanh nguyễn/IMG_7739.JPG" },
+    { label: "Hũ 90g", price: 65000, priceFormatted: "65.000đ", image: "/assets/san-pham/Mắm tép thanh nguyễn/IMG_7747.JPG" }
+  ],
+  "ruoc-ca-ro-tong-truong": [
+    { label: "Hộp 100g", price: 239000, priceFormatted: "239.000đ", image: "/assets/san-pham/ruốc cá rô tổng trường/2.png" }
+  ]
+};
+
 function formatVnd(value) {
   return new Intl.NumberFormat("vi-VN").format(Number(value || 0)) + "đ";
 }
 
 function toProductOption(product) {
+  if (!product) return null;
   return {
     ...product,
     id: product.id,
@@ -58,6 +83,23 @@ export default function ProductConfigurator({ productId }) {
     return toProductOption(getHardcodedProductBySlugOrId(productId));
   }, [productId]);
 
+  // Options list for current product
+  const optionsList = useMemo(() => {
+    return selected ? (PRODUCT_OPTIONS[selected.id] || []) : [];
+  }, [selected]);
+
+  // Selected option state
+  const [selectedOption, setSelectedOption] = useState(null);
+
+  // Initialize option state
+  useEffect(() => {
+    if (optionsList.length > 0) {
+      setSelectedOption(optionsList[0]);
+    } else {
+      setSelectedOption(null);
+    }
+  }, [optionsList]);
+
   useEffect(() => {
     setActiveImage(getImages(selected)[0] || fallbackImages[0]);
   }, [selected]);
@@ -67,20 +109,26 @@ export default function ProductConfigurator({ productId }) {
     return images.length ? images : fallbackImages;
   }, [selected]);
 
-  const total = useMemo(() => Number(selected?.price || 0) * quantity, [selected?.price, quantity]);
+  const currentPrice = useMemo(() => {
+    return selectedOption ? selectedOption.price : Number(selected?.price || 0);
+  }, [selectedOption, selected]);
+
+  const total = useMemo(() => currentPrice * quantity, [currentPrice, quantity]);
+  
   const model3d = selected?.model3d || {};
   const activeImageModeClass = isFallbackProductImage(activeImage?.src) ? "is-contain" : "is-cover";
+  
   const detailFacts = useMemo(
     () =>
       [
-        { label: "Khối lượng tịnh", value: selected?.weight },
+        { label: "Khối lượng tịnh", value: selectedOption ? selectedOption.label : selected?.weight },
         { label: "Thành phần", value: selected?.ingredients },
         { label: "Hướng dẫn sử dụng", value: selected?.usage },
         { label: "Hạn sử dụng", value: selected?.shelfLife },
         { label: "Bảo quản", value: selected?.storage },
         { label: "Lưu ý", value: selected?.note },
       ].filter((item) => item.value),
-    [selected]
+    [selected, selectedOption]
   );
 
   useEffect(() => {
@@ -115,6 +163,10 @@ export default function ProductConfigurator({ productId }) {
       const itemId = selected.id || selected.slug;
       const cartRef = doc(collection(db, "users", user.uid, "cart"), itemId);
 
+      const displayName = selectedOption 
+        ? `${selected.name} (${selectedOption.label})` 
+        : selected.name;
+
       await setDoc(
         cartRef,
         {
@@ -123,17 +175,21 @@ export default function ProductConfigurator({ productId }) {
           quantity: increment(quantity),
           updatedAt: serverTimestamp(),
           snapshot: {
-            name: selected.name,
-            price: Number(selected.price || 0),
-            image: selected.image || detailImages[0]?.src || "",
+            name: displayName,
+            price: currentPrice,
+            image: selectedOption?.image || selected.image || fallbackImages[0].src,
             badge: selected.badge || selected.category || "",
-            weight: selected.weight || "",
+            weight: selectedOption?.label || selected.weight || "",
           },
         },
         { merge: true }
       );
       setCartState("saved");
-      showToast("Đã thêm vào giỏ hàng.", "success");
+      showToast(`Đã thêm ${quantity} ${selected.shortName} (${selectedOption?.label || ""}) vào giỏ hàng.`, "success");
+      
+      setTimeout(() => {
+        setCartState("idle");
+      }, 1500);
     } catch (error) {
       console.error("Add to cart failed:", error);
       setCartState("idle");
@@ -182,6 +238,33 @@ export default function ProductConfigurator({ productId }) {
           <span aria-label="5 sao">★★★★★</span>
           <small>(48 đánh giá của người đi phượt)</small>
         </div>
+        
+        {/* Variant Selectors for Thịt Chưng Mắm Tép */}
+        {optionsList.length > 1 && (
+          <div style={{ marginTop: "16px", marginBottom: "16px" }}>
+            <span style={{ fontSize: "13px", color: "#5d6768", fontWeight: "bold", display: "block", marginBottom: "8px" }}>Chọn định lượng:</span>
+            <div className="product-option-pills">
+              {optionsList.map((opt) => (
+                <button
+                  key={opt.label}
+                  className={`option-pill-btn ${selectedOption?.label === opt.label ? "active" : ""}`}
+                  type="button"
+                  onClick={() => {
+                    setSelectedOption(opt);
+                    // Match thumb image with selected option image if available
+                    const matchingThumb = detailImages.find(img => img.src === opt.image);
+                    if (matchingThumb) {
+                      setActiveImage(matchingThumb);
+                    }
+                  }}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         <p>{selected?.description || "Sản phẩm di sản Ninh Bình được tuyển chọn cho hành trình Sắc Cố Đô."}</p>
 
         {detailFacts.length ? (
