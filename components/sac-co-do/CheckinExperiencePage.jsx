@@ -298,7 +298,9 @@ export default function CheckinExperiencePage({ stationId }) {
       setSelectedFile(null);
       setPreviewUrl(null);
 
-      // Play Confetti Celebration
+      showToast(`Chúc mừng! Bạn đã hoàn thành check-in tại ${station.name} và đóng dấu mộc thành công!`, "success");
+
+      // Play Confetti Celebration and redirect to passport page
       if (typeof window !== "undefined") {
         const script = document.createElement("script");
         script.src = "https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js";
@@ -308,11 +310,14 @@ export default function CheckinExperiencePage({ stationId }) {
             spread: 80,
             origin: { y: 0.6 },
           });
+          setTimeout(() => {
+            window.location.href = "/ho-chieu";
+          }, 1500);
         };
         document.body.appendChild(script);
+      } else {
+        window.location.href = "/ho-chieu";
       }
-
-      showToast(`Chúc mừng! Bạn đã hoàn thành check-in tại ${station.name} và đóng dấu mộc thành công!`, "success");
     } catch (err) {
       console.error("Cloudinary stamp upload failed:", err);
       showToast("Không thể đăng tải hình ảnh kỷ niệm. Vui lòng thử lại.", "error");
@@ -349,20 +354,42 @@ export default function CheckinExperiencePage({ stationId }) {
       }
     }
 
-    await saveJourneyProgress({
-      db,
-      uid: user?.uid,
-      stationId: station.id || stationId,
-      stationName: station.name,
-      source: "ar-live",
-    });
-    await saveArExperience({
-      db,
-      uid: user?.uid,
-      stationId: station.id || stationId,
-      stationName: station.name,
-      modelId: station.arGuide?.modelId,
-    });
+    try {
+      await saveJourneyProgress({
+        db,
+        uid: user?.uid,
+        stationId: station.id || stationId,
+        stationName: station.name,
+        source: "ar-live",
+      });
+      await saveArExperience({
+        db,
+        uid: user?.uid,
+        stationId: station.id || stationId,
+        stationName: station.name,
+        modelId: station.arGuide?.modelId,
+      });
+
+      showToast(`Chúc mừng! Bạn đã hoàn thành check-in tại ${station.name} và đóng dấu mộc thành công!`, "success");
+
+      // Play confetti and redirect
+      if (typeof window !== "undefined") {
+        const script = document.createElement("script");
+        script.src = "https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js";
+        script.onload = () => {
+          window.confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+          setTimeout(() => {
+            window.location.href = "/ho-chieu";
+          }, 1550);
+        };
+        document.body.appendChild(script);
+      } else {
+        window.location.href = "/ho-chieu";
+      }
+    } catch (e) {
+      console.error("AR live stamp saving failed:", e);
+      showToast("Lỗi đóng dấu mộc. Vui lòng thử lại.", "error");
+    }
   }
 
   function handleSheetPointerDown(event) {

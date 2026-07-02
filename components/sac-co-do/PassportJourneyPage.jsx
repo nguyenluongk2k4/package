@@ -297,37 +297,41 @@ function CertificatePreviewModal({ certificate, onClose, initialName }) {
   return (
     <div className="cert-modal-backdrop" onClick={onClose}>
       <div className="cert-modal-content" onClick={(e) => e.stopPropagation()}>
-        <button className="cert-modal-close" onClick={onClose} aria-label="Đóng">×</button>
+        <button type="button" className="cert-modal-close" onClick={onClose} aria-label="Đóng">×</button>
         
-        <h3>Chứng Nhận Di Sản</h3>
-        <p className="cert-modal-hint font-baloo">Họ tên sẽ in trên chứng chỉ thành tựu:</p>
-        
-        <div className="cert-input-group">
-          <input 
-            type="text" 
-            value={customName} 
-            onChange={(e) => setCustomName(e.target.value)} 
-            placeholder="Nhập họ tên nhận chứng nhận..." 
-            maxLength={40}
-          />
-        </div>
+        <div className="cert-modal-left">
+          <h3>Chứng Nhận Di Sản</h3>
+          <p className="cert-modal-hint font-baloo">Họ tên in trên chứng chỉ:</p>
+          
+          <div className="cert-input-group">
+            <input 
+              type="text" 
+              value={customName} 
+              onChange={(e) => setCustomName(e.target.value)} 
+              placeholder="Nhập họ tên nhận chứng nhận..." 
+              maxLength={40}
+            />
+          </div>
 
-        <div className="cert-preview-wrapper">
-          <img src={certificate.svgUrl} alt="Certificate template" className="cert-img-base" />
-          <div className="cert-name-overlay-cover">
-            <span className="cert-overlay-text">{customName}</span>
+          <div className="cert-modal-actions">
+            <button 
+              type="button" 
+              className="cert-download-btn" 
+              onClick={handleDownload}
+              disabled={isDownloading}
+            >
+              {isDownloading ? "Đang tạo..." : "Tải xuống Chứng nhận (PNG)"}
+            </button>
           </div>
         </div>
 
-        <div className="cert-modal-actions">
-          <button 
-            type="button" 
-            className="cert-download-btn" 
-            onClick={handleDownload}
-            disabled={isDownloading}
-          >
-            {isDownloading ? "Đang tạo chứng chỉ..." : "Tải xuống Chứng nhận (PNG)"}
-          </button>
+        <div className="cert-modal-right">
+          <div className="cert-preview-wrapper">
+            <img src={certificate.svgUrl} alt="Certificate template" className="cert-img-base" />
+            <div className="cert-name-overlay-cover">
+              <span className="cert-overlay-text">{customName}</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>

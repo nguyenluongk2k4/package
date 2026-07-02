@@ -248,22 +248,358 @@ export function CartPage() {
 }
 
 export function DashboardPage() {
+  const { user, db, profile, refreshProfile, logout } = useFirebaseAuth();
+  const { showToast } = useToast();
+  
+  // Local profile states
+  const [fullName, setFullName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+  
+  // Local checkin states
+  const [completedCount, setCompletedCount] = useState(0);
+  const [selectedCert, setSelectedCert] = useState(null);
+
+  // Sync profile state when loaded
+  useEffect(() => {
+    if (profile) {
+      setFullName(profile.fullName || profile.displayName || user?.displayName || "");
+      setPhoneNumber(profile.phoneNumber || profile.phone || "");
+    } else if (user) {
+      setFullName(user.displayName || "");
+      setPhoneNumber("");
+    } else if (typeof window !== "undefined") {
+      // Guest mode sync
+      setFullName(localStorage.getItem("scd_guest_name") || "");
+      setPhoneNumber(localStorage.getItem("scd_guest_phone") || "");
+    }
+  }, [profile, user]);
+
+  // Load completed stops count
+  useEffect(() => {
+    let active = true;
+
+    async function loadStats() {
+      // Guest local completed count
+      let guestCount = 0;
+      if (typeof window !== "undefined") {
+        try {
+          const visitedList = JSON.parse(localStorage.getItem("scd_visited_stations") || "[]");
+          guestCount = visitedList.length;
+        } catch (_) {}
+      }
+
+      if (!db || !user) {
+        if (active) setCompletedCount(guestCount);
+        return;
+      }
+
+      try {
+        const querySnapshot = await getDocs(collection(db, "users", user.uid, "journeyProgress"));
+        if (!active) return;
+        const dbCount = querySnapshot.size;
+        setCompletedCount(Math.max(dbCount, guestCount)); // Merge database and guest local
+      } catch (err) {
+        console.warn("⚠️ [Dashboard] Lỗi tải tiến trình:", err);
+        if (active) setCompletedCount(guestCount);
+      }
+    }
+
+    loadStats();
+    return () => {
+      active = false;
+    };
+  }, [user, db]);
+
+  const handleSaveProfile = async (e) => {
+    e.preventDefault();
+    if (!fullName.trim()) {
+      showToast("Vui lòng nhập họ và tên.", "error");
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      if (user && db) {
+        const userRef = doc(db, "users", user.uid);
+        await updateDoc(userRef, {
+          fullName: fullName.trim(),
+          displayName: fullName.trim(),
+        });
+        await refreshProfile();
+      } else if (typeof window !== "undefined") {
+        // Guest mode save
+        localStorage.setItem("scd_guest_name", fullName.trim());
+      }
+      showToast("Cập nhật thông tin hồ sơ thành công!", "success");
+    } catch (err) {
+      console.error("Failed to update profile:", err);
+      showToast("Không thể cập nhật hồ sơ. Vui lòng thử lại.", "error");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const certs = [
+    {
+      id: "beginner",
+      title: "Kẻ lữ hành tò mò",
+      description: "Đã ghé thăm 2 địa điểm di sản",
+      required: 2,
+      icon: "/assets/ho-chieu-hanh-trinh/desktop-icon/ic-cert-1.svg",
+      svgUrl: "/certificate/begin.svg",
+    },
+    {
+      id: "photographer",
+      title: "Nhiếp ảnh gia Cố đô",
+      description: "Check-in tại 4 địa điểm",
+      required: 4,
+      icon: "/assets/ho-chieu-hanh-trinh/desktop-icon/ic-cert-2.svg",
+      svgUrl: "/certificate/HERITAGE-PHOTOGRAPHER.svg",
+    },
+    {
+      id: "champion",
+      title: "Nhà chinh phục Cố đô",
+      description: "Đóng đủ 6 dấu mộc di sản",
+      required: 6,
+      icon: "/assets/ho-chieu-hanh-trinh/desktop-icon/ic-cert-3.svg",
+      svgUrl: "/certificate/HERITAGE-CHAMPION.svg",
+    },
+  ];
+
   return (
-    <UtilityPage
-      eyebrow="Của tôi"
-      title="Tiến độ passport cá nhân"
-      description="Màn hình tổng hợp số trạm đã đi, dấu đã nhận và phần thưởng đang mở khóa."
-    >
-      <div className="progress-grid">
-        {stations.slice(0, 4).map((station, index) => (
-          <article key={station.id}>
-            <span>{index < 2 ? "Đã nhận" : "Chưa mở"}</span>
-            <h3>{station.name}</h3>
-            <p>{station.stamp}</p>
-          </article>
-        ))}
+    <>
+      <UtilityPage
+        eyebrow="Tài khoản"
+        title="Hồ Sơ Của Tôi"
+        description="Quản lý thông tin cá nhân và xem danh sách chứng chỉ di sản Ninh Bình bạn đã đạt."
+      >
+        <div className="profile-page-container">
+          {/* Personal Info Card */}
+          <section className="profile-card" aria-label="Thông tin cá nhân">
+            <h2>Thông tin cá nhân</h2>
+            
+            {!user && (
+              <div className="profile-login-prompt font-baloo">
+                Bạn đang truy cập ở chế độ <strong>Khách tham quan</strong>. 
+                Đăng nhập để lưu trữ thông tin vĩnh viễn và đồng bộ chứng chỉ:
+                <a href="/dang-nhap">Đăng nhập ngay</a>
+              </div>
+            )}
+
+            <form onSubmit={handleSaveProfile}>
+              <div className="profile-form-group">
+                <label className="font-baloo">Họ và tên</label>
+                <input 
+                  type="text" 
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  placeholder="Nhập họ và tên nhận chứng chỉ..."
+                  required
+                />
+              </div>
+
+              <div className="profile-form-group">
+                <label className="font-baloo">Địa chỉ Email</label>
+                <input 
+                  type="email" 
+                  value={user?.email || "Chưa đăng nhập"} 
+                  disabled 
+                />
+              </div>
+
+              <button 
+                type="submit" 
+                className="profile-submit-btn font-baloo"
+                disabled={isSaving}
+              >
+                {isSaving ? "Đang lưu..." : "Lưu thay đổi"}
+              </button>
+            </form>
+
+            {user && (
+              <button 
+                type="button" 
+                className="profile-logout-btn font-baloo" 
+                onClick={async () => {
+                  await logout();
+                  showToast("Bạn đã đăng xuất thành công.", "info");
+                  window.location.href = "/";
+                }}
+              >
+                Đăng xuất tài khoản
+              </button>
+            )}
+          </section>
+
+          {/* Certificates Card */}
+          <section className="profile-card" aria-label="Chứng chỉ di sản">
+            <h2>Chứng chỉ đạt được ({certs.filter(c => completedCount >= c.required).length}/3)</h2>
+            <div className="profile-certs-list">
+              {certs.map((cert) => {
+                const isUnlocked = completedCount >= cert.required;
+                return (
+                  <article 
+                    className={`profile-cert-item ${isUnlocked ? "is-unlocked" : ""}`} 
+                    key={cert.id}
+                  >
+                    <div className="profile-cert-icon-wrapper">
+                      <img src={cert.icon} alt="" aria-hidden="true" />
+                    </div>
+                    <div className="profile-cert-info">
+                      <h3>{cert.title}</h3>
+                      <p>{cert.description}</p>
+                    </div>
+                    <div className="profile-cert-status">
+                      {isUnlocked ? (
+                        <>
+                          <span className="badge-unlocked font-baloo">Đã Đạt</span>
+                          <button 
+                            type="button" 
+                            className="profile-cert-action-btn font-baloo"
+                            onClick={() => setSelectedCert(cert)}
+                          >
+                            Nhận chứng chỉ
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <span className="badge-locked font-baloo">Chưa Đạt</span>
+                          <p style={{ fontSize: "11px", color: "#a0aec0", fontStyle: "italic" }}>
+                            Tiến trình: {completedCount}/{cert.required} chặng
+                          </p>
+                        </>
+                      )}
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          </section>
+        </div>
+      </UtilityPage>
+
+      {selectedCert && (
+        <LocalCertificateModal 
+          certificate={selectedCert} 
+          onClose={() => setSelectedCert(null)}
+          initialName={fullName || profile?.fullName || user?.displayName || "Lữ khách di sản"}
+        />
+      )}
+    </>
+  );
+}
+
+// Local Certificate Modal Component for UtilityPages
+function LocalCertificateModal({ certificate, onClose, initialName }) {
+  const [customName, setCustomName] = useState(initialName || "Lữ khách hiếu kỳ");
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  const handleDownload = () => {
+    setIsDownloading(true);
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    const img = new Image();
+
+    const scale = 3;
+    canvas.width = 595.5 * scale;
+    canvas.height = 842.25 * scale;
+
+    img.src = certificate.svgUrl;
+    img.onload = () => {
+      document.fonts.load('1em "HLT Burgues Script"').then(() => {
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#f0f0f0";
+        ctx.fillRect(110 * scale, 396 * scale, 375 * scale, 58 * scale);
+        ctx.fillStyle = "#1a1a1a";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.font = `${32 * scale}px "HLT Burgues Script", cursive`;
+        ctx.fillText(customName, (595.5 / 2) * scale, 428 * scale);
+
+        try {
+          const dataUrl = canvas.toDataURL("image/png");
+          const link = document.createElement("a");
+          link.download = `Chung_Nhan_Scd_${certificate.id}_${customName.replace(/\s+/g, "_")}.png`;
+          link.href = dataUrl;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        } catch (e) {
+          console.error("Canvas export failed:", e);
+        } finally {
+          setIsDownloading(false);
+        }
+      }).catch((err) => {
+        console.warn("Font loading failed, falling back to cursive:", err);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#f0f0f0";
+        ctx.fillRect(110 * scale, 396 * scale, 375 * scale, 58 * scale);
+        ctx.fillStyle = "#1a1a1a";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.font = `italic 700 ${28 * scale}px "Dancing Script", cursive`;
+        ctx.fillText(customName, (595.5 / 2) * scale, 428 * scale);
+        try {
+          const dataUrl = canvas.toDataURL("image/png");
+          const link = document.createElement("a");
+          link.download = `Chung_Nhan_Scd_${certificate.id}_${customName.replace(/\s+/g, "_")}.png`;
+          link.href = dataUrl;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        } catch (e) {
+          console.error("Canvas export failed:", e);
+        } finally {
+          setIsDownloading(false);
+        }
+      });
+    };
+
+    img.onerror = () => setIsDownloading(false);
+  };
+
+  return (
+    <div className="cert-modal-backdrop" onClick={onClose}>
+      <div className="cert-modal-content" onClick={(e) => e.stopPropagation()}>
+        <button type="button" className="cert-modal-close" onClick={onClose} aria-label="Đóng">×</button>
+        
+        <div className="cert-modal-left">
+          <h3>Chứng Nhận Di Sản</h3>
+          <p className="cert-modal-hint font-baloo">Họ tên in trên chứng chỉ:</p>
+          
+          <div className="cert-input-group">
+            <input 
+              type="text" 
+              value={customName} 
+              onChange={(e) => setCustomName(e.target.value)} 
+              placeholder="Nhập họ tên nhận chứng nhận..." 
+              maxLength={40}
+            />
+          </div>
+
+          <div className="cert-modal-actions">
+            <button 
+              type="button" 
+              className="cert-download-btn font-baloo" 
+              onClick={handleDownload}
+              disabled={isDownloading}
+            >
+              {isDownloading ? "Đang tạo..." : "Tải xuống Chứng nhận (PNG)"}
+            </button>
+          </div>
+        </div>
+
+        <div className="cert-modal-right">
+          <div className="cert-preview-wrapper">
+            <img src={certificate.svgUrl} alt="Certificate template" className="cert-img-base" />
+            <div className="cert-name-overlay-cover">
+              <span className="cert-overlay-text">{customName}</span>
+            </div>
+          </div>
+        </div>
       </div>
-    </UtilityPage>
+    </div>
   );
 }
 
