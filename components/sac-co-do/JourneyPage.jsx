@@ -12,9 +12,10 @@ import { Lock } from "lucide-react";
 import Lottie from "lottie-react";
 
 export default function JourneyPage() {
-  const { user, profile, loading } = useFirebaseAuth();
+  const { user, db, profile, loading } = useFirebaseAuth();
   const [journeyStations, setJourneyStations] = useState(stations);
   const [nibiData, setNibiData] = useState(null);
+  const [visitedIds, setVisitedIds] = useState([]);
   const lottieRef = useRef(null);
 
   useEffect(() => {
@@ -41,6 +42,47 @@ export default function JourneyPage() {
       mounted = false;
     };
   }, []);
+
+  // Load visited stations progress
+  useEffect(() => {
+    let active = true;
+
+    async function loadProgress() {
+      let guestVisited = [];
+      if (typeof window !== "undefined") {
+        try {
+          guestVisited = JSON.parse(localStorage.getItem("scd_visited_stations") || "[]");
+        } catch (_) {}
+      }
+
+      if (!db || !user) {
+        if (active) setVisitedIds(guestVisited);
+        return;
+      }
+
+      try {
+        const { getDocs, collection } = await import("firebase/firestore");
+        const querySnapshot = await getDocs(collection(db, "users", user.uid, "journeyProgress"));
+        if (!active) return;
+        const dbVisited = [];
+        querySnapshot.forEach((docSnapshot) => {
+          dbVisited.push(docSnapshot.id);
+        });
+        setVisitedIds(Array.from(new Set([...dbVisited, ...guestVisited])));
+      } catch (err) {
+        console.warn("⚠️ [JourneyPage] Lỗi tải tiến trình:", err);
+        if (active) setVisitedIds(guestVisited);
+      }
+    }
+
+    if (!loading) {
+      loadProgress();
+    }
+    
+    return () => {
+      active = false;
+    };
+  }, [user, db, loading]);
 
   // Mặc định là Khóa (isLocked = true) khi đang trong trạng thái loading để bảo mật tuyệt đối,
   // tránh hiển thị chớp nhoáng (flash) dữ liệu hành trình và không bị treo ở màn hình loading.
@@ -94,7 +136,7 @@ export default function JourneyPage() {
                   </article>
                 ))}
               </div>
-              <JourneyMapSection />
+              <JourneyMapSection visitedIds={visitedIds} />
               <div className="station-grid">
                 {journeyStations.map((station) => (
                   <StationCard key={station.id} station={station} />
@@ -159,7 +201,7 @@ export default function JourneyPage() {
                 </article>
               ))}
             </div>
-            <JourneyMapSection />
+            <JourneyMapSection visitedIds={visitedIds} />
             <div className="station-grid">
               {journeyStations.map((station) => (
                 <StationCard key={station.id} station={station} />

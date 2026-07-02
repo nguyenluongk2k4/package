@@ -51,10 +51,11 @@ const routePaths = [
   { id: "split-to-bai-dinh", d: "M50 72 C60 76 70 80 75 86", distance: "12 km", time: "20 phút", x: 67, y: 77, tone: "brown" },
 ];
 
-function MapNode({ node }) {
+function MapNode({ node, visitedIds = [] }) {
   const [isVisible, setIsVisible] = useState(false);
   const ref = useRef(null);
   const station = stationById(node.id);
+  const isVisited = visitedIds.includes(node.id);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -85,6 +86,9 @@ function MapNode({ node }) {
         <>
           <span className="journey-route-photo animate-fade-in">
             <img src={station.image} alt={node.label} loading="lazy" decoding="async" />
+            {isVisited && (
+              <span className="node-visited-badge" aria-label="Đã ghé thăm">✓</span>
+            )}
           </span>
           <span className="journey-route-text-group animate-slide-up">
             <span className="journey-route-label">{node.label}</span>
@@ -100,7 +104,13 @@ function MapNode({ node }) {
   );
 }
 
-export default function JourneyMapSection() {
+export default function JourneyMapSection({ visitedIds = [] }) {
+  // Find the node to place the tracking avatar
+  const visitedNodesInOrder = routeNodes.filter(n => visitedIds.includes(n.id));
+  const currentTrackingNode = visitedNodesInOrder.length > 0 
+    ? visitedNodesInOrder[visitedNodesInOrder.length - 1] // The last visited one!
+    : routeNodes[0]; // If none visited, default to the first one (Trang An)
+
   return (
     <section className="journey-route-map-section" aria-label="Lộ trình khám phá Ninh Bình">
       <div className="journey-route-heading">
@@ -164,8 +174,26 @@ export default function JourneyMapSection() {
           })}
 
           {routeNodes.map((node) => (
-            <MapNode key={node.id} node={node} />
+            <MapNode key={node.id} node={node} visitedIds={visitedIds} />
           ))}
+
+          {currentTrackingNode && (
+            <div 
+              className="nibi-tracking-avatar"
+              style={{ 
+                "--route-x": `${currentTrackingNode.x}%`,
+                "--route-y": `${currentTrackingNode.y}%`,
+              }}
+            >
+              <div className="nibi-tracking-tooltip font-baloo">Bạn ở đây</div>
+              <div className="nibi-tracking-img-wrapper animate-bounce">
+                <img 
+                  src="/ar/avt-nibi-no-bg.png" 
+                  alt="Nibi tracking" 
+                />
+              </div>
+            </div>
+          )}
 
         </div>
       </div>
