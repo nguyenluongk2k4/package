@@ -1305,7 +1305,7 @@ html.reveal-ready .reveal-target.is-revealed {
 .qr-scan-view {
   position: relative;
   width: 100%;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 1 / 1;
   overflow: hidden;
   border-radius: 12px;
   background: #000;
@@ -1396,11 +1396,24 @@ html.reveal-ready .reveal-target.is-revealed {
   }
 
   .qr-cta {
-    flex-wrap: wrap;
+    flex-direction: column !important;
+    text-align: center !important;
+    padding: 18px 24px !important;
+    gap: 12px !important;
+    border-radius: 18px !important;
+  }
+
+  .qr-cta-text strong {
+    font-size: 17px !important;
+  }
+
+  .qr-cta-text small {
+    font-size: 12px !important;
+    margin-top: 6px !important;
   }
 
   .qr-cta-arrow {
-    display: none;
+    display: none !important;
   }
 }
 
@@ -16388,5 +16401,20 @@ html.reveal-ready .reveal-target.is-revealed {
   .node-visited-badge {
     font-size: 18px !important;
   }
+}
+
+/* Journey QR Reader Layout Adjustments */
+#journey-qr-reader {
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+}
+
+#journey-qr-reader video {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  border-radius: 12px !important;
 }
 

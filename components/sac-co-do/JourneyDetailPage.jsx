@@ -16,6 +16,7 @@ import { stations } from "../../data/sac-co-do";
 import { getStationBySlugOrId } from "../../lib/firebase/catalog";
 import SiteFooter from "./SiteFooter";
 import SiteHeader from "./SiteHeader";
+import { useToast } from "./ToastProvider";
 
 // ─── Nội dung gợi ý vị trí QR cho từng trạm ───
 
@@ -185,11 +186,9 @@ function stepImageFor(station, stationId, index) {
 
 export default function JourneyDetailPage({ station, stationId }) {
   const router = useRouter();
+  const { showToast } = useToast();
   const [activeStation, setActiveStation] = useState(station);
   const [showQrDialog, setShowQrDialog] = useState(false);
-  const videoRef = useRef(null);
-  const streamRef = useRef(null);
-  const detectorRef = useRef(null);
   const [cameraError, setCameraError] = useState("");
   const guide = getGuide(stationId || station?.id);
 
@@ -213,83 +212,80 @@ export default function JourneyDetailPage({ station, stationId }) {
   const checkinSlug = st?.slug || st?.id || stationId;
   const expectedQrValue = `SAC-CODO:${sid}`;
 
-  // ── Camera / QR scan ──
-  const startCamera = useCallback(async () => {
-    try {
-      setCameraError("");
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "environment", width: { ideal: 640 }, height: { ideal: 480 } },
-      });
-      streamRef.current = stream;
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        await videoRef.current.play();
-      }
-    } catch {
-      setCameraError("Không thể mở camera. Vui lòng kiểm tra quyền truy cập.");
-    }
-  }, []);
-
-  const stopCamera = useCallback(() => {
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach((t) => t.stop());
-      streamRef.current = null;
-    }
-  }, []);
-
-  // Bật/tắt camera khi dialog mở/đóng
-  useEffect(() => {
-    if (showQrDialog) {
-      startCamera();
-    } else {
-      stopCamera();
-    }
-    return stopCamera;
-  }, [showQrDialog, startCamera, stopCamera]);
-
-  // Poll scan mỗi 800ms bằng BarcodeDetector nếu có
+  // ── Camera / QR scan using html5-qrcode ──
   useEffect(() => {
     if (!showQrDialog) return;
-    let mounted = true;
+    let html5QrCode;
+    let active = true;
+    let countInterval;
 
-    async function pollScan() {
-      if (!window.BarcodeDetector) return;
-      if (!detectorRef.current) {
-        try {
-          detectorRef.current = new window.BarcodeDetector({ formats: ["qr_code"] });
-        } catch {
-          return;
-        }
-      }
-      const video = videoRef.current;
-      if (!video || video.readyState < 2) return;
-
+    const timer = setTimeout(async () => {
       try {
-        const barcodes = await detectorRef.current.detect(video);
-        for (const barcode of barcodes) {
-          const raw = barcode.rawValue.trim();
-          if (raw === expectedQrValue) {
-            if (!mounted) return;
-            stopCamera();
-            setShowQrDialog(false);
-            router.push(`/checkin/${checkinSlug}`);
-            return;
+        setCameraError("");
+        const { Html5Qrcode } = await import("html5-qrcode");
+        
+        const container = document.getElementById("journey-qr-reader");
+        if (!container || !active) return;
+
+        html5QrCode = new Html5Qrcode("journey-qr-reader");
+
+        const config = {
+          fps: 10,
+          qrbox: { width: 250, height: 250 }
+        };
+
+        await html5QrCode.start(
+          { facingMode: "environment" },
+          config,
+          (decodedText) => {
+            const raw = decodedText.trim();
+            const isCorrectQr = raw === checkinSlug || raw === expectedQrValue || raw.includes(`/checkin/${checkinSlug}`);
+            
+            if (isCorrectQr) {
+              if (!active) return;
+              
+              // Close dialog
+              setShowQrDialog(false);
+
+              let countdown = 5;
+              showToast(`Kết nối thành công! Đang chuyển hướng sau ${countdown} giây...`, "success");
+
+              countInterval = setInterval(() => {
+                countdown -= 1;
+                if (countdown > 0) {
+                  showToast(`Kết nối thành công! Đang chuyển hướng sau ${countdown} giây...`, "success");
+                } else {
+                  clearInterval(countInterval);
+                  router.push(`/checkin/${checkinSlug}`);
+                }
+              }, 1000);
+            } else {
+              // Mismatched or invalid QR scanned
+              if (!active) return;
+              showToast("Mã QR không khớp với địa điểm này! Vui lòng quét đúng mã QR tại trạm.", "error");
+            }
+          },
+          () => {
+            // silent fail for frame decoding
           }
+        );
+      } catch (err) {
+        console.warn("Failed to initialize html5-qrcode:", err);
+        if (active) {
+          setCameraError("Không thể kích hoạt camera quét QR. Vui lòng cấp quyền truy cập camera cho trình duyệt.");
         }
-      } catch {
-        // ignore
       }
-    }
+    }, 450);
 
-    const interval = setInterval(pollScan, 800);
-    return () => { mounted = false; clearInterval(interval); };
-  }, [showQrDialog, expectedQrValue, checkinSlug, router, stopCamera]);
-
-  function handleQrConfirm() {
-    stopCamera();
-    setShowQrDialog(false);
-    router.push(`/checkin/${checkinSlug}`);
-  }
+    return () => {
+      active = false;
+      clearTimeout(timer);
+      if (countInterval) clearInterval(countInterval);
+      if (html5QrCode && html5QrCode.isScanning) {
+        html5QrCode.stop().catch(() => {});
+      }
+    };
+  }, [showQrDialog, expectedQrValue, checkinSlug, router, showToast]);
 
   return (
     <>
@@ -446,9 +442,9 @@ export default function JourneyDetailPage({ station, stationId }) {
       </main>
       {showQrDialog ? (
         <div className="qr-scan-dialog" role="dialog" aria-modal="true" aria-labelledby="qr-scan-title">
-          <div className="qr-scan-backdrop" onClick={() => { stopCamera(); setShowQrDialog(false); }} />
+          <div className="qr-scan-backdrop" onClick={() => setShowQrDialog(false)} />
           <div className="qr-scan-panel">
-            <button className="qr-scan-close" type="button" onClick={() => { stopCamera(); setShowQrDialog(false); }} aria-label="Đóng">
+            <button className="qr-scan-close" type="button" onClick={() => setShowQrDialog(false)} aria-label="Đóng">
               <X size={20} />
             </button>
             <div className="qr-scan-copy">
@@ -457,18 +453,9 @@ export default function JourneyDetailPage({ station, stationId }) {
               <p>Đưa mã QR của trạm vào giữa khung hình để tự động mở trải nghiệm.</p>
             </div>
             <div className="qr-scan-view">
-              <video ref={videoRef} className="qr-scan-camera" autoPlay playsInline muted />
-              <div className="qr-scan-overlay" />
-              {cameraError ? <p className="qr-scan-error">{cameraError}</p> : null}
+              <div id="journey-qr-reader" />
+              {cameraError ? <p className="qr-scan-error" style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: "90%", textAlign: "center", margin: 0, zIndex: 10 }}>{cameraError}</p> : null}
             </div>
-            {!window.BarcodeDetector ? (
-              <p className="qr-scan-fallback-note">
-                Trình duyệt của bạn chưa hỗ trợ quét QR tự động.{' '}
-                <button className="qr-scan-confirm" type="button" onClick={handleQrConfirm}>
-                  Vào trải nghiệm ngay
-                </button>
-              </p>
-            ) : null}
           </div>
         </div>
       ) : null}
