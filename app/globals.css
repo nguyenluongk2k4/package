@@ -16153,3 +16153,109 @@ html.reveal-ready .reveal-target.is-revealed {
   }
 }
 
+/* Product Images Looping Marquee */
+.souvenir-products-marquee-images {
+  width: 100% !important;
+  overflow: hidden !important;
+  position: relative !important;
+  padding: 20px 0 !important;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%) !important;
+  mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%) !important;
+}
+
+.souvenir-products-marquee-images-track {
+  display: flex !important;
+  gap: 24px !important;
+  width: max-content !important;
+  animation: souvenir-images-marquee 30s linear infinite !important;
+}
+
+.souvenir-products-marquee-images:hover .souvenir-products-marquee-images-track {
+  animation-play-state: paused !important;
+}
+
+.marquee-image-item {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  background: #ffffff !important;
+  border: 1px solid rgba(233, 223, 203, 0.6) !important;
+  border-radius: 16px !important;
+  padding: 16px !important;
+  width: 180px !important;
+  box-shadow: 0 4px 16px rgba(6, 62, 67, 0.04) !important;
+  text-decoration: none !important;
+  transition: all 0.25s ease !important;
+  flex-shrink: 0 !important;
+}
+
+.marquee-image-item:hover {
+  transform: translateY(-6px) !important;
+  border-color: #104c27 !important;
+  box-shadow: 0 12px 28px rgba(16, 76, 39, 0.12) !important;
+}
+
+.marquee-image-wrapper {
+  width: 130px !important;
+  height: 130px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: #fdfcf9 !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+}
+
+.marquee-image-wrapper img {
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: contain !important;
+  transition: transform 0.3s ease !important;
+}
+
+.marquee-image-item:hover .marquee-image-wrapper img {
+  transform: scale(1.08) !important;
+}
+
+.marquee-image-meta {
+  margin-top: 10px !important;
+  text-align: center !important;
+  width: 100% !important;
+}
+
+.marquee-image-meta span {
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  color: #063823 !important;
+  display: block !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+@keyframes souvenir-images-marquee {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@media (max-width: 767px) {
+  .souvenir-products-marquee-images {
+    padding: 10px 0 !important;
+  }
+  .marquee-image-item {
+    width: 140px !important;
+    padding: 12px !important;
+  }
+  .marquee-image-wrapper {
+    width: 100px !important;
+    height: 100px !important;
+  }
+  .marquee-image-meta span {
+    font-size: 12px !important;
+  }
+}
+

@@ -20,13 +20,11 @@ function getProductOptions(product) {
       ];
     case "com-chay-dang-tui":
       return [
-        { label: "Túi 216g", price: 59000, priceFormatted: "59.000đ", image: "/assets/san-pham/Cơm cháy cố đô dạng túi 180g - 59k_goi.png" },
-        { label: "Combo 3 túi", price: 165000, priceFormatted: "165.000đ", image: "/assets/san-pham/Cơm cháy nhí/cm cháy nhí.png" }
+        { label: "Túi 216g", price: 59000, priceFormatted: "59.000đ", image: "/assets/san-pham/Cơm cháy cố đô dạng túi 180g - 59k_goi.png" }
       ];
     case "com-chay-ruoc-dam-vi":
       return [
-        { label: "Túi 300g", price: 65000, priceFormatted: "65.000đ", image: "/assets/san-pham/Cơm cháy cố đô ruốc đậm vị 300g 65k_goi.png" },
-        { label: "Túi 180g", price: 45000, priceFormatted: "45.000đ", image: "/assets/san-pham/Cơm cháy đậm vị/cm cháy đậm vị ruốc1.png" }
+        { label: "Túi 300g", price: 65000, priceFormatted: "65.000đ", image: "/assets/san-pham/Cơm cháy cố đô ruốc đậm vị 300g 65k_goi.png" }
       ];
     case "com-chay-vuong-lut":
       return [
@@ -284,13 +282,22 @@ export default function ProductPage() {
           </div>
         </section>
 
-        {/* Marquee Footer Line */}
-        <div className="souvenir-products-marquee" aria-hidden="true" style={{ marginTop: "60px" }}>
-          <div className="souvenir-products-marquee-track">
-            {Array.from({ length: 2 }).map((_, groupIndex) => (
-              <span key={groupIndex}>
-                Passport Ninh Bình • Cơm cháy dạng túi • Cơm cháy đậm vị • Cơm cháy gạo lứt • Thịt chưng mắm tép • Ruốc cá rô •
-              </span>
+        {/* Marquee Footer Line - Product Images Loop */}
+        <div className="souvenir-products-marquee-images" aria-hidden="true" style={{ marginTop: "60px", marginBottom: "40px" }}>
+          <div className="souvenir-products-marquee-images-track">
+            {[...hardcodedProducts, ...hardcodedProducts].map((product, idx) => (
+              <a 
+                href={product.href || `/san-pham/${product.slug || product.id}`}
+                className="marquee-image-item" 
+                key={`${product.id}-${idx}`}
+              >
+                <div className="marquee-image-wrapper">
+                  <img src={product.image} alt={product.name} loading="lazy" decoding="async" />
+                </div>
+                <div className="marquee-image-meta">
+                  <span className="font-baloo">{product.shortName || product.name}</span>
+                </div>
+              </a>
             ))}
           </div>
         </div>

@@ -18,12 +18,10 @@ const PRODUCT_OPTIONS = {
     { label: "Cuốn Passport", price: 150000, priceFormatted: "150.000đ", image: "/assets/san-pham/remove-bg/passport.png" }
   ],
   "com-chay-dang-tui": [
-    { label: "Túi 216g", price: 59000, priceFormatted: "59.000đ", image: "/assets/san-pham/Cơm cháy cố đô dạng túi 180g - 59k_goi.png" },
-    { label: "Combo 3 túi", price: 165000, priceFormatted: "165.000đ", image: "/assets/san-pham/Cơm cháy nhí/cm cháy nhí.png" }
+    { label: "Túi 216g", price: 59000, priceFormatted: "59.000đ", image: "/assets/san-pham/Cơm cháy cố đô dạng túi 180g - 59k_goi.png" }
   ],
   "com-chay-ruoc-dam-vi": [
-    { label: "Túi 300g", price: 65000, priceFormatted: "65.000đ", image: "/assets/san-pham/Cơm cháy cố đô ruốc đậm vị 300g 65k_goi.png" },
-    { label: "Túi 180g", price: 45000, priceFormatted: "45.000đ", image: "/assets/san-pham/Cơm cháy đậm vị/cm cháy đậm vị ruốc1.png" }
+    { label: "Túi 300g", price: 65000, priceFormatted: "65.000đ", image: "/assets/san-pham/Cơm cháy cố đô ruốc đậm vị 300g 65k_goi.png" }
   ],
   "com-chay-vuong-lut": [
     { label: "Túi 200g", price: 54000, priceFormatted: "54.000đ", image: "/assets/san-pham/Cơm cháy cố đô vuông lứt 210g 54k_ goi.png" }
