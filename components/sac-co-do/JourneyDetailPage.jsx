@@ -217,7 +217,6 @@ export default function JourneyDetailPage({ station, stationId }) {
     if (!showQrDialog) return;
     let html5QrCode;
     let active = true;
-    let countInterval;
 
     const timer = setTimeout(async () => {
       try {
@@ -247,18 +246,8 @@ export default function JourneyDetailPage({ station, stationId }) {
               // Close dialog
               setShowQrDialog(false);
 
-              let countdown = 5;
-              showToast(`Kết nối thành công! Đang chuyển hướng sau ${countdown} giây...`, "success");
-
-              countInterval = setInterval(() => {
-                countdown -= 1;
-                if (countdown > 0) {
-                  showToast(`Kết nối thành công! Đang chuyển hướng sau ${countdown} giây...`, "success");
-                } else {
-                  clearInterval(countInterval);
-                  router.push(`/checkin/${checkinSlug}`);
-                }
-              }, 1000);
+              showToast("Kết nối thành công! Đang chuyển hướng...", "success");
+              router.push(`/checkin/${checkinSlug}`);
             } else {
               // Mismatched or invalid QR scanned
               if (!active) return;
@@ -280,7 +269,6 @@ export default function JourneyDetailPage({ station, stationId }) {
     return () => {
       active = false;
       clearTimeout(timer);
-      if (countInterval) clearInterval(countInterval);
       if (html5QrCode && html5QrCode.isScanning) {
         html5QrCode.stop().catch(() => {});
       }
