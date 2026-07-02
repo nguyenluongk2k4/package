@@ -5,6 +5,8 @@ import { stations } from "../../data/sac-co-do";
 import { getDefaultArCharacter, getStationBySlugOrId } from "../../lib/firebase/catalog";
 import { saveArExperience, saveJourneyProgress } from "../../lib/firebase/userData";
 import { useFirebaseAuth } from "./FirebaseAuthProvider";
+import { uploadToCloudinary } from "../../lib/cloudinary/client";
+import { useToast } from "./ToastProvider";
 
 const viewArBase = "/assets/view-ar";
 const fallbackArModelSrc = "/ar/sac-co-do-guide-v2.glb";
@@ -29,6 +31,7 @@ function isQuickLookDevice() {
 
 export default function CheckinExperiencePage({ stationId }) {
   const { user, db } = useFirebaseAuth();
+  const { showToast } = useToast();
   const fallbackStation = useMemo(() => getStation(stationId), [stationId]);
   const [station, setStation] = useState(fallbackStation);
   const [arCharacter, setArCharacter] = useState({
@@ -36,11 +39,13 @@ export default function CheckinExperiencePage({ stationId }) {
     usdzUrl: fallbackArIosModelSrc,
     posterUrl: "",
   });
+  
   const videoRef = useRef(null);
   const streamRef = useRef(null);
   const modelViewerRef = useRef(null);
   const playedGreetingRef = useRef(false);
   const dragStartRef = useRef(null);
+  
   const [isTracking, setIsTracking] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [isStamped, setIsStamped] = useState(false);
@@ -50,6 +55,13 @@ export default function CheckinExperiencePage({ stationId }) {
   const [hasCamera, setHasCamera] = useState(false);
   const [isIosQuickLook, setIsIosQuickLook] = useState(false);
   const [sheetPosition, setSheetPosition] = useState("middle");
+
+  // AR Upload States
+  const [showUploadModal, setShowUploadModal] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isUploading, setIsUploading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
 
   useEffect(() => {
     let mounted = true;
@@ -164,6 +176,33 @@ export default function CheckinExperiencePage({ stationId }) {
     };
   }, [hasMounted, arCharacter.glbUrl]);
 
+  // Monitor focus/visibility change to open upload modal when returning from iOS AR Quick Look
+  useEffect(() => {
+    const handleReturnFromQuickLook = () => {
+      if (typeof window !== "undefined") {
+        const pendingId = localStorage.getItem("scd_pending_ar_upload");
+        if (pendingId === (station.id || stationId)) {
+          localStorage.removeItem("scd_pending_ar_upload");
+          setShowUploadModal(true);
+        }
+      }
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        handleReturnFromQuickLook();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("focus", handleReturnFromQuickLook);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("focus", handleReturnFromQuickLook);
+    };
+  }, [station, stationId]);
+
   async function handleLaunchAr() {
     setArMessage("");
     setIsTracking(true);
@@ -195,7 +234,92 @@ export default function CheckinExperiencePage({ stationId }) {
     setIsTracking(true);
     setArStatus("tracking");
     stopCamera();
+
+    // Mark pending upload session in localStorage
+    if (typeof window !== "undefined") {
+      localStorage.setItem("scd_pending_ar_upload", station.id || stationId);
+    }
   }
+
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setSelectedFile(file);
+    setPreviewUrl(URL.createObjectURL(file));
+    setUploadProgress(0);
+  };
+
+  const handleUploadAndStamp = async () => {
+    if (!selectedFile) return;
+    setIsUploading(true);
+    setUploadProgress(0);
+
+    try {
+      // 1. Upload to Cloudinary using raw progress tracking
+      const res = await uploadToCloudinary(selectedFile, "journey-stamps", (percent) => {
+        setUploadProgress(percent);
+      });
+
+      // 2. Update Firestore if user is authenticated
+      if (user && db) {
+        await saveJourneyProgress({
+          db,
+          uid: user.uid,
+          stationId: station.id || stationId,
+          stationName: station.name,
+          source: "ios-ar-quicklook",
+          photoUrl: res.url,
+        });
+
+        await saveArExperience({
+          db,
+          uid: user.uid,
+          stationId: station.id || stationId,
+          stationName: station.name,
+          modelId: station.arGuide?.modelId,
+          status: "completed",
+        });
+      }
+
+      // 3. Keep fallback state locally for guest authentication sessions
+      if (typeof window !== "undefined") {
+        const visitedList = JSON.parse(localStorage.getItem("scd_visited_stations") || "[]");
+        if (!visitedList.includes(station.id)) {
+          visitedList.push(station.id);
+          localStorage.setItem("scd_visited_stations", JSON.stringify(visitedList));
+        }
+        const photosMap = JSON.parse(localStorage.getItem("scd_station_photos") || "{}");
+        photosMap[station.id] = res.url;
+        localStorage.setItem("scd_station_photos", JSON.stringify(photosMap));
+      }
+
+      setIsStamped(true);
+      setShowUploadModal(false);
+      setSelectedFile(null);
+      setPreviewUrl(null);
+
+      // Play Confetti Celebration
+      if (typeof window !== "undefined") {
+        const script = document.createElement("script");
+        script.src = "https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js";
+        script.onload = () => {
+          window.confetti({
+            particleCount: 150,
+            spread: 80,
+            origin: { y: 0.6 },
+          });
+        };
+        document.body.appendChild(script);
+      }
+
+      showToast(`Chúc mừng! Bạn đã hoàn thành check-in tại ${station.name} và đóng dấu mộc thành công!`, "success");
+    } catch (err) {
+      console.error("Cloudinary stamp upload failed:", err);
+      showToast("Không thể đăng tải hình ảnh kỷ niệm. Vui lòng thử lại.", "error");
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   function handleNarration() {
     if (typeof window === "undefined" || !window.speechSynthesis) {
@@ -362,6 +486,68 @@ export default function CheckinExperiencePage({ stationId }) {
 
         <span className={`ar-live-bottom-dot ${isTracking ? "is-active" : ""}`} aria-hidden="true" />
       </section>
+
+      {/* Dynamic iOS QuickLook Upload Modal */}
+      {showUploadModal && (
+        <div className="ar-upload-modal-backdrop">
+          <div className="ar-upload-modal-content">
+            <h3>Đăng Tải Kỷ Niệm AR</h3>
+            <p>Chọn và đăng tải bức ảnh chụp cùng hướng dẫn viên ảo bạn vừa chụp bằng camera iPhone để ghi nhận dấu mộc!</p>
+            
+            <div className="ar-upload-preview">
+              {previewUrl ? (
+                <img src={previewUrl} alt="Ảnh chụp AR" />
+              ) : (
+                <div className="ar-upload-placeholder font-baloo">Chưa chọn ảnh kỷ niệm</div>
+              )}
+            </div>
+
+            <div className="ar-upload-input-group">
+              <input 
+                type="file" 
+                accept="image/*" 
+                id="ar-photo-file-input"
+                onChange={handleFileChange}
+                style={{ display: "none" }}
+                disabled={isUploading}
+              />
+              <label htmlFor="ar-photo-file-input" className="ar-upload-file-label">
+                {selectedFile ? "Thay đổi ảnh chọn" : "Chọn ảnh từ Thư viện"}
+              </label>
+            </div>
+
+            {isUploading && (
+              <div className="ar-upload-progress-container">
+                <div className="ar-upload-progress-bar" style={{ width: `${uploadProgress}%` }} />
+                <span>Đang tải lên máy chủ: {uploadProgress}%</span>
+              </div>
+            )}
+
+            <div className="ar-upload-modal-actions">
+              <button 
+                type="button" 
+                className="ar-upload-submit-btn" 
+                onClick={handleUploadAndStamp}
+                disabled={!selectedFile || isUploading}
+              >
+                {isUploading ? "Đang lưu..." : "Đóng dấu mộc hành trình"}
+              </button>
+              <button 
+                type="button" 
+                className="ar-upload-cancel-btn" 
+                onClick={() => {
+                  setShowUploadModal(false);
+                  setSelectedFile(null);
+                  setPreviewUrl(null);
+                }}
+                disabled={isUploading}
+              >
+                Hủy bỏ
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

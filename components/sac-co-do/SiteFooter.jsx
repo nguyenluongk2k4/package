@@ -36,7 +36,7 @@ export default function SiteFooter() {
             <h3 style={{ fontFamily: "Baloo 2", fontSize: "18px", color: "var(--accent)", margin: "0 0 16px" }}>Liên hệ</h3>
             <div className="footer-contact">
               <p><strong>Địa chỉ:</strong> Ninh Bình, Việt Nam</p>
-              <p><strong>Hotline:</strong> 0987 654 321</p>
+              <p><strong>Hotline:</strong> <a href="tel:0987654321" style={{ color: "inherit", textDecoration: "none", fontWeight: "inherit" }}>0987 654 321</a></p>
               <p><strong>Email:</strong> contact@saccodo.vn</p>
             </div>
             <div className="footer-socials">

@@ -169,16 +169,18 @@ export default function HomePage() {
       }
     });
 
-    gsap.from(".about-bg-decor", {
-      opacity: 0,
-      scale: 0.85,
-      duration: 1.2,
-      ease: "power2.out",
-      scrollTrigger: {
-        trigger: ".home-about-section",
-        start: "top 80%",
-      }
-    });
+    if (document.querySelector(".about-bg-decor")) {
+      gsap.from(".about-bg-decor", {
+        opacity: 0,
+        scale: 0.85,
+        duration: 1.2,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: ".home-about-section",
+          start: "top 80%",
+        }
+      });
+    }
 
     gsap.from(".about-pillar-card", {
       opacity: 0,

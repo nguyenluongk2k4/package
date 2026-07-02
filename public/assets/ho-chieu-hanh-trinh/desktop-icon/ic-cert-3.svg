@@ -1,0 +1,11 @@
+<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Certificate border/sheet -->
+  <rect x="4" y="6" width="32" height="28" rx="3" stroke="#1A1C1B" stroke-width="2.5" fill="#FFFFFF"/>
+  <!-- Text lines -->
+  <line x1="8" y1="13" x2="20" y2="13" stroke="#1A1C1B" stroke-width="2" stroke-linecap="round"/>
+  <line x1="8" y1="18" x2="16" y2="18" stroke="#1A1C1B" stroke-width="2" stroke-linecap="round"/>
+  <!-- Crown seal badge -->
+  <circle cx="28" cy="24" r="6" fill="#D8A23B" stroke="#1A1C1B" stroke-width="1.5"/>
+  <!-- Crown path -->
+  <path d="M25 26 L24 22 L26.5 24 L28 22 L29.5 24 L32 22 L31 26 Z" fill="#FFFFFF" stroke="#1A1C1B" stroke-width="0.8"/>
+</svg>

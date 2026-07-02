@@ -7254,46 +7254,49 @@ html.reveal-ready .reveal-target.is-revealed {
 }
 
 .passport-achievement-item {
-  display: grid;
-  grid-template-columns: 58px minmax(0, 1fr);
-  gap: 18px;
-  align-items: center;
-  padding: 18px;
-  color: var(--muted);
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 18px !important;
+  padding: 18px !important;
+  color: var(--muted) !important;
 }
 
 .passport-achievement-item.is-active {
-  background: rgba(216, 162, 59, 0.12);
-  color: var(--ink);
+  background: rgba(216, 162, 59, 0.12) !important;
+  color: var(--ink) !important;
 }
 
 .passport-achievement-item span {
-  display: grid;
-  width: 58px;
-  height: 58px;
-  place-items: center;
-  border-radius: 12px;
-  background: rgba(6, 62, 67, 0.06);
+  display: grid !important;
+  width: 58px !important;
+  height: 58px !important;
+  place-items: center !important;
+  border-radius: 12px !important;
+  background: rgba(6, 62, 67, 0.06) !important;
+  flex-shrink: 0 !important;
 }
 
 .passport-achievement-item.is-active span {
-  background: rgba(216, 162, 59, 0.38);
+  background: rgba(216, 162, 59, 0.38) !important;
 }
 
 .passport-achievement-item img {
-  width: 30px;
-  opacity: 0.76;
+  width: 32px !important;
+  height: 32px !important;
+  object-fit: contain !important;
+  opacity: 0.85 !important;
 }
 
 .passport-achievement-item strong {
-  display: block;
-  margin-bottom: 5px;
-  font-size: 15px;
+  display: block !important;
+  margin-bottom: 5px !important;
+  font-size: 15px !important;
 }
 
 .passport-achievement-item p {
-  margin: 0;
-  font-size: 14px;
+  margin: 0 !important;
+  font-size: 13px !important;
 }
 
 .passport-offer-box {
@@ -9129,52 +9132,71 @@ html.reveal-ready .reveal-target.is-revealed {
   }
 
   .passport-stop-card {
-    min-height: 206px;
-    padding: 20px 14px 18px;
-    border: 1px dashed rgba(6, 62, 67, 0.18);
-    border-top: 2px solid rgba(216, 162, 59, 0.7);
-    border-radius: 10px;
-    transform: none;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    min-height: 245px !important;
+    padding: 16px 12px 14px !important;
+    border: 1px dashed rgba(6, 62, 67, 0.18) !important;
+    border-top: 2px solid rgba(216, 162, 59, 0.7) !important;
+    border-radius: 10px !important;
+    transform: none !important;
   }
 
   .passport-stop-card.is-unlocked {
-    box-shadow: 0 16px 34px rgba(183, 62, 39, 0.14);
+    box-shadow: 0 16px 34px rgba(183, 62, 39, 0.14) !important;
   }
 
   .passport-stop-heading {
-    order: 2;
+    order: 3 !important;
+    height: 36px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    margin: 0 !important;
   }
 
   .passport-stop-heading h2 {
-    font-family: "Be Vietnam Pro", ui-sans-serif, system-ui, sans-serif;
-    font-size: clamp(13px, 3.5vw, 15px);
-    font-weight: 900;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
-    white-space: nowrap;
+    font-family: var(--font-header, "Baloo 2", sans-serif) !important;
+    font-size: 13px !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.02em !important;
+    text-transform: uppercase !important;
+    white-space: normal !important;
+    text-align: center !important;
+    color: #063823 !important;
+    line-height: 1.25 !important;
   }
 
   .passport-stop-heading p,
   .passport-detail-link {
-    display: none;
+    display: none !important;
   }
 
-  .passport-locked-label {
-    order: 3;
-    display: inline-flex;
-    margin-top: 8px;
-    color: #8a5a16;
-    font-size: 13px;
+  .passport-card-actions {
+    order: 2 !important;
+    margin-top: auto !important;
+    margin-bottom: 8px !important;
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
   }
 
   .passport-stamp-frame {
-    width: 104px;
-    height: 104px;
-    margin: 8px 0 16px;
+    order: 1 !important;
+    width: 104px !important;
+    height: 104px !important;
+    min-height: 104px !important;
+    margin: 8px 0 12px 0 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
   }
 
   .is-unlocked .passport-stamp-frame {
-    transform: none;
+    transform: none !important;
   }
 
   .passport-stamp-image {
@@ -14535,8 +14557,8 @@ html.reveal-ready .reveal-target.is-revealed {
 .passport-polaroid-frame {
   position: relative !important;
   background: #ffffff !important;
-  padding: 12px 12px 36px 12px !important;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+  padding: 8px 8px 24px 8px !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04) !important;
   border-radius: 4px !important;
   border: 1px solid rgba(0, 0, 0, 0.06) !important;
   width: 100% !important;
@@ -14570,23 +14592,33 @@ html.reveal-ready .reveal-target.is-revealed {
 
 .passport-polaroid-caption {
   font-family: 'Playfair Display', Georgia, serif !important;
-  font-size: 14px !important;
+  font-size: 11px !important;
   font-weight: 700 !important;
   color: #2b2823 !important;
-  margin-top: 10px !important;
+  margin-top: 6px !important;
   text-align: center !important;
   white-space: nowrap !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
-  width: 90% !important;
+  width: 95% !important;
 }
 
 .passport-polaroid-date {
-  font-size: 9px !important;
+  font-size: 8px !important;
   color: #8c857b !important;
-  margin-top: 2px !important;
+  margin-top: 1px !important;
   text-transform: uppercase !important;
   letter-spacing: 0.05em !important;
+}
+
+.passport-stamp-frame.has-photo {
+  width: 140px !important;
+  height: 175px !important;
+  min-height: 175px !important;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  transform: none !important;
 }
 
 /* AR Check-in Modal Styles */
@@ -15325,5 +15357,440 @@ html.reveal-ready .reveal-target.is-revealed {
 .passport-card-actions {
   margin-top: auto !important; /* Push buttons to the bottom of the card */
   width: 100% !important;
+}
+
+/* Certificate Modal Styles */
+.cert-modal-backdrop {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: rgba(0, 0, 0, 0.75) !important;
+  z-index: 9999 !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  backdrop-filter: blur(4px) !important;
+  padding: 16px !important;
+}
+
+.cert-modal-content {
+  background: #ffffff !important;
+  width: min(520px, 100%) !important;
+  border-radius: 20px !important;
+  padding: 24px !important;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3) !important;
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+}
+
+.cert-modal-close {
+  position: absolute !important;
+  top: 16px !important;
+  right: 18px !important;
+  font-size: 28px !important;
+  background: none !important;
+  border: none !important;
+  cursor: pointer !important;
+  color: #718096 !important;
+}
+
+.cert-modal-content h3 {
+  font-family: var(--font-header, "Baloo 2", sans-serif) !important;
+  font-weight: 800 !important;
+  font-size: 22px !important;
+  color: #104c27 !important;
+  margin: 0 0 4px 0 !important;
+}
+
+.cert-modal-hint {
+  font-size: 13px !important;
+  color: #718096 !important;
+  margin: 0 0 16px 0 !important;
+  text-align: center !important;
+}
+
+.cert-input-group {
+  width: 100% !important;
+  margin-bottom: 20px !important;
+}
+
+.cert-input-group input {
+  width: 100% !important;
+  padding: 12px 16px !important;
+  border: 2px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+  font-size: 15px !important;
+  outline: none !important;
+  transition: all 0.3s ease !important;
+  text-align: center !important;
+  font-weight: 600 !important;
+}
+
+.cert-input-group input:focus {
+  border-color: #104c27 !important;
+  box-shadow: 0 0 0 3px rgba(16, 76, 39, 0.1) !important;
+}
+
+.cert-preview-wrapper {
+  position: relative !important;
+  width: 100% !important;
+  max-width: 320px !important;
+  aspect-ratio: 595.5 / 842.25 !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+  margin-bottom: 24px !important;
+}
+
+.cert-img-base {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
+.cert-name-overlay-cover {
+  position: absolute !important;
+  top: 50.8% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 65% !important;
+  height: 7% !important;
+  background-color: #f0f0f0 !important; /* Matches template background */
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+@font-face {
+  font-family: 'HLT Burgues Script';
+  src: url('/assets/fonts/HLT-Burgues-Script/HLT Burgues Script.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.cert-overlay-text {
+  font-family: "HLT Burgues Script", cursive !important;
+  font-size: 26px !important;
+  color: #1a1a1a !important;
+  font-weight: normal !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+  line-height: 1 !important;
+}
+
+.cert-download-btn {
+  background: #104c27 !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 30px !important;
+  padding: 14px 28px !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  box-shadow: 0 4px 15px rgba(16, 76, 39, 0.2) !important;
+  transition: all 0.3s ease !important;
+}
+
+.cert-download-btn:hover {
+  background: #0d3d1f !important;
+  transform: translateY(-1px) !important;
+}
+
+.cert-download-btn:disabled {
+  background: #a0aec0 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* iOS AR QuickLook Upload Modal Styles */
+.ar-upload-modal-backdrop {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: rgba(0, 0, 0, 0.8) !important;
+  z-index: 9999 !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  backdrop-filter: blur(5px) !important;
+  padding: 16px !important;
+}
+
+.ar-upload-modal-content {
+  background: #ffffff !important;
+  width: min(440px, 100%) !important;
+  border-radius: 24px !important;
+  padding: 28px 24px !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  text-align: center !important;
+}
+
+.ar-upload-modal-content h3 {
+  font-family: var(--font-header, "Baloo 2", sans-serif) !important;
+  font-weight: 800 !important;
+  font-size: 22px !important;
+  color: #104c27 !important;
+  margin: 0 0 8px 0 !important;
+}
+
+.ar-upload-modal-content p {
+  font-size: 14px !important;
+  color: #4a5568 !important;
+  margin: 0 0 20px 0 !important;
+  line-height: 1.5 !important;
+}
+
+.ar-upload-preview {
+  width: 100% !important;
+  aspect-ratio: 4 / 3 !important;
+  background: #f7fafc !important;
+  border: 2px dashed #cbd5e0 !important;
+  border-radius: 16px !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  overflow: hidden !important;
+  margin-bottom: 20px !important;
+}
+
+.ar-upload-preview img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
+.ar-upload-placeholder {
+  color: #a0aec0 !important;
+  font-size: 14px !important;
+  font-weight: bold !important;
+}
+
+.ar-upload-input-group {
+  width: 100% !important;
+  margin-bottom: 16px !important;
+}
+
+.ar-upload-file-label {
+  display: inline-block !important;
+  background: #f7fafc !important;
+  color: #4a5568 !important;
+  border: 1px solid #cbd5e0 !important;
+  border-radius: 12px !important;
+  padding: 10px 20px !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.ar-upload-file-label:hover {
+  background: #edf2f7 !important;
+  border-color: #a0aec0 !important;
+}
+
+.ar-upload-progress-container {
+  width: 100% !important;
+  background: #edf2f7 !important;
+  border-radius: 8px !important;
+  height: 24px !important;
+  position: relative !important;
+  overflow: hidden !important;
+  margin-bottom: 20px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.ar-upload-progress-bar {
+  background: #34d399 !important; /* Soft green */
+  height: 100% !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  z-index: 1 !important;
+  transition: width 0.3s ease !important;
+}
+
+.ar-upload-progress-container span {
+  position: relative !important;
+  z-index: 2 !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  color: #1a202c !important;
+}
+
+.ar-upload-modal-actions {
+  display: flex !important;
+  gap: 12px !important;
+  width: 100% !important;
+}
+
+.ar-upload-submit-btn {
+  flex: 1 !important;
+  background: #104c27 !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 12px !important;
+  padding: 12px 20px !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.ar-upload-submit-btn:hover:not(:disabled) {
+  background: #0d3d1f !important;
+}
+
+.ar-upload-submit-btn:disabled {
+  background: #cbd5e0 !important;
+  cursor: not-allowed !important;
+}
+
+.ar-upload-cancel-btn {
+  flex: 1 !important;
+  background: #edf2f7 !important;
+  color: #4a5568 !important;
+  border: none !important;
+  border-radius: 12px !important;
+  padding: 12px 20px !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.ar-upload-cancel-btn:hover:not(:disabled) {
+  background: #e2e8f0 !important;
+}
+
+.ar-upload-cancel-btn:disabled {
+  cursor: not-allowed !important;
+}
+
+/* Photo Viewer Lightbox Modal */
+.photo-viewer-backdrop {
+  position: fixed !important;
+  inset: 0 !important;
+  background: rgba(10, 15, 12, 0.95) !important;
+  backdrop-filter: blur(10px) !important;
+  z-index: 99999 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  user-select: none !important;
+  touch-action: none !important;
+}
+
+.photo-viewer-controls {
+  position: absolute !important;
+  top: 30px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  padding: 6px 20px !important;
+  border-radius: 50px !important;
+  z-index: 10 !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+}
+
+.photo-viewer-controls button {
+  background: transparent !important;
+  border: none !important;
+  color: #ffffff !important;
+  font-size: 22px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  width: 44px !important;
+  height: 44px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 50% !important;
+  transition: background 0.2s ease !important;
+  padding: 0 !important;
+}
+
+.photo-viewer-controls button.reset-btn {
+  width: auto !important;
+  padding: 0 16px !important;
+  border-radius: 20px !important;
+  font-size: 14px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+}
+
+.photo-viewer-controls button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.15) !important;
+}
+
+.photo-viewer-controls button:disabled {
+  opacity: 0.4 !important;
+  cursor: not-allowed !important;
+}
+
+.photo-viewer-controls button.close-btn {
+  font-size: 32px !important;
+  color: #ff6b6b !important;
+  margin-left: 12px !important;
+}
+
+.zoom-indicator {
+  color: #ffffff !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  min-width: 48px !important;
+  text-align: center !important;
+}
+
+.photo-viewer-container {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  width: 90% !important;
+  max-width: 500px !important;
+}
+
+.photo-viewer-image-wrapper {
+  width: 100% !important;
+  aspect-ratio: 4 / 5 !important;
+  background: #000000 !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.photo-viewer-image-wrapper img {
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: contain !important;
+  user-select: none !important;
+  pointer-events: none !important; /* Managed by wrapper drag events */
+}
+
+.photo-viewer-caption {
+  font-family: var(--font-header, "Baloo 2", sans-serif) !important;
+  color: #ffffff !important;
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  margin-top: 20px !important;
+  text-align: center !important;
 }
 

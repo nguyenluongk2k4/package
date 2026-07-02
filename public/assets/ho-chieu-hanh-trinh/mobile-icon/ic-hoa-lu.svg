@@ -1,0 +1,23 @@
+<svg width="55" height="53" viewBox="0 0 55 53" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Pillars -->
+  <rect x="8" y="24" width="4" height="24" fill="#1A1C1B"/>
+  <rect x="43" y="24" width="4" height="24" fill="#1A1C1B"/>
+  <rect x="18" y="16" width="5" height="32" fill="#1A1C1B"/>
+  <rect x="32" y="16" width="5" height="32" fill="#1A1C1B"/>
+  
+  <!-- Lower roof left -->
+  <path d="M4 24 C10 21, 19 21, 20 24 H4 Z" fill="#1A1C1B"/>
+  <!-- Lower roof right -->
+  <path d="M35 24 C36 21, 45 21, 51 24 H35 Z" fill="#1A1C1B"/>
+  
+  <!-- Upper middle section -->
+  <rect x="21" y="12" width="13" height="10" fill="#1A1C1B"/>
+  <circle cx="27.5" cy="17" r="2.5" fill="#FFF"/> <!-- Gate Emblem -->
+  
+  <!-- Main top roof -->
+  <path d="M14 12 C20 8, 35 8, 41 12 H14 Z" fill="#1A1C1B"/>
+  <path d="M22 8 L27.5 3 L33 8 H22 Z" fill="#1A1C1B"/>
+  
+  <!-- Base foundation -->
+  <rect x="2" y="48" width="51" height="3" rx="1" fill="#1A1C1B"/>
+</svg>

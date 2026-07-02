@@ -1,0 +1,10 @@
+<svg width="55" height="53" viewBox="0 0 55 53" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Left mountain -->
+  <path d="M2 42 L18 16 L31 42 H2Z" fill="#1A1C1B"/>
+  <!-- Right mountain -->
+  <path d="M20 42 L37 10 L53 42 H20Z" fill="#1A1C1B" fill-opacity="0.8"/>
+  <!-- A clean boat shape -->
+  <path d="M10 44 C15 48, 35 48, 40 44 H10Z" fill="#1A1C1B"/>
+  <!-- Water ripple -->
+  <path d="M5 49 C15 47, 35 51, 50 49" stroke="#1A1C1B" stroke-width="2" stroke-linecap="round"/>
+</svg>

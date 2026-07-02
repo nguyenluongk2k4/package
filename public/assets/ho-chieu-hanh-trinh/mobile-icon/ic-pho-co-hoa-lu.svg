@@ -1,0 +1,17 @@
+<svg width="55" height="53" viewBox="0 0 55 53" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Top loop hanger (thick) -->
+  <path d="M27.5 9 C24 9, 24 3, 27.5 3 C31 3, 31 9, 27.5 9" stroke="#1A1C1B" stroke-width="3" stroke-linecap="round"/>
+  <!-- Top cover cap of the lantern -->
+  <path d="M16 10 H39 L35 15 H20 Z" fill="#1A1C1B"/>
+  <!-- Main lantern body (large, wide oval shape to fill space) -->
+  <path d="M20 15 C10 20, 10 32, 20 37 H35 C45 32, 45 20, 35 15 Z" fill="#1A1C1B"/>
+  <!-- Vertical texture stripes inside lantern body -->
+  <path d="M23 15 C18 20, 18 32, 23 37" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" opacity="0.95"/>
+  <path d="M32 15 C37 20, 37 32, 32 37" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" opacity="0.95"/>
+  <line x1="27.5" y1="15" x2="27.5" y2="37" stroke="#FFFFFF" stroke-width="1.8" opacity="0.95"/>
+  
+  <!-- Bottom cap -->
+  <path d="M21 37 H34 V41 H21 Z" fill="#1A1C1B"/>
+  <!-- Large hanging tassel -->
+  <path d="M25 41 H30 V49 L27.5 52 L25 49 Z" fill="#1A1C1B"/>
+</svg>
