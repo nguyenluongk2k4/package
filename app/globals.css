@@ -16128,5 +16128,28 @@ html.reveal-ready .reveal-target.is-revealed {
     font-size: 13px !important;
     width: 100% !important;
   }
+
+  .profile-cert-item {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    padding: 24px 16px !important;
+    gap: 16px !important;
+  }
+  
+  .profile-cert-status {
+    align-items: center !important;
+    width: 100% !important;
+  }
+  
+  .profile-cert-info h3 {
+    font-size: 18px !important;
+    margin-bottom: 6px !important;
+  }
+
+  .profile-cert-info p {
+    font-size: 13px !important;
+    line-height: 1.4 !important;
+  }
 }
 
