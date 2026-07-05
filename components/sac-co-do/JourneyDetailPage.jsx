@@ -290,6 +290,21 @@ export default function JourneyDetailPage({ station, stationId }) {
         </section>
 
         <div className="page-shell">
+          {/* CTA Check-in Button at the top */}
+          <button
+            type="button"
+            className="qr-cta"
+            onClick={() => setShowQrDialog(true)}
+            style={{ margin: "10px 0 32px 0" }}
+          >
+            <Smartphone size={36} className="qr-cta-icon" strokeWidth={1.6} />
+            <span className="qr-cta-text">
+              <strong>Tôi đã đến nơi — Quét QR ngay</strong>
+              <small>Quét đúng mã QR tại trạm để mở AR + Photobooth</small>
+            </span>
+            <ArrowRight size={28} className="qr-cta-arrow" strokeWidth={2.4} />
+          </button>
+
           {/* Thông tin nhanh */}
           <div className="qr-grid-3">
             <div className="qr-info-item">
@@ -311,7 +326,6 @@ export default function JourneyDetailPage({ station, stationId }) {
 
           {/* Bước 1: Vị trí đặt QR */}
           <section className="qr-section">
-            <span className="qr-badge">Bước 1</span>
             <h2>Tìm vị trí đặt mã QR</h2>
             <p className="qr-subtitle">
               Mỗi trạm có một mã QR riêng — hãy tìm đúng vị trí dưới đây để bắt đầu trải nghiệm.
@@ -347,7 +361,6 @@ export default function JourneyDetailPage({ station, stationId }) {
 
           {/* Bước 2: Cách tìm QR */}
           <section className="qr-section">
-            <span className="qr-badge">Bước 2</span>
             <h2>Cách tìm QR</h2>
             <p className="qr-subtitle">
               Đi theo các bước sau để đến đúng vị trí đặt mã QR.
@@ -413,18 +426,6 @@ export default function JourneyDetailPage({ station, stationId }) {
               </p>
             </div>
 
-            <button
-              type="button"
-              className="qr-cta"
-              onClick={() => setShowQrDialog(true)}
-            >
-              <Smartphone size={36} className="qr-cta-icon" strokeWidth={1.6} />
-              <span className="qr-cta-text">
-                <strong>Tôi đã đến nơi — Quét QR ngay</strong>
-                <small>Quét đúng mã QR tại trạm để mở AR + Photobooth</small>
-              </span>
-              <ArrowRight size={28} className="qr-cta-arrow" strokeWidth={2.4} />
-            </button>
           </section>
         </div>
       </main>

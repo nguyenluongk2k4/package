@@ -729,237 +729,148 @@ export function RewardPage() {
   );
 }
 
-export function CheckinPage({ stationId }) {
-  const { user, db } = useFirebaseAuth();
-  const station = stations.find((item) => item.id === stationId) || stations[0];
-  const [showAr, setShowAr] = useState(false);
-  const [isStamped, setIsStamped] = useState(false);
-  const [manualCode, setManualCode] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [showManualSuccess, setShowManualSuccess] = useState(false);
+export function ArOnboardingGuide({ onClose, onStart }) {
+  const [activeStep, setActiveStep] = useState(0);
+  const [dontShowAgain, setDontShowAgain] = useState(false);
 
-  // Kiểm tra xem trạm này đã được đóng dấu trong LocalStorage chưa
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const visited = JSON.parse(localStorage.getItem("scd_visited_stations") || "[]");
-      if (visited.includes(stationId)) {
-        setIsStamped(true);
-      }
+  const GUIDE_STEPS = [
+    {
+      title: "Bước 1: Quét bề mặt đất",
+      dialogue: "Xin chào bạn hữu! Hãy cùng tôi khám phá di sản nhé. Đầu tiên, bạn hãy lia camera điện thoại chậm rãi để quét sạch bề mặt sàn nhà hoặc mặt đất xung quanh.",
+      image: "/tour-guide/asset/step1-nibi.png",
+      badge: "Bước 1"
+    },
+    {
+      title: "Bước 2: Chọn vị trí đặt Nibi",
+      dialogue: "Tuyệt vời! Khi thấy vòng tròn vàng xuất hiện, bạn hãy chạm nhẹ tay lên vị trí đó để đặt tôi đứng vững trong không gian nhé.",
+      image: "/tour-guide/asset/step2-nibi.png",
+      badge: "Bước 2"
+    },
+    {
+      title: "Bước 3: Chụp và lưu ảnh cùng Nibi",
+      dialogue: "Cười lên nào! Bạn hãy căn chỉnh góc máy thật đẹp, xoay/phóng to thu nhỏ tôi cho hợp lý, rồi nhấn nút chụp ảnh để lưu giữ kỷ niệm vào thiết bị.",
+      image: "/tour-guide/asset/step3--nibi.png",
+      badge: "Bước 3"
+    },
+    {
+      title: "Bước 4: Đóng dấu mộc hộ chiếu",
+      dialogue: "Sắp hoàn thành rồi! Bây giờ bạn hãy tải bức ảnh vừa chụp lên website để hệ thống xác nhận và đóng con dấu mộc số lưu niệm vào cuốn hộ chiếu di sản nha.",
+      image: "/tour-guide/asset/step4-nibi.png",
+      badge: "Bước 4"
+    },
+    {
+      title: "Bước 5: Chia sẻ hành trình di sản",
+      dialogue: "Tuyệt vời ông mặt trời! Hãy chia sẻ khoảnh khắc đáng nhớ cùng Sắc Cố Đô để lưu giữ những kỷ niệm đẹp và tiếp tục hành trình di sản của bạn.",
+      image: "/tour-guide/asset/step5-nibi.png",
+      badge: "Bước 5"
     }
-  }, [stationId]);
+  ];
 
-  // Xử lý khi quét/đóng dấu AR thành công
-  const handleArSuccess = (id) => {
-    setIsStamped(true);
-    setShowAr(false);
+  const currentStep = GUIDE_STEPS[activeStep];
+
+  const handleNext = () => {
+    if (activeStep < 4) {
+      setActiveStep((prev) => prev + 1);
+    } else {
+      if (dontShowAgain) {
+        localStorage.setItem("scd_ar_guide_completed", "true");
+      }
+      onStart();
+    }
   };
 
-  // Xử lý đóng dấu bằng mã ngày thủ công
-  const handleManualCheckin = (e) => {
-    e.preventDefault();
-    if (!manualCode.trim()) {
-      setErrorMessage("Vui lòng nhập mã ngày.");
-      return;
-    }
-
-    // Giả định mã ngày đúng là "SCD2026" hoặc có tiền tố SCD
-    const codeUpper = manualCode.toUpperCase().trim();
-    if (codeUpper === "SCD2026" || codeUpper.startsWith("SCD")) {
-      setErrorMessage("");
-      
-      // Phát âm thanh tiếng đóng dấu gỗ "cộp"
-      const stampSound = new Audio("https://assets.mixkit.co/active_storage/sfx/2012/2012-84.wav");
-      stampSound.play().catch((err) => console.log(err));
-
-      setShowManualSuccess(true);
-      
-      setTimeout(async () => {
-        setIsStamped(true);
-        setShowManualSuccess(false);
-
-        // Lưu vào LocalStorage
-        const visited = JSON.parse(localStorage.getItem("scd_visited_stations") || "[]");
-        if (!visited.includes(stationId)) {
-          visited.push(stationId);
-          localStorage.setItem("scd_visited_stations", JSON.stringify(visited));
-        }
-
-        await saveJourneyProgress({
-          db,
-          uid: user?.uid,
-          stationId,
-          stationName: station.name,
-          source: "manual-code",
-        });
-      }, 1500);
-    } else {
-      setErrorMessage("Mã ngày không hợp lệ. Vui lòng hỏi nhân viên tại quầy!");
+  const handleBack = () => {
+    if (activeStep > 0) {
+      setActiveStep((prev) => prev - 1);
     }
   };
 
   return (
     <>
-      {showAr ? (
-        <WebArViewer 
-          stationId={stationId} 
-          onClose={() => setShowAr(false)} 
-          onCheckinSuccess={handleArSuccess} 
-        />
-      ) : (
-        <UtilityPage
-          eyebrow="Check-in Hành trình"
-          title={`Trạm ${station.name}`}
-          description={station.description}
-        >
-          <div className="checkin-shell max-w-2xl mx-auto px-4 py-8">
-            <div className="checkin-card-modern bg-white rounded-3xl overflow-hidden shadow-2xl border border-neutral-100 flex flex-col md:flex-row transition-all duration-300 hover:shadow-neutral-200">
-              
-              {/* Ảnh trạm check-in + Dấu mộc đè lên nếu đã đóng dấu */}
-              <div className="checkin-hero relative w-full md:w-1/2 h-64 md:h-auto min-h-[300px]">
-                <img 
-                  src={station.image} 
-                  alt={station.name} 
-                  className="w-full h-full object-cover"
-                  loading="lazy" 
-                  decoding="async" 
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
-                
-                {isStamped && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-red-950/20 backdrop-blur-xs animate-scale-up">
-                    {/* Con dấu tròn đỏ rực đóng đè lên ảnh cảnh danh thắng */}
-                    <div className="w-36 h-36 rounded-full border-4 border-red-600 border-dashed flex flex-col items-center justify-center text-red-600 bg-white/90 shadow-2xl transform -rotate-12 select-none">
-                      <span className="text-[10px] tracking-widest font-bold uppercase">Sắc Cố Đô</span>
-                      <div className="w-4/5 h-[2px] bg-red-600 my-1"></div>
-                      <span className="text-center font-extrabold text-xs leading-none uppercase px-2">{station.stamp}</span>
-                      <div className="w-4/5 h-[2px] bg-red-600 my-1"></div>
-                      <span className="text-[9px] font-bold tracking-wider">ĐÃ ĐÓNG DẤU</span>
-                    </div>
-                  </div>
-                )}
+      <div className="ar-guide-overlay" role="dialog" aria-modal="true">
+        <div className="ar-guide-backdrop" onClick={onClose} />
+        <div className="ar-guide-card animate-scale-up">
+          <button className="ar-guide-close" onClick={onClose} aria-label="Đóng">✕</button>
+          
+          <div className="ar-guide-grid-container">
+            {/* Left side: Image container */}
+            <div className="ar-guide-left-col">
+              <div className={`ar-guide-image-container ${activeStep === 0 || activeStep === 1 ? "align-bottom" : ""}`}>
+                <img src={currentStep.image} alt={currentStep.title} className="ar-guide-mascot-img-main" />
+              </div>
+            </div>
+
+            {/* Right side: Stepper controls & Dialogue */}
+            <div className="ar-guide-right-col">
+              <div className="ar-guide-header flex items-center justify-between w-full mb-4">
+                <span className="ar-guide-badge px-3 py-1 bg-amber-50 text-amber-700 text-xs font-semibold rounded-full border border-amber-100 uppercase tracking-wider">
+                  {currentStep.badge}
+                </span>
+                <span className="ar-guide-step-indicator text-xs text-neutral-400 font-medium">
+                  Bước {activeStep + 1}/5
+                </span>
               </div>
 
-              {/* Chi tiết trạm check-in và tuỳ chọn check-in */}
-              <div className="checkin-details w-full md:w-1/2 p-8 flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="px-3 py-1 bg-red-50 text-red-700 text-xs font-semibold rounded-full border border-red-100 uppercase tracking-wider">
-                      {station.tag}
-                    </span>
-                    <span className="text-xs text-neutral-500 font-light flex items-center gap-1">
-                      🕒 {station.hours}
-                    </span>
-                  </div>
+              <div className="ar-guide-copy text-center mb-4">
+                <h3 className="text-xl font-bold text-neutral-900">{currentStep.title}</h3>
+              </div>
 
-                  <h3 className="text-2xl font-bold text-neutral-900 mb-2">{station.name}</h3>
-                  <p className="text-sm text-neutral-500 font-light leading-relaxed mb-6">
-                    {isStamped 
-                      ? `Chúc mừng bạn đã check-in thành công trạm ${station.name}! Dấu mộc "${station.stamp}" đã chính thức được đóng vào cuốn passport số của bạn.` 
-                      : `Chào mừng bạn đến với ${station.name}! Quét mã QR tại điểm để mở ra trải nghiệm WebAR sinh động với hướng dẫn viên 3D cầm sản phẩm kể chuyện văn hóa và đóng dấu passport số.`}
+              <div className="ar-guide-dialogue">
+                <div className="ar-guide-dialogue-avatar-wrapper">
+                  <img src="/ar/avt-nibi-no-bg.png" alt="Nibi Tourguide" className="ar-guide-dialogue-avatar" />
+                </div>
+                <div className="ar-guide-dialogue-content">
+                  <div className="ar-guide-dialogue-name">Nibi Hướng Dẫn Viên</div>
+                  <p className="ar-guide-dialogue-text">
+                    "{currentStep.dialogue}"
                   </p>
                 </div>
-
-                {isStamped ? (
-                  /* Giao diện khi đã đóng dấu */
-                  <div className="mt-4">
-                    <div className="p-4 bg-green-50 rounded-2xl border border-green-100 flex items-center gap-3.5 mb-5">
-                      <div className="w-8 h-8 rounded-full bg-green-600 text-white flex items-center justify-center text-sm font-bold shadow-md">✓</div>
-                      <div>
-                        <h4 className="text-sm font-bold text-green-900">Đã đóng dấu mộc số!</h4>
-                        <p className="text-xs text-green-700 font-light">Kiểm tra tiến trình tại trang cá nhân của bạn.</p>
-                      </div>
-                    </div>
-                    <a 
-                      href="/cua-toi" 
-                      className="w-full h-12 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-sm tracking-wider uppercase flex items-center justify-center gap-2 shadow-lg shadow-neutral-900/10 active:scale-98 transition-all"
-                    >
-                      📖 XEM PASSPORT CỦA TÔI
-                    </a>
-                  </div>
-                ) : (
-                  /* Giao diện khi chưa đóng dấu */
-                  <div className="checkin-actions space-y-6">
-                    
-                    {/* TUỲ CHỌN 1: MỞ CAMERA AR (TRẢI NGHIỆM ĐỈNH CAO GIỐNG POKEMON GO) */}
-                    <div>
-                      <button
-                        onClick={() => setShowAr(true)}
-                        className="checkin-ar-button w-full h-14 rounded-2xl bg-gradient-to-r from-red-700 via-red-600 to-amber-600 text-white font-bold text-sm tracking-wider uppercase flex items-center justify-center gap-2.5 shadow-xl shadow-red-700/20 border border-amber-400/20 active:scale-97 hover:brightness-105 transition-all animate-pulse"
-                      >
-                        <span className="text-lg">✨</span>
-                        MỞ TRẢI NGHIỆM AR
-                      </button>
-                      <p className="text-[10px] text-neutral-400 text-center font-light mt-2 italic">
-                        Bấm tiếp "Mở AR thật" trên điện thoại HTTPS để track mặt đất và đặt nhân vật.
-                      </p>
-                    </div>
-
-                    {/* Đường phân chia ngăn cách */}
-                    <div className="relative flex items-center justify-center py-2">
-                      <div className="w-full border-t border-neutral-100"></div>
-                      <span className="absolute bg-white px-3 text-[10px] text-neutral-400 font-medium tracking-widest uppercase">Hoặc</span>
-                    </div>
-
-                    {/* TUỲ CHỌN 2: NHẬP MÃ NGÀY THỦ CÔNG */}
-                    <form onSubmit={handleManualCheckin} className="checkin-manual-form space-y-3">
-                      <div>
-                        <label className="block text-xs font-semibold text-neutral-700 mb-1.5 uppercase tracking-wider">
-                          Đóng dấu thủ công bằng mã ngày
-                        </label>
-                        <div className="flex gap-2">
-                          <input 
-                            placeholder="Mã ngày tại quầy (VD: SCD2026)" 
-                            value={manualCode}
-                            onChange={(e) => setManualCode(e.target.value)}
-                            className="flex-1 h-11 px-4 rounded-xl border border-neutral-200 text-sm focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 text-neutral-800 placeholder-neutral-400 font-medium tracking-wide uppercase"
-                          />
-                          <button
-                            type="submit"
-                            className="h-11 px-5 rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-xs uppercase tracking-wider active:scale-98 transition-all"
-                          >
-                            Đóng dấu
-                          </button>
-                        </div>
-                      </div>
-                      
-                      {errorMessage && (
-                        <p className="text-xs text-red-600 font-medium">{errorMessage}</p>
-                      )}
-                    </form>
-                  </div>
-                )}
               </div>
 
-            </div>
-            {station.gallery?.length > 1 && (
-              <div className="checkin-gallery" aria-label={`Ảnh tham khảo ${station.name}`}>
-                {station.gallery.slice(1, 4).map((image) => (
-                  <img key={image} src={image} alt="" loading="lazy" decoding="async" />
+              <div className="ar-guide-dots flex justify-center gap-1.5 mb-5">
+                {GUIDE_STEPS.map((_, i) => (
+                  <span key={i} className={`ar-guide-dot ${i === activeStep ? "active" : ""}`} />
                 ))}
               </div>
-            )}
-          </div>
 
-          {/* Hiệu ứng đóng dấu thủ công thành công */}
-          {showManualSuccess && (
-            <div className="fixed inset-0 z-50 bg-black/75 flex flex-col items-center justify-center animate-fade-in pointer-events-none">
-              <div className="relative flex flex-col items-center gap-6 animate-scale-up">
-                <div className="w-36 h-36 rounded-full border-[6px] border-red-600 border-dashed flex flex-col items-center justify-center text-red-600 bg-white shadow-2xl p-4 transform -rotate-12 animate-pulse">
-                  <span className="text-[10px] font-bold uppercase tracking-widest">Sắc Cố Đô</span>
-                  <div className="w-full h-[2px] bg-red-600 my-1"></div>
-                  <span className="text-center font-extrabold text-xs uppercase leading-tight">{station.stamp}</span>
-                  <div className="w-full h-[2px] bg-red-600 my-1"></div>
-                  <span className="text-[9px] font-bold tracking-wider">ĐÃ ĐÓNG DẤU</span>
-                </div>
-                <div className="text-center text-white">
-                  <h2 className="text-2xl font-bold tracking-wide text-amber-200">Đang đóng dấu...</h2>
-                  <p className="text-xs text-neutral-300 mt-1">Hệ thống đang cập nhật passport số của bạn.</p>
+              <div className="ar-guide-footer w-full flex flex-col gap-4 border-t border-neutral-100 pt-4">
+                {activeStep === 4 && (
+                  <label className="ar-guide-checkbox-label">
+                    <input 
+                      type="checkbox" 
+                      checked={dontShowAgain} 
+                      onChange={(e) => setDontShowAgain(e.target.checked)} 
+                      className="ar-guide-checkbox" 
+                    />
+                    <span>Không hiển thị lại hướng dẫn này</span>
+                  </label>
+                )}
+                <div className="ar-guide-buttons flex items-center justify-between gap-3 w-full">
+                  {activeStep > 0 ? (
+                    <button 
+                      type="button"
+                      className="ar-guide-btn-secondary" 
+                      onClick={handleBack}
+                    >
+                      Quay lại
+                    </button>
+                  ) : (
+                    <div className="flex-1" />
+                  )}
+                  
+                  <button 
+                    type="button"
+                    className="ar-guide-btn-primary" 
+                    onClick={handleNext}
+                  >
+                    {activeStep === 4 ? "Bắt đầu ngay ✨" : "Tiếp theo"}
+                  </button>
                 </div>
               </div>
             </div>
-          )}
-        </UtilityPage>
-      )}
+          </div>
+        </div>
+      </div>
 
       {/* Thêm CSS Keyframe Animations cục bộ cho UtilityPages */}
       <style jsx global>{`

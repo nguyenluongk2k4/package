@@ -55,14 +55,37 @@ export default function ActivatePage() {
         
         const config = {
           fps: 12,
-          qrbox: { width: 250, height: 250 }
+          qrbox: (viewfinderWidth, viewfinderHeight) => {
+            const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
+            const size = Math.floor(minEdge * 0.65);
+            return { width: size, height: size };
+          }
         };
 
         await html5QrCode.start(
           { facingMode: "environment" },
           config,
           (decodedText) => {
-            const cleanCode = decodedText.trim();
+            const raw = decodedText.trim();
+            
+            // Auto redirect if user accidentally scans a station check-in QR
+            const checkinMatch = raw.match(/\/checkin\/([a-zA-Z0-9-]+)/) || raw.match(/^[a-zA-Z0-9-]+$/);
+            const potentialSlug = checkinMatch ? checkinMatch[1] || raw : null;
+            const validSlugs = ["trang-an", "hoa-lu", "bai-dinh", "pho-co-hoa-lu", "tam-coc", "hang-mua"];
+            
+            if (raw.includes("/checkin/") || (potentialSlug && validSlugs.includes(potentialSlug))) {
+              const slug = potentialSlug || raw.split("/checkin/")[1]?.split("?")[0];
+              if (slug && validSlugs.includes(slug)) {
+                showToast("Phát hiện mã QR check-in trạm! Đang di chuyển sang trang check-in...", "success");
+                if (html5QrCode && html5QrCode.isScanning) {
+                  html5QrCode.stop().catch(() => {});
+                }
+                router.push(`/checkin/${slug}`);
+                return;
+              }
+            }
+
+            const cleanCode = raw.toUpperCase();
             setPassportCode(cleanCode);
             showToast(`Phát hiện mã QR: ${cleanCode}`, "info");
           },
@@ -212,8 +235,8 @@ export default function ActivatePage() {
               </p>
             )}
 
-            <div className="scanner-view-container" style={{ position: "relative", minHeight: "260px", background: "#f7f9fa", borderRadius: "12px", overflow: "hidden", display: isActivated ? "none" : "block" }}>
-              <div id="qr-reader" style={{ width: "100%" }} />
+            <div className="scanner-view-container" style={{ display: isActivated ? "none" : "block" }}>
+              <div id="qr-reader" />
               {cameraError && (
                 <div className="scanner-error-display" style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.85)", padding: "20px", textAlign: "center", zIndex: 2 }}>
                   <ShieldAlert size={36} style={{ marginBottom: "12px", color: "#e53e3e" }} />

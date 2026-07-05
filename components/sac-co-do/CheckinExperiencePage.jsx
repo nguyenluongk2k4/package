@@ -7,10 +7,11 @@ import { saveArExperience, saveJourneyProgress } from "../../lib/firebase/userDa
 import { useFirebaseAuth } from "./FirebaseAuthProvider";
 import { uploadToCloudinary } from "../../lib/cloudinary/client";
 import { useToast } from "./ToastProvider";
+import { ArOnboardingGuide } from "./UtilityPages";
 
 const viewArBase = "/assets/view-ar";
-const fallbackArModelSrc = "/ar/sac-co-do-guide-v2.glb";
-const fallbackArIosModelSrc = "/ar/sac-co-do-guide-v2.usdz";
+const fallbackArModelSrc = "/ar/sac-co-do-guide-v3.glb";
+const fallbackArIosModelSrc = "/ar/sac-co-do-guide-v3.usdz";
 const modelGreetingAnimation = "WaveOnceThenIdle";
 const sheetPositions = ["expanded", "middle", "collapsed"];
 
@@ -55,6 +56,7 @@ export default function CheckinExperiencePage({ stationId }) {
   const [hasCamera, setHasCamera] = useState(false);
   const [isIosQuickLook, setIsIosQuickLook] = useState(false);
   const [sheetPosition, setSheetPosition] = useState("middle");
+  const [showArGuide, setShowArGuide] = useState(false);
 
   // AR Upload States
   const [showUploadModal, setShowUploadModal] = useState(false);
@@ -134,8 +136,19 @@ export default function CheckinExperiencePage({ stationId }) {
     setHasMounted(true);
     setIsIosQuickLook(quickLookDevice);
 
-    if (!quickLookDevice) {
-      openCamera();
+    if (typeof window !== "undefined") {
+      const guideCompleted = localStorage.getItem("scd_ar_guide_completed");
+      if (guideCompleted !== "true") {
+        setShowArGuide(true);
+      } else {
+        if (!quickLookDevice) {
+          openCamera();
+        }
+      }
+    } else {
+      if (!quickLookDevice) {
+        openCamera();
+      }
     }
 
     return () => {
@@ -453,9 +466,22 @@ export default function CheckinExperiencePage({ stationId }) {
             AR Live Session
           </p>
         </div>
-        <a className="ar-live-close" href={`/hanh-trinh/${station.id}`} aria-label="Đóng AR">
-          <img src={`${viewArBase}/mobile-app/btn-close.svg`} alt="" aria-hidden="true" />
-        </a>
+        <div className="ar-live-header-right">
+          <button 
+            type="button"
+            className="ar-live-help"
+            onClick={() => {
+              stopCamera();
+              setShowArGuide(true);
+            }}
+            aria-label="Xem hướng dẫn"
+          >
+            ?
+          </button>
+          <a className="ar-live-close" href={`/hanh-trinh/${station.id}`} aria-label="Đóng AR">
+            <img src={`${viewArBase}/mobile-app/btn-close.svg`} alt="" aria-hidden="true" />
+          </a>
+        </div>
       </header>
 
       <div className={`ar-live-reticle ${isTracking ? "is-tracking" : ""}`} aria-hidden="true">
@@ -574,6 +600,23 @@ export default function CheckinExperiencePage({ stationId }) {
             </div>
           </div>
         </div>
+      )}
+
+      {showArGuide && (
+        <ArOnboardingGuide 
+          onClose={() => {
+            setShowArGuide(false);
+            if (!isIosQuickLook) {
+              openCamera();
+            }
+          }} 
+          onStart={() => {
+            setShowArGuide(false);
+            if (!isIosQuickLook) {
+              openCamera();
+            }
+          }} 
+        />
       )}
     </main>
   );

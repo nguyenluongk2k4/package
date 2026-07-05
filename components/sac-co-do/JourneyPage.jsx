@@ -48,10 +48,13 @@ export default function JourneyPage() {
     let active = true;
 
     async function loadProgress() {
+      const validStationIds = new Set(journeyStations.map((station) => station.id));
       let guestVisited = [];
       if (typeof window !== "undefined") {
         try {
-          guestVisited = JSON.parse(localStorage.getItem("scd_visited_stations") || "[]");
+          guestVisited = JSON.parse(localStorage.getItem("scd_visited_stations") || "[]").filter((id) =>
+            validStationIds.has(id)
+          );
         } catch (_) {}
       }
 
@@ -66,9 +69,11 @@ export default function JourneyPage() {
         if (!active) return;
         const dbVisited = [];
         querySnapshot.forEach((docSnapshot) => {
-          dbVisited.push(docSnapshot.id);
+          if (validStationIds.has(docSnapshot.id)) {
+            dbVisited.push(docSnapshot.id);
+          }
         });
-        setVisitedIds(Array.from(new Set([...dbVisited, ...guestVisited])));
+        setVisitedIds(dbVisited);
       } catch (err) {
         console.warn("⚠️ [JourneyPage] Lỗi tải tiến trình:", err);
         if (active) setVisitedIds(guestVisited);
@@ -82,7 +87,7 @@ export default function JourneyPage() {
     return () => {
       active = false;
     };
-  }, [user, db, loading]);
+  }, [user, db, loading, journeyStations]);
 
   // Mặc định là Khóa (isLocked = true) khi đang trong trạng thái loading để bảo mật tuyệt đối,
   // tránh hiển thị chớp nhoáng (flash) dữ liệu hành trình và không bị treo ở màn hình loading.

@@ -2266,43 +2266,44 @@ html.reveal-ready .reveal-target.is-revealed {
 .ar-live-station img {
   width: 36px;
   height: 36px;
-  object-fit: contain;
-  filter: brightness(0) saturate(100%) invert(89%) sepia(15%) saturate(727%) hue-rotate(86deg) brightness(105%) contrast(92%);
+  object-fit: cover;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
 }
 
 .ar-live-station span {
   font-family: "Be Vietnam Pro", ui-sans-serif, system-ui, sans-serif;
-  font-size: clamp(40px, 8vw, 72px);
+  font-size: clamp(20px, 4vw, 36px);
   font-weight: 900;
-  line-height: 1;
-  text-shadow: 0 6px 20px rgba(0, 0, 0, 0.16);
+  line-height: 1.1;
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
 .ar-live-status {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin: 16px 0 0;
+  gap: 8px;
+  margin: 10px 0 0;
   color: rgba(255, 255, 255, 0.86);
-  font-size: 16px;
+  font-size: 13px;
   font-weight: 500;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   line-height: 1;
   text-transform: uppercase;
 }
 
 .ar-live-status span {
-  width: 14px;
-  height: 14px;
+  width: 8px;
+  height: 8px;
   border-radius: 999px;
   background: #cf202a;
-  box-shadow: 0 0 0 6px rgba(207, 32, 42, 0.12);
+  box-shadow: 0 0 0 4px rgba(207, 32, 42, 0.15);
 }
 
 .ar-live-close {
   display: grid;
-  width: clamp(62px, 10vw, 86px);
-  height: clamp(62px, 10vw, 86px);
+  width: 44px;
+  height: 44px;
   place-items: center;
   border: 0;
   background: transparent;
@@ -2311,6 +2312,40 @@ html.reveal-ready .reveal-target.is-revealed {
 .ar-live-close img {
   width: 100%;
   height: 100%;
+}
+
+.ar-live-header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ar-live-help {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  font-family: "Be Vietnam Pro", sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+  line-height: 1;
+}
+
+.ar-live-help:hover {
+  background: rgba(0, 0, 0, 0.5);
+  transform: scale(1.05);
+}
+
+.ar-live-help:active {
+  transform: scale(0.95);
 }
 
 .ar-live-reticle {
@@ -2562,32 +2597,33 @@ html.reveal-ready .reveal-target.is-revealed {
 
 @media (max-width: 620px) {
   .ar-live-header {
-    padding-inline: 29px;
+    padding-inline: 20px;
+    padding-top: max(16px, env(safe-area-inset-top));
   }
 
   .ar-live-station {
-    gap: 12px;
+    gap: 8px;
   }
 
   .ar-live-station img {
-    width: 34px;
-    height: 34px;
+    width: 24px;
+    height: 24px;
   }
 
   .ar-live-station span {
-    font-size: 44px;
+    font-size: 18px;
   }
 
   .ar-live-status {
-    margin-top: 14px;
-    font-size: 16px;
-    letter-spacing: 0.1em;
+    margin-top: 6px;
+    font-size: 11px;
+    letter-spacing: 0.08em;
   }
 
   .ar-live-close {
-    width: 86px;
-    height: 86px;
-    border-radius: 22px;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
   }
 
   .ar-live-reticle {
@@ -2634,29 +2670,36 @@ html.reveal-ready .reveal-target.is-revealed {
 
 @media (max-width: 430px) {
   .ar-live-header {
-    padding-inline: 18px;
+    padding-inline: 12px;
+    padding-top: max(12px, env(safe-area-inset-top));
   }
 
   .ar-live-station span {
-    font-size: 30px;
+    font-size: 15px;
   }
 
   .ar-live-status {
-    gap: 8px;
-    margin-top: 8px;
-    font-size: 16px;
-    line-height: 0.95;
+    gap: 6px;
+    margin-top: 4px;
+    font-size: 10px;
+    line-height: 1;
   }
 
   .ar-live-status span {
-    width: 10px;
-    height: 10px;
+    width: 6px;
+    height: 6px;
   }
 
   .ar-live-close {
-    width: 66px;
-    height: 66px;
-    border-radius: 18px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+  }
+
+  .ar-live-help {
+    width: 28px;
+    height: 28px;
+    font-size: 13px;
   }
 
   .ar-live-reticle {
@@ -14485,11 +14528,26 @@ html.reveal-ready .reveal-target.is-revealed {
 .scanner-view-container {
   position: relative;
   width: 100%;
-  aspect-ratio: 4/3;
+  aspect-ratio: 1 / 1;
   background: #000;
   border-radius: 12px;
   overflow: hidden;
   margin: 20px 0;
+}
+
+#qr-reader {
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  position: relative !important;
+}
+
+#qr-reader video {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  border-radius: 12px !important;
 }
 
 .scanner-camera-feed {
@@ -16417,4 +16475,675 @@ html.reveal-ready .reveal-target.is-revealed {
   object-fit: cover !important;
   border-radius: 12px !important;
 }
+
+/* ── WebAR Onboarding Guide Styles ── */
+.ar-guide-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.ar-guide-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 12, 20, 0.62);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: opacity 0.3s ease-in-out;
+}
+
+.ar-guide-card {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 820px;
+  background: #ffffff;
+  border-radius: 28px;
+  padding: clamp(20px, 4vw, 28px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 
+    0 10px 25px -5px rgba(0, 0, 0, 0.05),
+    0 20px 48px -10px rgba(0, 0, 0, 0.08),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+  transform-origin: center;
+}
+
+.ar-guide-grid-container {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 28px;
+  align-items: start;
+}
+
+.ar-guide-left-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 360px;
+  flex-shrink: 0;
+}
+
+.ar-guide-right-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 360px;
+}
+
+.ar-guide-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid #f1f3f5;
+  background: #ffffff;
+  color: #868e96;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.ar-guide-close:hover {
+  background: #f8f9fa;
+  color: #212529;
+  transform: scale(1.05);
+}
+
+.ar-guide-image-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle, #f8fafc 0%, #e2e8f0 100%);
+  border-radius: 24px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 2px 8px rgba(0,0,0,0.02);
+  padding: 16px;
+  overflow: hidden;
+  width: 360px;
+  height: 360px;
+  flex-shrink: 0;
+}
+
+.ar-guide-image-container.align-bottom {
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding-bottom: 0;
+  padding-left: 0;
+}
+
+.ar-guide-image-container.align-bottom .ar-guide-mascot-img-main {
+  width: auto;
+  height: 108%;
+  margin-bottom: -24px;
+  margin-left: -20px;
+  max-width: none;
+}
+
+
+.ar-guide-mascot-img-main {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.08));
+}
+
+@keyframes slideFade {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.ar-guide-copy h3 {
+  font-family: "Baloo 2", "Be Vietnam Pro", sans-serif;
+  color: #104C27; /* SCD Brand Green */
+}
+
+/* Custom Checkbox styles */
+.ar-guide-checkbox-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+  margin-bottom: 12px;
+  width: 100%;
+}
+
+.ar-guide-checkbox-label span {
+  font-family: "Be Vietnam Pro", sans-serif;
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.ar-guide-checkbox {
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 4px;
+  cursor: pointer;
+  accent-color: #104c27;
+}
+
+.ar-guide-buttons button {
+  font-family: "Be Vietnam Pro", sans-serif;
+  font-size: 14px;
+}
+
+/* Onboarding responsive overrides */
+@media (max-width: 768px) {
+  .ar-guide-card {
+    max-width: 420px !important;
+    width: calc(100% - 32px) !important;
+    max-height: calc(100vh - 32px) !important;
+    overflow-y: auto !important;
+    border-radius: 20px !important;
+    padding: 20px !important;
+  }
+  .ar-guide-grid-container {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+  .ar-guide-image-container {
+    margin-bottom: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 1 / 1 !important;
+  }
+  .ar-guide-dialogue {
+    padding: 10px !important;
+    margin-bottom: 12px !important;
+    gap: 10px !important;
+  }
+  .ar-guide-dialogue-avatar-wrapper {
+    width: 44px !important;
+    height: 44px !important;
+  }
+  .ar-guide-dialogue p {
+    font-size: 11px !important;
+    line-height: 1.4 !important;
+  }
+  .ar-guide-copy h3 {
+    font-size: 16px !important;
+  }
+  .ar-guide-close {
+    top: 14px !important;
+    right: 14px !important;
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 12px !important;
+  }
+}
+
+/* ── WebAR Onboarding Visual Steps Styles ── */
+.ar-guide-step-visual {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #121824;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.ar-guide-perspective-grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.15;
+  background-image: radial-gradient(#10b981 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+.ar-guide-perspective-floor {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  opacity: 0.25;
+  background: linear-gradient(to top, rgba(16, 185, 129, 0.2), transparent);
+  transform: perspective(100px) rotateX(60deg);
+}
+
+.ar-guide-scanner-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #10b981;
+  opacity: 0.6;
+  box-shadow: 0 0 8px #10b981;
+  animation: scanMotion 2s infinite ease-in-out;
+}
+
+.ar-guide-phone-scan {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+
+.ar-guide-phone-outline {
+  width: 80px;
+  height: 110px;
+  border-radius: 16px;
+  border: 2px dashed rgba(16, 185, 129, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(18, 24, 36, 0.8);
+}
+
+.ar-guide-arrow-left, .ar-guide-arrow-right {
+  color: #10b981;
+  font-size: 24px;
+  font-weight: bold;
+  animation: arrowPulse 1.5s infinite ease-in-out;
+}
+
+.ar-guide-floor-grid {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  opacity: 0.35;
+  background: linear-gradient(to top, rgba(245, 158, 11, 0.15), transparent);
+  border-top: 1px solid rgba(245, 158, 11, 0.2);
+  transform: perspective(100px) rotateX(60deg);
+}
+
+.ar-guide-target-ring-ping {
+  position: absolute;
+  bottom: 25%;
+  width: 96px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid #f59e0b;
+  background: rgba(245, 158, 11, 0.1);
+  transform: scaleY(0.5);
+  animation: ringPing 1.8s infinite ease-out;
+}
+
+.ar-guide-target-ring-static {
+  position: absolute;
+  bottom: 25%;
+  width: 96px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid #fbbf24;
+  background: rgba(245, 158, 11, 0.2);
+  transform: scaleY(0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+}
+
+.ar-guide-target-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #fbbf24;
+}
+
+.ar-guide-floating-nibi {
+  position: relative;
+  z-index: 10;
+  transform: translateY(-16px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ar-guide-mascot-img-step1 {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  opacity: 0.5;
+}
+
+.ar-guide-mascot-img-step2 {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  animation: floatBounce 2s infinite ease-in-out;
+}
+
+.ar-guide-mascot-img-step3 {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+}
+
+.ar-guide-tap-hand {
+  font-size: 28px;
+  position: absolute;
+  right: -8px;
+  bottom: -8px;
+  animation: tapHandPulse 1.2s infinite ease-in-out;
+}
+
+.ar-guide-rotational-base {
+  position: absolute;
+  bottom: 22%;
+  width: 112px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px dashed rgba(16, 185, 129, 0.4);
+  transform: scaleY(0.5);
+}
+
+.ar-guide-pinch-indicators {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-left: -24px;
+  margin-right: -24px;
+  pointer-events: none;
+}
+
+.ar-guide-pinch-text {
+  font-size: 11px;
+  color: #10b981;
+  animation: arrowPulse 1.5s infinite ease-in-out;
+  font-weight: 600;
+}
+
+.ar-guide-dialogue {
+  display: flex;
+  align-items: start;
+  gap: 14px;
+  background: #e6f4ea;
+  border-radius: 16px;
+  padding: 16px;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  margin-bottom: 20px;
+  text-align: left;
+  min-height: 94px;
+}
+
+.ar-guide-dialogue-avatar-wrapper {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  flex-shrink: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+
+.ar-guide-dialogue-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.ar-guide-dialogue-content {
+  flex: 1;
+}
+
+.ar-guide-dialogue-name {
+  font-size: 10px;
+  font-weight: bold;
+  color: #137333;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 6px;
+}
+
+.ar-guide-dialogue-text {
+  font-size: 13px;
+  color: #3c4043;
+  font-weight: 500;
+  line-height: 1.5;
+  margin: 0;
+}
+
+@keyframes scanMotion {
+  0%, 100% { top: 30%; }
+  50% { top: 70%; }
+}
+
+@keyframes arrowPulse {
+  0%, 100% { opacity: 0.3; transform: scale(0.95); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+@keyframes ringPing {
+  0% { transform: scaleY(0.5) scale(0.8); opacity: 1; }
+  100% { transform: scaleY(0.5) scale(1.6); opacity: 0; }
+}
+
+@keyframes floatBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes tapHandPulse {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(4px) scale(0.9); }
+}
+
+/* ── WebAR Onboarding Steps 3, 4, 5 Styles ── */
+.ar-guide-camera-frame {
+  position: absolute;
+  inset: 40px;
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  border-radius: 16px;
+  pointer-events: none;
+}
+
+.ar-guide-capture-button {
+  position: absolute;
+  bottom: 24px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 4px solid #ffffff;
+  background: #cf202a;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.ar-guide-flash-sparkle {
+  position: absolute;
+  font-size: 20px;
+  color: #fbbf24;
+  animation: arrowPulse 1.2s infinite ease-in-out;
+}
+
+.ar-guide-upload-bar {
+  width: 140px;
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+  margin-top: 14px;
+}
+
+.ar-guide-upload-progress {
+  width: 70%;
+  height: 100%;
+  background: #10b981;
+  animation: uploadAnimation 2s infinite ease-in-out;
+}
+
+.ar-guide-stamp-icon {
+  position: absolute;
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
+  border: 3px dashed #cf202a;
+  color: #cf202a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 10px;
+  background: rgba(255, 255, 255, 0.95);
+  transform: rotate(-12deg);
+  animation: stampAnimation 2s infinite ease-in-out;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.ar-guide-share-bubbles {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.ar-guide-share-node {
+  position: absolute;
+  background: #ffffff;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.15);
+  color: #137333;
+}
+
+@keyframes uploadAnimation {
+  0% { transform: translateX(-100%); }
+  50%, 100% { transform: translateX(100%); }
+}
+
+@keyframes stampAnimation {
+  0% { transform: scale(1.6) rotate(-12deg); opacity: 0; }
+  35% { transform: scale(1) rotate(-12deg); opacity: 1; }
+  100% { transform: scale(1) rotate(-12deg); opacity: 1; }
+}
+
+/* ── WebAR Onboarding Button Styles & Custom Dots ── */
+.ar-guide-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+}
+
+.ar-guide-btn-primary {
+  flex: 1;
+  height: 44px;
+  border-radius: 12px;
+  background: #104c27;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 4px 12px rgba(16, 76, 39, 0.15);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.ar-guide-btn-primary:hover {
+  background: #176335;
+  transform: translateY(-1px);
+}
+
+.ar-guide-btn-primary:active {
+  transform: scale(0.98);
+}
+
+.ar-guide-btn-secondary {
+  flex: 1;
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #475569;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.ar-guide-btn-secondary:hover {
+  background: #f8fafc;
+  color: #1e293b;
+}
+
+.ar-guide-btn-secondary:active {
+  transform: scale(0.98);
+}
+
+/* Custom Dots Styling */
+.ar-guide-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+
+.ar-guide-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #cbd5e1;
+  transition: all 0.3s ease;
+}
+
+.ar-guide-dot.active {
+  background: #104c27;
+  width: 22px;
+  border-radius: 4px;
+}
+
+/* Mobile responsive scaling overrides for buttons */
+@media (max-width: 480px) {
+  .ar-guide-btn-primary,
+  .ar-guide-btn-secondary {
+    height: 40px !important;
+    font-size: 12px !important;
+    border-radius: 10px !important;
+  }
+  .ar-guide-buttons {
+    gap: 8px !important;
+  }
+}
+
 

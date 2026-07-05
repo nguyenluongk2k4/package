@@ -5,8 +5,8 @@ import { getDefaultArCharacter, getStationBySlugOrId } from "../../lib/firebase/
 import { saveArExperience, saveJourneyProgress } from "../../lib/firebase/userData";
 import { useFirebaseAuth } from "./FirebaseAuthProvider";
 
-const AR_MODEL_SRC = "/ar/sac-co-do-guide-v2.glb";
-const AR_IOS_MODEL_SRC = "/ar/sac-co-do-guide-v2.usdz";
+const AR_MODEL_SRC = "/ar/sac-co-do-guide-v3.glb";
+const AR_IOS_MODEL_SRC = "/ar/sac-co-do-guide-v3.usdz";
 const MODEL_GREETING_ANIMATION = "WaveOnceThenIdle";
 
 // Định nghĩa thông tin thuyết minh và âm thanh cho từng trạm
