@@ -57,6 +57,7 @@ export default function CheckinExperiencePage({ stationId }) {
   const [isIosQuickLook, setIsIosQuickLook] = useState(false);
   const [sheetPosition, setSheetPosition] = useState("middle");
   const [showArGuide, setShowArGuide] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   // AR Upload States
   const [showUploadModal, setShowUploadModal] = useState(false);
@@ -313,7 +314,7 @@ export default function CheckinExperiencePage({ stationId }) {
 
       showToast(`Chúc mừng! Bạn đã hoàn thành check-in tại ${station.name} và đóng dấu mộc thành công!`, "success");
 
-      // Play Confetti Celebration and redirect to passport page
+      // Play Confetti Celebration and show success dialog
       if (typeof window !== "undefined") {
         const script = document.createElement("script");
         script.src = "https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js";
@@ -323,14 +324,10 @@ export default function CheckinExperiencePage({ stationId }) {
             spread: 80,
             origin: { y: 0.6 },
           });
-          setTimeout(() => {
-            window.location.href = "/ho-chieu";
-          }, 1500);
         };
         document.body.appendChild(script);
-      } else {
-        window.location.href = "/ho-chieu";
       }
+      setShowSuccessModal(true);
     } catch (err) {
       console.error("Cloudinary stamp upload failed:", err);
       showToast("Không thể đăng tải hình ảnh kỷ niệm. Vui lòng thử lại.", "error");
@@ -385,20 +382,16 @@ export default function CheckinExperiencePage({ stationId }) {
 
       showToast(`Chúc mừng! Bạn đã hoàn thành check-in tại ${station.name} và đóng dấu mộc thành công!`, "success");
 
-      // Play confetti and redirect
+      // Play confetti and show success dialog
       if (typeof window !== "undefined") {
         const script = document.createElement("script");
         script.src = "https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js";
         script.onload = () => {
           window.confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
-          setTimeout(() => {
-            window.location.href = "/ho-chieu";
-          }, 1550);
         };
         document.body.appendChild(script);
-      } else {
-        window.location.href = "/ho-chieu";
       }
+      setShowSuccessModal(true);
     } catch (e) {
       console.error("AR live stamp saving failed:", e);
       showToast("Lỗi đóng dấu mộc. Vui lòng thử lại.", "error");
@@ -617,6 +610,79 @@ export default function CheckinExperiencePage({ stationId }) {
             }
           }} 
         />
+      )}
+
+      {showSuccessModal && (
+        <div className="checkin-success-overlay" role="dialog" aria-modal="true">
+          <div className="checkin-success-backdrop" />
+          <div className="checkin-success-card">
+            <div className="checkin-success-icon-wrapper">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                <polyline points="22 4 12 14.01 9 11.01" />
+              </svg>
+            </div>
+            <h3>Ghi Nhận Thành Công!</h3>
+            <p>
+              Chúc mừng bạn đã hoàn thành check-in tại <strong>{station.name}</strong> và đóng dấu mộc hành trình thành công!
+            </p>
+            
+            <div className="checkin-success-buttons">
+              <button 
+                type="button"
+                className="checkin-success-btn-primary"
+                onClick={() => {
+                  window.location.href = "/ho-chieu";
+                }}
+              >
+                Xem Hộ chiếu của tôi
+              </button>
+              
+              {(() => {
+                const currentIndex = stations.findIndex(s => s.id === (station.id || stationId));
+                const nextSt = currentIndex !== -1 && currentIndex < stations.length - 1 
+                  ? stations[currentIndex + 1] 
+                  : null;
+                
+                if (nextSt) {
+                  return (
+                    <button 
+                      type="button"
+                      className="checkin-success-btn-secondary"
+                      onClick={() => {
+                        window.location.href = `/hanh-trinh/${nextSt.id}`;
+                      }}
+                    >
+                      Đến trạm tiếp theo: {nextSt.name}
+                    </button>
+                  );
+                } else {
+                  return (
+                    <button 
+                      type="button"
+                      className="checkin-success-btn-secondary"
+                      onClick={() => {
+                        window.location.href = "/hanh-trinh";
+                      }}
+                    >
+                      Hoàn thành Bản đồ Hành trình
+                    </button>
+                  );
+                }
+              })()}
+
+              <button 
+                type="button"
+                className="checkin-success-btn-link"
+                onClick={() => {
+                  window.location.href = "/hanh-trinh";
+                }}
+              >
+                Về bản đồ Hành trình
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </main>
   );

@@ -16648,7 +16648,7 @@ html.reveal-ready .reveal-target.is-revealed {
 }
 
 /* Onboarding responsive overrides */
-@media (max-width: 768px) {
+@media (max-width: 860px) {
   .ar-guide-card {
     max-width: 420px !important;
     width: calc(100% - 32px) !important;
@@ -16656,15 +16656,34 @@ html.reveal-ready .reveal-target.is-revealed {
     overflow-y: auto !important;
     border-radius: 20px !important;
     padding: 20px !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
   }
   .ar-guide-grid-container {
     grid-template-columns: 1fr !important;
     gap: 16px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+  .ar-guide-left-col {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    flex-shrink: 1 !important;
+  }
+  .ar-guide-right-col {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: auto !important;
   }
   .ar-guide-image-container {
     margin-bottom: 0 !important;
     width: 100% !important;
+    max-width: 100% !important;
     height: auto !important;
+    min-width: 0 !important;
+    flex-shrink: 1 !important;
     aspect-ratio: 1 / 1 !important;
   }
   .ar-guide-dialogue {
@@ -17144,6 +17163,170 @@ html.reveal-ready .reveal-target.is-revealed {
   .ar-guide-buttons {
     gap: 8px !important;
   }
+}
+
+/* Checkin Success Dialog styles */
+.checkin-success-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.checkin-success-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 12, 20, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.checkin-success-card {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 440px;
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 32px 24px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(16, 76, 39, 0.08);
+  animation: checkin-success-scale 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes checkin-success-scale {
+  0% { transform: scale(0.9); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.checkin-success-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  background: rgba(16, 76, 39, 0.08);
+  border-radius: 50%;
+  margin: 0 auto 20px;
+  color: #104c27;
+  border: 2px solid rgba(16, 76, 39, 0.15);
+}
+
+.checkin-success-card h3 {
+  font-family: "Baloo 2", "Be Vietnam Pro", sans-serif;
+  font-size: 24px;
+  color: #104c27;
+  font-weight: 800;
+  margin: 0 0 10px 0;
+  line-height: 1.2;
+}
+
+.checkin-success-card p {
+  font-family: "Be Vietnam Pro", sans-serif;
+  font-size: 14px;
+  color: #64748b;
+  margin: 0 0 24px 0;
+  line-height: 1.5;
+}
+
+.checkin-success-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.checkin-success-btn-primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 48px;
+  border-radius: 12px;
+  background: #104c27;
+  color: #ffffff;
+  font-family: "Be Vietnam Pro", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(16, 76, 39, 0.15);
+}
+
+.checkin-success-btn-primary:hover {
+  background: #176335;
+  transform: translateY(-1px);
+}
+
+.checkin-success-btn-primary:active {
+  transform: scale(0.98);
+}
+
+.checkin-success-btn-secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 48px;
+  border-radius: 12px;
+  border: 1px solid rgba(16, 76, 39, 0.35);
+  background: #ffffff;
+  color: #104c27;
+  font-family: "Be Vietnam Pro", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.checkin-success-btn-secondary:hover {
+  background: rgba(16, 76, 39, 0.04);
+  color: #176335;
+  transform: translateY(-1px);
+}
+
+.checkin-success-btn-secondary:active {
+  transform: scale(0.98);
+}
+
+.checkin-success-btn-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Be Vietnam Pro", sans-serif;
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 600;
+  text-decoration: underline;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: color 0.2s ease;
+}
+
+.checkin-success-btn-link:hover {
+  color: #1e293b;
+}
+
+/* Hide floating action buttons when fullscreen overlays are active */
+body:has(.ar-guide-overlay) .fab-verify,
+body:has(.ar-guide-overlay) .scroll-to-top-btn,
+body:has(.qr-scan-dialog) .fab-verify,
+body:has(.qr-scan-dialog) .scroll-to-top-btn,
+body:has(.checkin-success-overlay) .fab-verify,
+body:has(.checkin-success-overlay) .scroll-to-top-btn {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+  transition: opacity 0.2s ease, visibility 0.2s ease !important;
 }
 
 
