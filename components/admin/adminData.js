@@ -54,7 +54,6 @@ export const emptyDocs = {
     detailImages: [],
     features: [],
     variants: [],
-    model3d: { glbUrl: "", usdzUrl: "", posterUrl: "" },
   },
   arCharacters: {
     name: "",

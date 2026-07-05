@@ -340,6 +340,7 @@ export default function StationsManager() {
 
   async function archiveStation() {
     if (!docId) return;
+    if (!window.confirm("Bạn có chắc chắn muốn lưu trữ địa danh này không?")) return;
     await archiveDocument("stations", docId);
     setMessage("Đã lưu trữ địa danh.");
   }
@@ -364,24 +365,60 @@ export default function StationsManager() {
           </header>
 
           <div className="admin-stations-list">
-            {filteredItems.map((item) => (
-              <article className={item.id === docId ? "active" : ""} key={item.id}>
-                <button type="button" onClick={() => edit(item)}>
-                  <span className={`admin-station-status ${item.status || "draft"}`}>{item.status === "published" ? "ACTIVE" : (item.status || "draft").toUpperCase()}</span>
-                  <strong>{item.name || item.id}</strong>
-                  <p>{item.description || "Chưa có mô tả card."}</p>
-                  <small>
-                    <span>Thứ tự: {item.sortOrder || 0}</span>
-                    <span>Cập nhật: {item.updatedAt ? "gần đây" : "chưa rõ"}</span>
-                  </small>
-                </button>
-              </article>
-            ))}
+            {filteredItems.map((item) => {
+              const itemImage = getStationImage(item);
+              return (
+                <article className={item.id === docId ? "active" : ""} key={item.id}>
+                  <button type="button" onClick={() => edit(item)} style={{ width: "100%", textAlign: "left", display: "flex", gap: "12px", alignItems: "center", padding: "16px 20px" }}>
+                    {itemImage ? (
+                      <img src={itemImage} className="admin-product-thumb" style={{ width: "52px", height: "52px", borderRadius: "6px", objectFit: "cover", flexShrink: 0 }} alt="" />
+                    ) : (
+                      <div className="admin-product-thumb-placeholder" style={{ width: "52px", height: "52px", borderRadius: "6px", background: "#f0f4f2", display: "flex", alignItems: "center", justifyItems: "center", justifyContent: "center", fontSize: "11px", color: "#6d7672", flexShrink: 0 }}>Không ảnh</div>
+                    )}
+                    <div style={{ display: "flex", flexDirection: "column", minWidth: 0, flex: 1 }}>
+                      <span className={`admin-station-status ${item.status || "draft"}`} style={{ position: "static", alignSelf: "start" }}>
+                        {item.status === "published" ? "ACTIVE" : (item.status || "draft").toUpperCase()}
+                      </span>
+                      <strong style={{ fontSize: "15px", color: "#111b18", marginTop: "4px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontWeight: "750" }}>{item.name || item.id}</strong>
+                      <small style={{ color: "#6d7672", fontSize: "12px", marginTop: "2px" }}>
+                        Thứ tự: {item.sortOrder || 0}
+                      </small>
+                    </div>
+                  </button>
+                </article>
+              );
+            })}
           </div>
         </aside>
 
-        <form className="admin-stations-editor" onSubmit={save}>
-          <nav className="admin-station-tabs" aria-label="Nhóm thông tin địa danh">
+        <form className="admin-editor" onSubmit={save}>
+          <div className="admin-editor-head" style={{ padding: "0 0 16px", marginBottom: 0 }}>
+            <div>
+              <h2>{docId ? "Chỉnh sửa địa danh" : "Tạo mới địa danh"}</h2>
+              {message ? <p className="admin-editor-message">{message}</p> : null}
+            </div>
+            <div className="admin-form-actions" style={{ borderTop: "none", marginTop: 0, paddingTop: 0 }}>
+              <button type="submit" disabled={saving}>
+                {saving ? "Đang lưu..." : "Lưu"}
+              </button>
+              <button type="button" onClick={createNew} className="admin-secondary-button">
+                Huỷ bỏ
+              </button>
+              {docId ? (
+                <button
+                  type="button"
+                  onClick={archiveStation}
+                  className="admin-secondary-button"
+                  style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}
+                >
+                  <img src="/assets/ic-trash'.svg" style={{ width: "16px", height: "16px", opacity: 0.8 }} alt="" />
+                  Lưu trữ
+                </button>
+              ) : null}
+            </div>
+          </div>
+
+          <nav className="admin-tabs-nav" aria-label="Nhóm thông tin địa danh">
             {tabs.map((tab) => (
               <button className={activeTab === tab.id ? "active" : ""} type="button" onClick={() => setActiveTab(tab.id)} key={tab.id}>
                 {tab.label}
@@ -389,34 +426,44 @@ export default function StationsManager() {
             ))}
           </nav>
 
-          <div className="admin-station-form-body">
+          <div className="admin-tab-content" style={{ marginTop: "24px" }}>
             {activeTab === "basic" ? (
-              <div className="admin-station-form-grid">
-                <TextField label="Tên địa danh" value={selected.name} onChange={(value) => setField("name", value)} />
-                <label>
-                  Slug
-                  <div className="admin-station-slug-field">
-                    <span>/stations/</span>
-                    <input value={selected.slug || ""} onChange={(event) => setField("slug", event.target.value)} />
-                  </div>
-                </label>
-                <TextField label="Tag / Phân loại" value={selected.tag} onChange={(value) => setField("tag", value)} />
+              <div className="admin-form-section">
+                <div className="admin-form-row">
+                  <TextField label="Tên địa danh" value={selected.name} onChange={(value) => setField("name", value)} />
+                  <label>
+                    Slug
+                    <div className="admin-station-slug-field">
+                      <span>/stations/</span>
+                      <input value={selected.slug || ""} onChange={(event) => setField("slug", event.target.value)} />
+                    </div>
+                  </label>
+                </div>
+                <div className="admin-form-row">
+                  <TextField label="Tag / Phân loại" value={selected.tag} onChange={(value) => setField("tag", value)} />
+                  <TextField label="Giờ mở cửa" value={selected.hours} onChange={(value) => setField("hours", value)} />
+                </div>
+                <div className="admin-form-row">
+                  <TextField label="Stamp" value={selected.stamp} onChange={(value) => setField("stamp", value)} />
+                  <StatusFields selected={selected} setField={setField} featuredLabel="Hiện ở homepage" />
+                </div>
                 <TextArea label="Mô tả card" value={selected.description} onChange={(value) => setField("description", value)} />
-                <TextField label="Giờ mở cửa" value={selected.hours} onChange={(value) => setField("hours", value)} />
-                <TextField label="Stamp" value={selected.stamp} onChange={(value) => setField("stamp", value)} />
-                <StatusFields selected={selected} setField={setField} featuredLabel="Hiện ở homepage" />
               </div>
             ) : null}
 
             {activeTab === "media" ? (
-              <div className="admin-station-form-grid">
-                <TextField label="Hero image URL" value={selected.heroImage} onChange={(value) => setField("heroImage", value)} />
-                <FileField label="Upload hero image" onChange={(file) => uploadStationFile("heroImage", file)} />
-                <TextField label="Ảnh card URL" value={selected.image} onChange={(value) => setField("image", value)} />
-                <TextField label="Map image URL" value={selected.mapImage} onChange={(value) => setField("mapImage", value)} />
-                <div className="admin-station-preview-grid">
+              <div className="admin-form-section">
+                <div className="admin-form-row">
+                  <TextField label="Hero image URL" value={selected.heroImage} onChange={(value) => setField("heroImage", value)} />
+                  <FileField label="Upload hero image" onChange={(file) => uploadStationFile("heroImage", file)} />
+                </div>
+                <div className="admin-form-row">
+                  <TextField label="Ảnh card URL" value={selected.image} onChange={(value) => setField("image", value)} />
+                  <TextField label="Map image URL" value={selected.mapImage} onChange={(value) => setField("mapImage", value)} />
+                </div>
+                <div className="admin-station-preview-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px", marginTop: "16px" }}>
                   <section>
-                    <h3>Hero image</h3>
+                    <h3 style={{ fontSize: "13px", fontWeight: "700", marginBottom: "8px", color: "#052c24" }}>Hero image</h3>
                     <StationPreviewImage
                       src={getStationImage(selected)}
                       alt={selected.name || "Hero image"}
@@ -425,7 +472,7 @@ export default function StationsManager() {
                     />
                   </section>
                   <section>
-                    <h3>Vị trí map (preview)</h3>
+                    <h3 style={{ fontSize: "13px", fontWeight: "700", marginBottom: "8px", color: "#052c24" }}>Vị trí map (preview)</h3>
                     <StationPreviewImage src={getMapImage(selected)} alt="Map preview">
                       <span>{selected.mapImage || "Chưa có map image"}</span>
                     </StationPreviewImage>
@@ -436,46 +483,40 @@ export default function StationsManager() {
             ) : null}
 
             {activeTab === "detail" ? (
-              <div className="admin-station-form-grid">
-                <TextField label="Detail badge" value={selected.detail?.badge} onChange={(value) => setNested("detail", "badge", value)} />
-                <TextField label="Detail headline" value={selected.detail?.headline} onChange={(value) => setNested("detail", "headline", value)} />
+              <div className="admin-form-section">
+                <div className="admin-form-row">
+                  <TextField label="Detail badge" value={selected.detail?.badge} onChange={(value) => setNested("detail", "badge", value)} />
+                  <TextField label="Detail headline" value={selected.detail?.headline} onChange={(value) => setNested("detail", "headline", value)} />
+                </div>
+                <div className="admin-form-row">
+                  <TextField label="Station code" value={selected.detail?.stationCode} onChange={(value) => setNested("detail", "stationCode", value)} />
+                  <TextField label="QR code" value={selected.detail?.qrCode} onChange={(value) => setNested("detail", "qrCode", value)} />
+                </div>
+                <div className="admin-form-row">
+                  <TextField label="Offer" value={selected.detail?.offer} onChange={(value) => setNested("detail", "offer", value)} />
+                  <div style={{ flex: 1 }} />
+                </div>
                 <TextArea label="Intro" value={selected.detail?.intro} onChange={(value) => setNested("detail", "intro", value)} />
-                <TextField label="Station code" value={selected.detail?.stationCode} onChange={(value) => setNested("detail", "stationCode", value)} />
-                <TextField label="QR code" value={selected.detail?.qrCode} onChange={(value) => setNested("detail", "qrCode", value)} />
-                <TextField label="Offer" value={selected.detail?.offer} onChange={(value) => setNested("detail", "offer", value)} />
                 <HistoryEditor rows={selected.detail?.history} onChange={(value) => setNested("detail", "history", value)} />
                 <ChaptersEditor rows={selected.detail?.chapters} onChange={(value) => setNested("detail", "chapters", value)} />
               </div>
             ) : null}
 
             {activeTab === "ar" ? (
-              <div className="admin-station-form-grid">
-                <TextField label="AR modelId" value={selected.arGuide?.modelId} onChange={(value) => setNested("arGuide", "modelId", value)} />
-                <TextField label="Stamp name" value={selected.arGuide?.stampName} onChange={(value) => setNested("arGuide", "stampName", value)} />
+              <div className="admin-form-section">
+                <div className="admin-form-row">
+                  <TextField label="AR modelId" value={selected.arGuide?.modelId} onChange={(value) => setNested("arGuide", "modelId", value)} />
+                  <TextField label="Stamp name" value={selected.arGuide?.stampName} onChange={(value) => setNested("arGuide", "stampName", value)} />
+                </div>
                 <TextArea label="AR voice text" value={selected.arGuide?.voiceText} onChange={(value) => setNested("arGuide", "voiceText", value)} />
                 <JsonField label="Subtitles JSON array" name="subtitles" selected={selected.arGuide?.subtitles} jsonDraft={jsonDraft} setJsonDraft={setJsonDraft} />
-                <aside className="admin-station-info-box">
-                  <strong>Cấu hình nâng cao</strong>
-                  <p>Các thông số tọa độ AR và nội dung thuyết minh tự động có thể chỉnh sửa trong tab Chi tiết và AR.</p>
+                <aside className="admin-station-info-box" style={{ background: "#f0f4f2", padding: "16px", borderRadius: "8px", borderLeft: "4px solid #10b981", marginTop: "16px", gridColumn: "1 / -1" }}>
+                  <strong style={{ display: "block", fontSize: "14px", color: "#052c24", marginBottom: "4px" }}>Cấu hình nâng cao</strong>
+                  <p style={{ margin: 0, fontSize: "13px", color: "#55605c" }}>Các thông số tọa độ AR và nội dung thuyết minh tự động có thể chỉnh sửa trong tab Chi tiết và AR.</p>
                 </aside>
               </div>
             ) : null}
           </div>
-
-          <footer className="admin-station-action-bar">
-            <button className="admin-station-archive" type="button" onClick={archiveStation} disabled={!docId}>
-              Lưu trữ
-            </button>
-            <div>
-              <button className="admin-station-cancel" type="button" onClick={createNew}>
-                Hủy bỏ
-              </button>
-              <button className="admin-station-save" type="submit" disabled={saving}>
-                {saving ? "Đang lưu..." : "Lưu thay đổi"}
-              </button>
-            </div>
-            {message ? <p>{message}</p> : null}
-          </footer>
         </form>
       </div>
     </AdminLayout>

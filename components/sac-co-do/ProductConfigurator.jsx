@@ -1,51 +1,42 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { getHardcodedProductBySlugOrId } from "../../data/products";
+import { getProductBySlugOrId } from "../../lib/firebase/catalog";
 import { useFirebaseAuth } from "./FirebaseAuthProvider";
 import { collection, doc, increment, serverTimestamp, setDoc } from "firebase/firestore";
 import { useToast } from "./ToastProvider";
 
 const fallbackImages = [
-  { src: "/assets/anh-new/frame-1.png", label: "Khung nhan dien Sac Co Do" },
-  { src: "/assets/anh-new/cover photo.jpg", label: "Cover Sac Co Do" },
-  { src: "/assets/anh-new/AVT.jpg", label: "Bieu tuong Sac Co Do" },
-  { src: "/assets/anh-new/vvv.jpg", label: "Bang mau va logo Sac Co Do" },
+  { src: "/assets/anh-new/frame-1.png", label: "Khung nhận diện Sắc Cố Đô" },
+  { src: "/assets/anh-new/cover photo.jpg", label: "Cover Sắc Cố Đô" },
+  { src: "/assets/anh-new/AVT.jpg", label: "Biểu tượng Sắc Cố Đô" },
+  { src: "/assets/anh-new/vvv.jpg", label: "Bảng màu và logo Sắc Cố Đô" },
 ];
 
 const PRODUCT_OPTIONS = {
-  "passport": [
-    { label: "Cuốn Passport", price: 150000, priceFormatted: "150.000đ", image: "/assets/san-pham/remove-bg/passport.png" }
-  ],
-  "com-chay-dang-tui": [
-    { label: "Túi 216g", price: 59000, priceFormatted: "59.000đ", image: "/assets/san-pham/Cơm cháy cố đô dạng túi 180g - 59k_goi.png" }
-  ],
-  "com-chay-ruoc-dam-vi": [
-    { label: "Túi 300g", price: 65000, priceFormatted: "65.000đ", image: "/assets/san-pham/Cơm cháy cố đô ruốc đậm vị 300g 65k_goi.png" }
-  ],
-  "com-chay-vuong-lut": [
-    { label: "Túi 200g", price: 54000, priceFormatted: "54.000đ", image: "/assets/san-pham/Cơm cháy cố đô vuông lứt 210g 54k_ goi.png" }
-  ],
+  passport: [{ label: "Cuốn Passport", price: 150000, priceFormatted: "150.000đ" }],
+  "com-chay-dang-tui": [{ label: "Túi 216g", price: 59000, priceFormatted: "59.000đ" }],
+  "com-chay-ruoc-dam-vi": [{ label: "Túi 300g", price: 65000, priceFormatted: "65.000đ" }],
+  "com-chay-vuong-lut": [{ label: "Túi 200g", price: 54000, priceFormatted: "54.000đ" }],
   "thit-chung-mam-tep-thanh-nguyen": [
-    { label: "Hũ 275g", price: 175000, priceFormatted: "175.000đ", image: "/assets/san-pham/Mắm tép thanh nguyễn/IMG_7739.JPG" },
-    { label: "Hũ 90g", price: 65000, priceFormatted: "65.000đ", image: "/assets/san-pham/Mắm tép thanh nguyễn/IMG_7747.JPG" }
+    { label: "Hũ 275g", price: 175000, priceFormatted: "175.000đ" },
+    { label: "Hũ 90g", price: 65000, priceFormatted: "65.000đ" },
   ],
-  "ruoc-ca-ro-tong-truong": [
-    { label: "Hộp 100g", price: 239000, priceFormatted: "239.000đ", image: "/assets/san-pham/ruốc cá rô tổng trường/2.png" }
-  ]
+  "ruoc-ca-ro-tong-truong": [{ label: "Hộp 100g", price: 239000, priceFormatted: "239.000đ" }],
 };
 
 function formatVnd(value) {
-  return new Intl.NumberFormat("vi-VN").format(Number(value || 0)) + "đ";
+  return `${new Intl.NumberFormat("vi-VN").format(Number(value || 0))}đ`;
 }
 
 function toProductOption(product) {
   if (!product) return null;
+
   return {
     ...product,
     id: product.id,
     shortName: product.shortName || product.name,
-    subtitle: product.category || product.badge || product.weight || "San pham di san",
+    subtitle: product.category || product.badge || product.weight || "Sản phẩm di sản",
     price: Number(product.price || 0),
     priceFormatted: product.priceFormatted || formatVnd(product.price),
   };
@@ -55,12 +46,12 @@ function getImages(product) {
   const images = product?.detailImages?.length ? product.detailImages : product?.images;
   return (images?.length ? images : [product?.image].filter(Boolean)).map((image, index) => {
     if (typeof image === "string") {
-      return { src: image, label: `${product?.name || "San pham"} ${index + 1}` };
+      return { src: image, label: `${product?.name || "Sản phẩm"} ${index + 1}` };
     }
 
     return {
       src: image?.src || image?.url || product?.image || fallbackImages[0].src,
-      label: image?.label || image?.alt || `${product?.name || "San pham"} ${index + 1}`,
+      label: image?.label || image?.alt || `${product?.name || "Sản phẩm"} ${index + 1}`,
     };
   });
 }
@@ -72,24 +63,40 @@ function isFallbackProductImage(src) {
 export default function ProductConfigurator({ productId }) {
   const { user, db } = useFirebaseAuth();
   const { showToast } = useToast();
+  const [product, setProduct] = useState(null);
+  const [loadingProduct, setLoadingProduct] = useState(true);
   const [activeImage, setActiveImage] = useState(fallbackImages[0]);
   const [quantity, setQuantity] = useState(1);
   const [cartState, setCartState] = useState("idle");
-  const [hasDetailModel, setHasDetailModel] = useState(false);
-
-  const selected = useMemo(() => {
-    return toProductOption(getHardcodedProductBySlugOrId(productId));
-  }, [productId]);
-
-  // Options list for current product
-  const optionsList = useMemo(() => {
-    return selected ? (PRODUCT_OPTIONS[selected.id] || []) : [];
-  }, [selected]);
-
-  // Selected option state
   const [selectedOption, setSelectedOption] = useState(null);
 
-  // Initialize option state
+  useEffect(() => {
+    let mounted = true;
+
+    async function loadProduct() {
+      setLoadingProduct(true);
+      const nextProduct = await getProductBySlugOrId(productId);
+      if (!mounted) return;
+      setProduct(nextProduct);
+      setLoadingProduct(false);
+    }
+
+    loadProduct();
+
+    return () => {
+      mounted = false;
+    };
+  }, [productId]);
+
+  const selected = useMemo(() => toProductOption(product), [product]);
+
+  const optionsList = useMemo(() => {
+    if (selected && Array.isArray(selected.variants) && selected.variants.length > 0) {
+      return selected.variants;
+    }
+    return selected ? PRODUCT_OPTIONS[selected.id] || [] : [];
+  }, [selected]);
+
   useEffect(() => {
     if (optionsList.length > 0) {
       setSelectedOption(optionsList[0]);
@@ -112,10 +119,8 @@ export default function ProductConfigurator({ productId }) {
   }, [selectedOption, selected]);
 
   const total = useMemo(() => currentPrice * quantity, [currentPrice, quantity]);
-  
-  const model3d = selected?.model3d || {};
   const activeImageModeClass = isFallbackProductImage(activeImage?.src) ? "is-contain" : "is-cover";
-  
+
   const detailFacts = useMemo(
     () =>
       [
@@ -129,26 +134,6 @@ export default function ProductConfigurator({ productId }) {
     [selected, selectedOption]
   );
 
-  useEffect(() => {
-    if (!model3d.glbUrl) {
-      setHasDetailModel(false);
-      return;
-    }
-
-    let mounted = true;
-    fetch(model3d.glbUrl, { method: "HEAD" })
-      .then((response) => {
-        if (mounted) setHasDetailModel(response.ok);
-      })
-      .catch(() => {
-        if (mounted) setHasDetailModel(false);
-      });
-
-    return () => {
-      mounted = false;
-    };
-  }, [model3d.glbUrl]);
-
   async function addToCart() {
     if (!user || !db || !selected) {
       setCartState("auth");
@@ -157,13 +142,11 @@ export default function ProductConfigurator({ productId }) {
     }
 
     setCartState("saving");
+
     try {
       const itemId = selected.id || selected.slug;
       const cartRef = doc(collection(db, "users", user.uid, "cart"), itemId);
-
-      const displayName = selectedOption 
-        ? `${selected.name} (${selectedOption.label})` 
-        : selected.name;
+      const displayName = selectedOption ? `${selected.name} (${selectedOption.label})` : selected.name;
 
       await setDoc(
         cartRef,
@@ -182,9 +165,10 @@ export default function ProductConfigurator({ productId }) {
         },
         { merge: true }
       );
+
       setCartState("saved");
       showToast(`Đã thêm ${quantity} ${selected.shortName} (${selectedOption?.label || ""}) vào giỏ hàng.`, "success");
-      
+
       setTimeout(() => {
         setCartState("idle");
       }, 1500);
@@ -195,25 +179,34 @@ export default function ProductConfigurator({ productId }) {
     }
   }
 
+  if (loadingProduct) {
+    return (
+      <section className="product-detail" aria-label="Đang tải sản phẩm">
+        <div className="product-buy-panel">
+          <h1>Đang tải sản phẩm...</h1>
+        </div>
+      </section>
+    );
+  }
+
+  if (!selected) {
+    return (
+      <section className="product-detail" aria-label="Không tìm thấy sản phẩm">
+        <div className="product-buy-panel">
+          <h1>Không tìm thấy sản phẩm</h1>
+          <p>Sản phẩm này hiện không còn hiển thị công khai hoặc đường dẫn không hợp lệ.</p>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="product-detail" aria-label="Chi tiết sản phẩm Sắc Cố Đô">
       <div className="product-gallery-panel">
         <div className={`product-main-image ${activeImageModeClass}`}>
-          {hasDetailModel ? (
-            <model-viewer
-              src={model3d.glbUrl}
-              ios-src={model3d.usdzUrl || undefined}
-              poster={model3d.posterUrl || activeImage.src}
-              camera-controls
-              auto-rotate
-              ar
-              shadow-intensity="0.8"
-              alt={selected?.name || "Sản phẩm 3D"}
-            />
-          ) : (
-            <img src={activeImage.src} alt={activeImage.label} loading="eager" decoding="async" />
-          )}
+          <img src={activeImage.src} alt={activeImage.label} loading="eager" decoding="async" />
         </div>
+
         <div className="product-thumbs" aria-label="Ảnh sản phẩm">
           {detailImages.map((image) => (
             <button
@@ -230,40 +223,38 @@ export default function ProductConfigurator({ productId }) {
       </div>
 
       <div className="product-buy-panel">
-        <span className="product-kicker">{selected?.category || "Sản phẩm du lịch"}</span>
-        <h1>{selected?.name || "Sản phẩm Sắc Cố Đô"}</h1>
+        <span className="product-kicker">{selected.category || "Sản phẩm du lịch"}</span>
+        <h1>{selected.name || "Sản phẩm Sắc Cố Đô"}</h1>
         <div className="rating-row">
           <span aria-label="5 sao">★★★★★</span>
           <small>(48 đánh giá của người đi phượt)</small>
         </div>
-        
-        {/* Variant Selectors for Thịt Chưng Mắm Tép */}
-        {optionsList.length > 1 && (
+
+        {optionsList.length > 1 ? (
           <div style={{ marginTop: "16px", marginBottom: "16px" }}>
             <span style={{ fontSize: "13px", color: "#5d6768", fontWeight: "bold", display: "block", marginBottom: "8px" }}>Chọn định lượng:</span>
             <div className="product-option-pills">
-              {optionsList.map((opt) => (
+              {optionsList.map((option) => (
                 <button
-                  key={opt.label}
-                  className={`option-pill-btn ${selectedOption?.label === opt.label ? "active" : ""}`}
+                  key={option.label}
+                  className={`option-pill-btn ${selectedOption?.label === option.label ? "active" : ""}`}
                   type="button"
                   onClick={() => {
-                    setSelectedOption(opt);
-                    // Match thumb image with selected option image if available
-                    const matchingThumb = detailImages.find(img => img.src === opt.image);
+                    setSelectedOption(option);
+                    const matchingThumb = detailImages.find((image) => image.src === option.image);
                     if (matchingThumb) {
                       setActiveImage(matchingThumb);
                     }
                   }}
                 >
-                  {opt.label}
+                  {option.label}
                 </button>
               ))}
             </div>
           </div>
-        )}
+        ) : null}
 
-        <p>{selected?.description || "Sản phẩm di sản Ninh Bình được tuyển chọn cho hành trình Sắc Cố Đô."}</p>
+        <p>{selected.description || "Sản phẩm di sản Ninh Bình được tuyển chọn cho hành trình Sắc Cố Đô."}</p>
 
         {detailFacts.length ? (
           <div className="product-facts-panel">
@@ -307,7 +298,7 @@ export default function ProductConfigurator({ productId }) {
         {cartState === "auth" ? <small className="product-cart-note">Đăng nhập để lưu giỏ hàng trên Firebase.</small> : null}
         {cartState === "saved" ? <small className="product-cart-note">Đã lưu vào giỏ hàng.</small> : null}
 
-        {selected?.story ? (
+        {selected.story ? (
           <div className="product-story-panel">
             <span className="product-section-kicker">Câu chuyện sản phẩm</span>
             <p>{selected.story}</p>

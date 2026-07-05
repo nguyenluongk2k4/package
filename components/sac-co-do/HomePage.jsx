@@ -433,7 +433,7 @@ export default function HomePage() {
         </section>
 
         {/* Passport Options Section */}
-        <PassportVersionSection className="content-section" />
+        <PassportVersionSection className="content-section" products={homeProducts} />
 
         {/* Interactive Location Circles & Loop Gallery (Heritage Moments) */}
         <section className="content-section interactive-gallery-section" style={{ paddingBottom: 0 }}>

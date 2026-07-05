@@ -2,7 +2,8 @@ import fs from "node:fs";
 import { initializeApp, applicationDefault, cert, getApps } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
 import { FieldValue, getFirestore } from "firebase-admin/firestore";
-import { stations, souvenirProducts } from "../data/sac-co-do.js";
+import { stations } from "../data/sac-co-do.js";
+import { hardcodedProducts } from "../data/products.js";
 
 function loadLocalEnv(fileName) {
   if (!fs.existsSync(fileName)) return;
@@ -50,6 +51,7 @@ if (!getApps().length) {
 
 const db = getFirestore();
 const auth = getAuth();
+const seedMode = process.argv[2] || "all";
 
 function serverTimestamp() {
   return FieldValue.serverTimestamp();
@@ -87,18 +89,50 @@ async function seedStations() {
 
 async function seedProducts() {
   await Promise.all(
-    souvenirProducts.map((product, index) => {
+    hardcodedProducts.map((product, index) => {
       const id = product.slug || product.id || slugFrom(product.name);
-      return db.collection("products").doc(id).set(
-        {
-          ...product,
-          slug: product.slug || id,
-          status: product.status || "published",
-          showOnHome: product.showOnHome ?? index < 3,
-          showOnProductList: product.showOnProductList ?? true,
-          sortOrder: product.sortOrder ?? index,
-          updatedAt: serverTimestamp(),
+
+      const payload = {
+        id: product.id || id,
+        slug: product.slug || id,
+        name: product.name || "",
+        shortName: product.shortName || product.name || "",
+        description: product.description || "",
+        story: product.story || "",
+        price: Number(product.price || 0),
+        priceFormatted: product.priceFormatted || "",
+        weight: product.weight || "",
+        badge: product.badge || "",
+        category: product.category || "",
+        status: product.status || "published",
+        sortOrder: product.sortOrder ?? index,
+        showOnHome: product.showOnHome ?? true,
+        showOnProductList: product.showOnProductList ?? true,
+        homePlacement: product.homePlacement || "",
+        image: product.image || "",
+        homeImage: product.homeImage || product.image || "",
+        images: product.images || (product.image ? [product.image] : []),
+        detailImages: product.detailImages || product.images || (product.image ? [product.image] : []),
+        features: product.features || [],
+        variants: product.variants || [],
+        href: product.href || `/san-pham/${product.slug || id}`,
+        ingredients: product.ingredients || "",
+        usage: product.usage || "",
+        shelfLife: product.shelfLife || "",
+        storage: product.storage || "",
+        note: product.note || "",
+        homeVisualOffsetX: product.homeVisualOffsetX || "",
+        homeVisualOffsetY: product.homeVisualOffsetY || "",
+        model3d: {
+          glbUrl: "",
+          usdzUrl: "",
+          posterUrl: "",
         },
+        updatedAt: serverTimestamp(),
+      };
+
+      return db.collection("products").doc(id).set(
+        payload,
         { merge: true }
       );
     })
@@ -175,9 +209,13 @@ async function seedAdminUser() {
   console.log(`Admin seeded: ${adminUser.email || adminUser.uid}`);
 }
 
-await seedStations();
-await seedProducts();
-await seedDefaultArCharacter();
-await seedAdminUser();
-
-console.log("Firebase seed completed.");
+if (seedMode === "products-only") {
+  await seedProducts();
+  console.log("Firebase product seed completed.");
+} else {
+  await seedStations();
+  await seedProducts();
+  await seedDefaultArCharacter();
+  await seedAdminUser();
+  console.log("Firebase seed completed.");
+}

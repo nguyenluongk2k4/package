@@ -1,5 +1,3 @@
-const productModelBase = "/assets/san-pham/models";
-
 const rawProducts = [
   {
     id: "passport",
@@ -188,14 +186,7 @@ const rawProducts = [
   },
 ];
 
-export const hardcodedProducts = rawProducts.map((product) => ({
-  ...product,
-  model3d: {
-    glbUrl: `${productModelBase}/${product.id}.glb`,
-    usdzUrl: `${productModelBase}/${product.id}.usdz`,
-    posterUrl: product.image,
-  },
-}));
+export const hardcodedProducts = rawProducts;
 
 export function getHardcodedProductBySlugOrId(value) {
   return hardcodedProducts.find((product) => product.slug === value || product.id === value);

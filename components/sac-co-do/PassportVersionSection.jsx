@@ -1,21 +1,29 @@
 "use client";
 
 import { collection, doc, increment, serverTimestamp, setDoc } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { hardcodedProducts as fallbackProducts } from "../../data/products";
 import { useFirebaseAuth } from "./FirebaseAuthProvider";
-import { hardcodedProducts } from "../../data/products";
 import { useI18n } from "./I18nProvider";
 import { useToast } from "./ToastProvider";
 
-export default function PassportVersionSection({ className = "" }) {
+function productHref(product) {
+  return product?.href || `/san-pham/${product?.slug || product?.id}`;
+}
+
+export default function PassportVersionSection({ className = "", products = [] }) {
   const { t } = useI18n();
   const { user, db } = useFirebaseAuth();
   const { showToast } = useToast();
   const [activeIndex, setActiveIndex] = useState(0);
   const [rotation, setRotation] = useState(0);
-  const [hasProductModel, setHasProductModel] = useState(false);
   const [cartState, setCartState] = useState("idle");
-  const activeProduct = hardcodedProducts[activeIndex] || hardcodedProducts[0];
+
+  const displayProducts = useMemo(() => {
+    return products.length ? products : fallbackProducts;
+  }, [products]);
+
+  const activeProduct = displayProducts[activeIndex] || displayProducts[0];
   const activeProductVisual = activeProduct?.homeImage || activeProduct?.image;
   const activeProductVisualStyle = {
     "--passport-rotation": `${rotation}deg`,
@@ -24,23 +32,13 @@ export default function PassportVersionSection({ className = "" }) {
   };
 
   useEffect(() => {
-    let mounted = true;
-
-    fetch(activeProduct.model3d.glbUrl, { method: "HEAD" })
-      .then((response) => {
-        if (mounted) setHasProductModel(response.ok);
-      })
-      .catch(() => {
-        if (mounted) setHasProductModel(false);
-      });
-
-    return () => {
-      mounted = false;
-    };
-  }, [activeProduct.model3d.glbUrl]);
+    if (activeIndex >= displayProducts.length) {
+      setActiveIndex(0);
+    }
+  }, [activeIndex, displayProducts.length]);
 
   function goToProduct(direction) {
-    setActiveIndex((index) => (index + direction + hardcodedProducts.length) % hardcodedProducts.length);
+    setActiveIndex((index) => (index + direction + displayProducts.length) % displayProducts.length);
     setRotation(0);
     setCartState("idle");
   }
@@ -53,6 +51,7 @@ export default function PassportVersionSection({ className = "" }) {
     }
 
     setCartState("saving");
+
     try {
       const cartRef = doc(collection(db, "users", user.uid, "cart"), activeProduct.id);
 
@@ -83,6 +82,10 @@ export default function PassportVersionSection({ className = "" }) {
     }
   }
 
+  if (!activeProduct) {
+    return null;
+  }
+
   return (
     <section className={`passport-version-section ${className}`.trim()} id="san-pham-noi-bat">
       <div className="passport-version-inner">
@@ -92,13 +95,13 @@ export default function PassportVersionSection({ className = "" }) {
             Quà mang về
             <span>từ Cố Đô</span>
           </h2>
-          <div className="passport-version-ribbon">6 lựa chọn nổi bật</div>
+          <div className="passport-version-ribbon">{displayProducts.length} lựa chọn nổi bật</div>
           <div className="passport-active-card">
             {activeProduct.badge ? <span className="passport-active-badge">{activeProduct.badge}</span> : null}
             <strong className="passport-active-price">{activeProduct.priceFormatted}</strong>
             <h3>{activeProduct.name}</h3>
             <div className="passport-active-actions">
-              <a className="passport-active-link" href={activeProduct.href}>
+              <a className="passport-active-link" href={productHref(activeProduct)}>
                 Xem chi tiết
                 <img src="/assets/ic-next.svg" alt="" aria-hidden="true" />
               </a>
@@ -123,30 +126,14 @@ export default function PassportVersionSection({ className = "" }) {
               loading="eager"
               decoding="async"
             />
-            {hasProductModel ? (
-              <model-viewer
-                class="passport-product-model"
-                src={activeProduct.model3d.glbUrl}
-                ios-src={activeProduct.model3d.usdzUrl}
-                poster={activeProductVisual}
-                camera-controls
-                auto-rotate
-                interaction-prompt="none"
-                shadow-intensity="0.65"
-                exposure="1"
-                ar
-                style={activeProductVisualStyle}
-              />
-            ) : (
-              <img
-                className="passport-product-image"
-                src={activeProductVisual}
-                alt={activeProduct.name}
-                loading="eager"
-                decoding="async"
-                style={activeProductVisualStyle}
-              />
-            )}
+            <img
+              className="passport-product-image"
+              src={activeProductVisual}
+              alt={activeProduct.name}
+              loading="eager"
+              decoding="async"
+              style={activeProductVisualStyle}
+            />
           </div>
 
           <button className="passport-product-arrow next" type="button" onClick={() => goToProduct(1)} aria-label="Sản phẩm tiếp theo">
@@ -154,7 +141,7 @@ export default function PassportVersionSection({ className = "" }) {
           </button>
 
           <div className="passport-product-dots" aria-label="Chọn sản phẩm">
-            {hardcodedProducts.map((item, index) => (
+            {displayProducts.map((item, index) => (
               <button
                 className={index === activeIndex ? "is-active" : ""}
                 type="button"

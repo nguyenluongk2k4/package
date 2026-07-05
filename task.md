@@ -1,0 +1,9 @@
+- [x] Refactor `CatalogManager.jsx`
+  - [x] Add tabbed routing controls inside `ProductFields` (Basic, Placements, Details, Media, 3D Model)
+  - [x] Create `RepeatableStringList` for features and animations
+  - [x] Create `RepeatableImageList` with direct Cloudinary inline uploader rows
+  - [x] Create `RepeatableVariantList` with price validation and formatted values
+  - [x] Clean up Firestore payload logic in `save()` (no more raw JSON strings parsing)
+  - [x] Render thumbnail images in the document list on the left side
+- [x] Update `globals.css` with tab and repeatable list layouts
+- [x] Verify build output and page routing
