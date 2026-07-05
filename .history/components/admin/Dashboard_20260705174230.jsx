@@ -91,6 +91,7 @@ export default function Dashboard() {
                 <div>
                   <strong>User operations</strong>
                   <p>Theo doi passport, check-in, photobooth, AR sessions va moderation ngay trong admin users.</p>
+                  <small>Module 1</small>
                 </div>
               </article>
               <article>
@@ -106,6 +107,7 @@ export default function Dashboard() {
                 <div>
                   <strong>Activation + AR mapping</strong>
                   <p>Code kich hoat va station to AR character mapping dang duoc dieu hanh truc tiep tren Firebase.</p>
+                  <small>Module 3 + 4</small>
                 </div>
               </article>
             </div>

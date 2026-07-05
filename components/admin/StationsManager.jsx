@@ -197,6 +197,7 @@ function GalleryEditor({ rows, onChange, onUpload }) {
 export default function StationsManager() {
   const { db } = useFirebaseAuth();
   const [items, setItems] = useState([]);
+  const [arCharacters, setArCharacters] = useState([]);
   const [selected, setSelected] = useState(emptyDocs.stations);
   const [docId, setDocId] = useState("");
   const [search, setSearch] = useState("");
@@ -223,10 +224,45 @@ export default function StationsManager() {
     });
   }, [db, message]);
 
+  useEffect(() => {
+    if (!db) return;
+
+    let mounted = true;
+
+    async function loadArCharacters() {
+      try {
+        let snapshot;
+        try {
+          snapshot = await getDocs(query(collection(db, "arCharacters"), orderBy("name")));
+        } catch {
+          snapshot = await getDocs(collection(db, "arCharacters"));
+        }
+
+        if (!mounted) return;
+        setArCharacters(snapshot.docs.map((itemDoc) => ({ id: itemDoc.id, ...itemDoc.data() })));
+      } catch (error) {
+        console.warn("Unable to load AR characters for station mapping:", error);
+        if (mounted) {
+          setArCharacters([]);
+        }
+      }
+    }
+
+    loadArCharacters();
+
+    return () => {
+      mounted = false;
+    };
+  }, [db]);
+
   const filteredItems = useMemo(() => {
     const keyword = search.toLowerCase();
     return items.filter((item) => `${item.name || ""} ${item.slug || ""} ${item.tag || ""}`.toLowerCase().includes(keyword));
   }, [items, search]);
+
+  const selectedArCharacter = useMemo(() => {
+    return arCharacters.find((item) => item.id === selected.arGuide?.modelId) || null;
+  }, [arCharacters, selected.arGuide?.modelId]);
 
   function edit(item) {
     setDocId(item.id);
@@ -505,9 +541,43 @@ export default function StationsManager() {
             {activeTab === "ar" ? (
               <div className="admin-form-section">
                 <div className="admin-form-row">
-                  <TextField label="AR modelId" value={selected.arGuide?.modelId} onChange={(value) => setNested("arGuide", "modelId", value)} />
+                  <label>
+                    AR modelId
+                    <select value={selected.arGuide?.modelId || ""} onChange={(event) => setNested("arGuide", "modelId", event.target.value)}>
+                      <option value="">Dùng nhân vật mặc định</option>
+                      {arCharacters.map((item) => (
+                        <option value={item.id} key={item.id}>
+                          {item.name || item.id}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
                   <TextField label="Stamp name" value={selected.arGuide?.stampName} onChange={(value) => setNested("arGuide", "stampName", value)} />
                 </div>
+                {selectedArCharacter ? (
+                  <aside
+                    className="admin-station-info-box"
+                    style={{ background: "#f0f4f2", padding: "16px", borderRadius: "8px", borderLeft: "4px solid #10b981", marginBottom: "16px", display: "grid", gap: "12px" }}
+                  >
+                    <strong style={{ display: "block", fontSize: "14px", color: "#052c24" }}>Nhân vật đang gán cho địa danh này</strong>
+                    <div style={{ display: "grid", gridTemplateColumns: "96px 1fr", gap: "16px", alignItems: "start" }}>
+                      {selectedArCharacter.posterUrl ? (
+                        <img src={selectedArCharacter.posterUrl} alt={selectedArCharacter.name || selectedArCharacter.id} style={{ width: "96px", height: "96px", objectFit: "cover", borderRadius: "12px" }} />
+                      ) : (
+                        <div style={{ width: "96px", height: "96px", borderRadius: "12px", background: "#dfe8e4", display: "grid", placeItems: "center", color: "#64748b", fontSize: "12px" }}>
+                          No poster
+                        </div>
+                      )}
+                      <div style={{ display: "grid", gap: "6px" }}>
+                        <strong style={{ color: "#052c24" }}>{selectedArCharacter.name || selectedArCharacter.id}</strong>
+                        <span style={{ color: "#55605c", fontSize: "13px" }}>ID: {selectedArCharacter.id}</span>
+                        <span style={{ color: "#55605c", fontSize: "13px" }}>GLB: {selectedArCharacter.glbUrl || "Chua co"}</span>
+                        <span style={{ color: "#55605c", fontSize: "13px" }}>USDZ: {selectedArCharacter.usdzUrl || "Chua co"}</span>
+                        <span style={{ color: "#55605c", fontSize: "13px" }}>Status: {selectedArCharacter.status || "draft"}</span>
+                      </div>
+                    </div>
+                  </aside>
+                ) : null}
                 <TextArea label="AR voice text" value={selected.arGuide?.voiceText} onChange={(value) => setNested("arGuide", "voiceText", value)} />
                 <JsonField label="Subtitles JSON array" name="subtitles" selected={selected.arGuide?.subtitles} jsonDraft={jsonDraft} setJsonDraft={setJsonDraft} />
                 <aside className="admin-station-info-box" style={{ background: "#f0f4f2", padding: "16px", borderRadius: "8px", borderLeft: "4px solid #10b981", marginTop: "16px", gridColumn: "1 / -1" }}>

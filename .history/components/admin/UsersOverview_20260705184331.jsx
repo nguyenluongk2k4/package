@@ -251,6 +251,8 @@ export default function UsersOverview() {
         setOrderCountsByUser(nextOrderCounts);
         if (requestedUid && rows.some((item) => item.id === requestedUid)) {
           setSelectedUserId(requestedUid);
+        } else if (!selectedUserId && rows[0]?.id) {
+          setSelectedUserId(rows[0].id);
         }
       } finally {
         if (mounted) {
@@ -265,16 +267,6 @@ export default function UsersOverview() {
       mounted = false;
     };
   }, [db, requestedUid]);
-
-  useEffect(() => {
-    if (selectedUserId) return;
-    setSelectedUser(null);
-    setDraft(null);
-    setDetails({});
-    setActivationCodeData(null);
-    setLoadingDetails(false);
-    setMessage("");
-  }, [selectedUserId]);
 
   useEffect(() => {
     if (!db || !selectedUserId) return;
@@ -676,299 +668,341 @@ export default function UsersOverview() {
     setMessage(`Da export ${filteredUsers.length} user.`);
   }
 
-  function openUserDetail(userId) {
-    setSelectedUserId(userId);
-  }
-
-  function closeUserDetail() {
-    setSelectedUserId("");
-  }
-
   return (
     <AdminLayout resource="users">
-      {!selectedUserId ? (
-        <>
-          <header className="admin-heading">
-            <h1>Quản lý người dùng</h1>
-            <p>Xem hồ sơ tài khoản, hành trình check-in, passport, certificate, photobooth, AR sessions và cập nhật trạng thái người dùng.</p>
-          </header>
+      <header className="admin-heading">
+        <h1>Quan ly nguoi dung</h1>
+        <p>Xem ho so tai khoan, hanh trinh checkin, passport, certificate, photobooth, AR sessions va cap nhat trang thai user.</p>
+      </header>
 
-          <div className="admin-toolbar">
-            <div className="admin-search-wrapper">
-              <img src="/assets/ic-search.svg" className="admin-search-icon" alt="" />
-              <input placeholder="Tìm theo tên, email, uid, passport code..." value={search} onChange={(event) => setSearch(event.target.value)} />
-            </div>
-            <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
-              <option value="all">Tất cả trạng thái</option>
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
-              <option value="banned">Banned</option>
-            </select>
-            <select value={supportStatusFilter} onChange={(event) => setSupportStatusFilter(event.target.value)}>
-              <option value="all">Tất cả hỗ trợ</option>
-              <option value="none">None</option>
-              <option value="open">Open</option>
-              <option value="pending">Pending</option>
-              <option value="resolved">Resolved</option>
-            </select>
-            <select value={activationFilter} onChange={(event) => setActivationFilter(event.target.value)}>
-              <option value="all">Tất cả passport</option>
-              <option value="activated">Đã kích hoạt</option>
-              <option value="notActivated">Chưa kích hoạt</option>
-            </select>
-            <select value={orderFilter} onChange={(event) => setOrderFilter(event.target.value)}>
-              <option value="all">Tất cả đơn hàng</option>
-              <option value="hasOrders">Có đơn hàng</option>
-              <option value="noOrders">Chưa có đơn hàng</option>
-            </select>
-            <button type="button" className="admin-secondary-button" onClick={exportUsersCsv} disabled={filteredUsers.length === 0}>
-              Export CSV
-            </button>
-          </div>
+      <div className="admin-toolbar">
+        <div className="admin-search-wrapper">
+          <img src="/assets/ic-search.svg" className="admin-search-icon" alt="" />
+          <input placeholder="Tim theo ten, email, uid, passport code..." value={search} onChange={(event) => setSearch(event.target.value)} />
+        </div>
+        <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
+          <option value="all">Tat ca trang thai</option>
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+          <option value="banned">Banned</option>
+        </select>
+        <select value={supportStatusFilter} onChange={(event) => setSupportStatusFilter(event.target.value)}>
+          <option value="all">Tat ca support</option>
+          <option value="none">none</option>
+          <option value="open">open</option>
+          <option value="pending">pending</option>
+          <option value="resolved">resolved</option>
+        </select>
+        <select value={activationFilter} onChange={(event) => setActivationFilter(event.target.value)}>
+          <option value="all">Tat ca passport</option>
+          <option value="activated">Da kich hoat</option>
+          <option value="notActivated">Chua kich hoat</option>
+        </select>
+        <select value={orderFilter} onChange={(event) => setOrderFilter(event.target.value)}>
+          <option value="all">Tat ca orders</option>
+          <option value="hasOrders">Co order</option>
+          <option value="noOrders">Chua co order</option>
+        </select>
+        <button type="button" className="admin-secondary-button" onClick={exportUsersCsv} disabled={filteredUsers.length === 0}>
+          Export CSV
+        </button>
+        <button type="button" onClick={() => selectedUserId && saveProfile()} disabled={!selectedUserId || saving}>
+          {saving ? "Dang luu..." : "Luu user"}
+        </button>
+      </div>
 
-          <div className="admin-table" style={{ maxHeight: "none" }}>
-            {loadingUsers ? <EmptyState message="Đang tải danh sách người dùng..." /> : null}
-            {!loadingUsers && filteredUsers.length === 0 ? <EmptyState message="Không tìm thấy người dùng phù hợp." /> : null}
-            {!loadingUsers && filteredUsers.length > 0 ? (
-              <div className="admin-users-table-wrap">
-                <table className="admin-users-table">
-                  <thead>
-                    <tr>
-                      <th>Người dùng</th>
-                      <th>Trạng thái</th>
-                      <th>Mã Passport</th>
-                      <th>Đơn hàng</th>
-                      <th>Đăng nhập cuối</th>
-                      <th>Thao tác</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {paginatedUsers.map((userRow) => {
-                      const status = deriveUserStatus(userRow);
+      <div className="admin-manager-grid">
+        <div className="admin-table">
+          {loadingUsers ? <EmptyState message="Dang tai danh sach user..." /> : null}
+          {!loadingUsers && filteredUsers.length === 0 ? <EmptyState message="Khong tim thay user phu hop." /> : null}
+          {paginatedUsers.map((userRow) => {
+            const status = deriveUserStatus(userRow);
+            return (
+              <article className={`${selectedUserId === userRow.id ? "active" : ""} admin-table-item-card`} key={userRow.id}>
+                {userRow.photoURL ? (
+                  <img src={userRow.photoURL} className="admin-table-item-thumb" alt="" />
+                ) : (
+                  <div className="admin-table-item-thumb-placeholder">
+                    {(userRow.displayName || userRow.email || "U").slice(0, 1).toUpperCase()}
+                  </div>
+                )}
+                <div className="admin-table-item-info">
+                  <button type="button" onClick={() => setSelectedUserId(userRow.id)}>
+                    <strong>{getUserTitle(userRow)}</strong>
+                    <span>{userRow.email || userRow.id}</span>
+                  </button>
+                  <small>
+                    {status.toUpperCase()} · {userRow.passportCode ? `Passport ${userRow.passportCode}` : "Chua kich hoat"} · {orderCountsByUser[userRow.id] || 0} order
+                  </small>
+                </div>
+              </article>
+            );
+          })}
+          <PaginationControls page={page} totalPages={totalPages} onPageChange={setPage} />
+        </div>
+
+        <section className="admin-editor">
+          {!selectedUser ? (
+            loadingDetails ? <EmptyState message="Dang tai chi tiet nguoi dung..." /> : <EmptyState message="Chon mot user de xem chi tiet." />
+          ) : (
+            <div style={{ display: "grid", gap: "20px" }}>
+              <div className="admin-editor-head">
+                <div>
+                  <h2>{getUserTitle(selectedUser)}</h2>
+                  <p>{selectedUser.email || selectedUser.id}</p>
+                </div>
+                <StatusBadge status={deriveUserStatus(selectedUser)} />
+              </div>
+
+              {message ? <p className="admin-editor-message">{message}</p> : null}
+
+              <div className="admin-user-stats">
+                <div className="admin-user-stat-card">
+                  <span>Check-in</span>
+                  <strong>{summary.completedStops}/6</strong>
+                  <small>Tram da dong dau</small>
+                </div>
+                <div className="admin-user-stat-card">
+                  <span>Photobooth</span>
+                  <strong>{summary.photoboothCount}</strong>
+                  <small>Anh da luu</small>
+                </div>
+                <div className="admin-user-stat-card">
+                  <span>AR sessions</span>
+                  <strong>{summary.arCount}</strong>
+                  <small>Luot AR</small>
+                </div>
+                <div className="admin-user-stat-card">
+                  <span>Cart items</span>
+                  <strong>{summary.cartCount}</strong>
+                  <small>Dong du lieu gio hang</small>
+                </div>
+                <div className="admin-user-stat-card">
+                  <span>Orders</span>
+                  <strong>{summary.orderCount}</strong>
+                  <small>Don hang da tao</small>
+                </div>
+              </div>
+
+              <div className="admin-user-section-grid">
+                <section className="admin-user-section">
+                  <div className="admin-user-section-head">
+                    <h3>Thong tin tai khoan</h3>
+                    <div className="admin-form-actions" style={{ margin: 0 }}>
+                      <button type="button" onClick={saveProfile} disabled={saving}>
+                        {saving ? "Dang luu..." : "Luu thay doi"}
+                      </button>
+                      <button type="button" onClick={() => updateAccountStatus("active")} className="admin-secondary-button" disabled={saving}>
+                        Active
+                      </button>
+                      <button type="button" onClick={() => updateAccountStatus("banned")} className="admin-secondary-button" disabled={saving}>
+                        Ban
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="admin-user-form-grid">
+                    <label>
+                      Display name
+                      <input value={draft?.displayName || ""} onChange={(event) => setDraftField("displayName", event.target.value)} />
+                    </label>
+                    <label>
+                      Full name
+                      <input value={draft?.fullName || ""} onChange={(event) => setDraftField("fullName", event.target.value)} />
+                    </label>
+                    <label>
+                      Email
+                      <input value={draft?.email || ""} onChange={(event) => setDraftField("email", event.target.value)} />
+                    </label>
+                    <label>
+                      Phone
+                      <input value={draft?.phone || ""} onChange={(event) => setDraftField("phone", event.target.value)} />
+                    </label>
+                    <label>
+                      Avatar URL
+                      <input value={draft?.photoURL || ""} onChange={(event) => setDraftField("photoURL", event.target.value)} />
+                    </label>
+                    <label>
+                      Status
+                      <select value={draft?.status || "inactive"} onChange={(event) => setDraftField("status", event.target.value)}>
+                        <option value="active">active</option>
+                        <option value="inactive">inactive</option>
+                        <option value="banned">banned</option>
+                      </select>
+                    </label>
+                    <label>
+                      Support status
+                      <select value={draft?.supportStatus || "none"} onChange={(event) => setDraftField("supportStatus", event.target.value)}>
+                        <option value="none">none</option>
+                        <option value="open">open</option>
+                        <option value="pending">pending</option>
+                        <option value="resolved">resolved</option>
+                      </select>
+                    </label>
+                    <label style={{ gridColumn: "1 / -1" }}>
+                      Ban reason
+                      <textarea value={draft?.bannedReason || ""} onChange={(event) => setDraftField("bannedReason", event.target.value)} />
+                    </label>
+                    <label style={{ gridColumn: "1 / -1" }}>
+                      Admin notes
+                      <textarea value={draft?.adminNotes || ""} onChange={(event) => setDraftField("adminNotes", event.target.value)} placeholder="Ghi chu noi bo, yeu cau ho tro, tinh trang xu ly..." />
+                    </label>
+                  </div>
+
+                  <div className="admin-user-meta">
+                    <div><strong>UID</strong><span>{selectedUser.id}</span></div>
+                    <div><strong>Created</strong><span>{formatDate(selectedUser.createdAt)}</span></div>
+                    <div><strong>Last login</strong><span>{formatDate(selectedUser.lastLoginAt)}</span></div>
+                    <div><strong>Activated</strong><span>{selectedUser.isActivated ? formatDate(selectedUser.activatedAt) : "Chua kich hoat"}</span></div>
+                    <div><strong>Support status</strong><span>{draft?.supportStatus || "none"}</span></div>
+                    <div><strong>Notes updated</strong><span>{formatDate(selectedUser.adminNotesUpdatedAt)}</span></div>
+                  </div>
+                </section>
+
+                <section className="admin-user-section">
+                  <div className="admin-user-section-head">
+                    <h3>Passport va certificate</h3>
+                  </div>
+
+                  <div className="admin-user-meta">
+                    <div><strong>Passport status</strong><span>{selectedUser.isActivated ? "Da kich hoat" : "Chua kich hoat"}</span></div>
+                    <div><strong>Passport code</strong><span>{selectedUser.passportCode || "Khong co"}</span></div>
+                    <div><strong>Code used at</strong><span>{formatDate(activationCodeData?.usedAt)}</span></div>
+                    <div><strong>Certificate field</strong><span>{selectedUser.certificateUrl || "Chua luu URL rieng"}</span></div>
+                  </div>
+
+                  {selectedUser.certificateUrl ? (
+                    <a href={selectedUser.certificateUrl} target="_blank" rel="noreferrer" className="admin-user-link">
+                      Mo certificate URL
+                    </a>
+                  ) : null}
+
+                  {selectedUser.passportCode ? (
+                    <a href={`/admin/activation-codes?code=${selectedUser.passportCode}`} className="admin-user-link">
+                      Mo activation code lien ket
+                    </a>
+                  ) : null}
+
+                  <div className="admin-user-cert-grid">
+                    {CERTIFICATES.map((certificate) => {
+                      const unlocked = summary.completedStops >= certificate.required;
                       return (
-                        <tr key={userRow.id}>
-                          <td>
-                            <div className="admin-users-table-user">
-                              {userRow.photoURL ? (
-                                <img src={userRow.photoURL} className="admin-table-item-thumb" alt="" />
-                              ) : (
-                                <div className="admin-table-item-thumb-placeholder">
-                                  {(userRow.displayName || userRow.email || "U").slice(0, 1).toUpperCase()}
-                                </div>
-                              )}
-                              <div className="admin-users-table-user-copy">
-                                <strong>{getUserTitle(userRow)}</strong>
-                                <span>{userRow.email || userRow.id}</span>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <StatusBadge status={status} />
-                          </td>
-                          <td>{userRow.passportCode || "Chưa kích hoạt"}</td>
-                          <td>{orderCountsByUser[userRow.id] || 0}</td>
-                          <td>{formatDate(userRow.lastLoginAt || userRow.createdAt)}</td>
-                          <td>
-                            <button type="button" className="admin-secondary-button" onClick={() => openUserDetail(userRow.id)}>
-                              Xem chi tiết
-                            </button>
-                          </td>
-                        </tr>
+                        <article className={`admin-user-cert-card ${unlocked ? "is-unlocked" : ""}`} key={certificate.id}>
+                          <strong>{certificate.title}</strong>
+                          <span>{certificate.required}/6 tram</span>
+                          <small>{unlocked ? "Da mo khoa" : "Chua mo khoa"}</small>
+                        </article>
                       );
                     })}
-                  </tbody>
-                </table>
+                  </div>
+                </section>
               </div>
-            ) : null}
-            <PaginationControls page={page} totalPages={totalPages} onPageChange={setPage} />
-          </div>
-        </>
-      ) : (
-        <>
-          <header className="admin-heading" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
-            <div>
-              <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "4px" }}>
-                <h1 style={{ margin: 0, fontSize: "28px" }}>Chi tiết tài khoản</h1>
-              </div>
-              <p style={{ margin: 0 }}>Xem hồ sơ cá nhân, tiến trình check-in địa danh, lịch sử giao dịch và cập nhật thông tin hỗ trợ.</p>
-            </div>
-            <div style={{ display: "flex", gap: "12px" }}>
-              <button type="button" className="admin-btn-primary" onClick={saveProfile} disabled={saving}>
-                {saving ? "Đang lưu..." : "Lưu thay đổi"}
-              </button>
-              <button type="button" className="admin-btn-secondary" onClick={closeUserDetail}>
-                Quay lại
-              </button>
-            </div>
-          </header>
 
-          <section className="admin-editor" style={{ width: "100%" }}>
-            {!selectedUser ? (
-              loadingDetails ? <EmptyState message="Đang tải chi tiết người dùng..." /> : <EmptyState message="Không tìm thấy người dùng." />
-            ) : (
-              <div className="admin-editor-content-scroll">
-                <div className="admin-editor-head" style={{ borderBottom: "1px solid rgba(5, 52, 44, 0.08)", paddingBottom: "16px", marginBottom: 0 }}>
-                  <div>
-                    <h2 style={{ fontSize: "22px", margin: 0, color: "#052c24", fontWeight: "800" }}>{getUserTitle(selectedUser)}</h2>
-                    <p style={{ margin: "4px 0 0", color: "#64748b", fontSize: "14px" }}>{selectedUser.email || selectedUser.id}</p>
-                  </div>
-                  <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-                    <StatusBadge status={deriveUserStatus(selectedUser)} />
-                  </div>
+              <section className="admin-user-section">
+                <div className="admin-user-section-head">
+                  <h3>Timeline tong hop</h3>
                 </div>
+                {activityTimeline.length === 0 ? (
+                  <EmptyState message="Chua co timeline tong hop." />
+                ) : (
+                  <div className="admin-user-list-grid">
+                    {activityTimeline.map((item) => (
+                      <article className="admin-user-list-card" key={item.id}>
+                        <strong>{item.title}</strong>
+                        <span>{item.subtitle || item.type}</span>
+                        <small>{formatDate(item.createdAt)}</small>
+                      </article>
+                    ))}
+                  </div>
+                )}
+              </section>
 
-                {message ? <p className="admin-editor-message">{message}</p> : null}
-
-                <div className="admin-user-stats" style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "16px" }}>
-                  <div className="admin-user-stat-card">
-                    <span>Check-in</span>
-                    <strong>{summary.completedStops}/6</strong>
-                    <small>Trạm đã đóng dấu</small>
-                  </div>
-                  <div className="admin-user-stat-card">
-                    <span>Photobooth</span>
-                    <strong>{summary.photoboothCount}</strong>
-                    <small>Ảnh đã lưu</small>
-                  </div>
-                  <div className="admin-user-stat-card">
-                    <span>AR Sessions</span>
-                    <strong>{summary.arCount}</strong>
-                    <small>Lượt trải nghiệm</small>
-                  </div>
-                  <div className="admin-user-stat-card">
-                    <span>Giỏ hàng</span>
-                    <strong>{summary.cartCount}</strong>
-                    <small>Sản phẩm chờ</small>
-                  </div>
-                  <div className="admin-user-stat-card">
-                    <span>Đơn hàng</span>
-                    <strong>{summary.orderCount}</strong>
-                    <small>Đơn đã tạo</small>
-                  </div>
+              <section className="admin-user-section">
+                <div className="admin-user-section-head">
+                  <h3>Dia diem da checkin</h3>
                 </div>
+                {(details.journeyProgress || []).length === 0 ? (
+                  <EmptyState message="User nay chua co du lieu checkin." />
+                ) : (
+                  <div className="admin-user-list-grid">
+                    {details.journeyProgress.map((item) => (
+                      <article className="admin-user-list-card" key={item.id}>
+                        <strong>{item.stationName || item.stationId || item.id}</strong>
+                        <span>{item.stationId || item.id}</span>
+                        <small>Check-in: {formatDate(item.checkedInAt || item.updatedAt)}</small>
+                        <small>Source: {item.source || "app"}</small>
+                        {item.photoUrl ? <img src={item.photoUrl} alt="" className="admin-user-inline-image" /> : null}
+                      </article>
+                    ))}
+                  </div>
+                )}
+              </section>
 
-                <div className="admin-user-section-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px" }}>
-                  <section className="admin-user-section">
-                    <div className="admin-user-section-head" style={{ marginBottom: "16px" }}>
-                      <h3 style={{ fontSize: "16px", fontWeight: "700", margin: 0 }}>Thông tin tài khoản</h3>
-                    </div>
-
-                    <div className="admin-user-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-                      <label>
-                        Tên hiển thị (Display Name)
-                        <input value={draft?.displayName || ""} onChange={(event) => setDraftField("displayName", event.target.value)} />
-                      </label>
-                      <label>
-                        Họ và tên (Full Name)
-                        <input value={draft?.fullName || ""} onChange={(event) => setDraftField("fullName", event.target.value)} />
-                      </label>
-                      <label>
-                        Email liên hệ
-                        <input value={draft?.email || ""} onChange={(event) => setDraftField("email", event.target.value)} />
-                      </label>
-                      <label>
-                        Số điện thoại
-                        <input value={draft?.phone || ""} onChange={(event) => setDraftField("phone", event.target.value)} />
-                      </label>
-                      <label>
-                        Ảnh đại diện (Avatar URL)
-                        <input value={draft?.photoURL || ""} onChange={(event) => setDraftField("photoURL", event.target.value)} />
-                      </label>
-                      <label>
-                        Trạng thái tài khoản
-                        <select value={draft?.status || "inactive"} onChange={(event) => setDraftField("status", event.target.value)}>
-                          <option value="active">Active</option>
-                          <option value="inactive">Inactive</option>
-                          <option value="banned">Banned</option>
-                        </select>
-                      </label>
-                      <label style={{ gridColumn: "1 / -1" }}>
-                        Trạng thái hỗ trợ (Support Status)
-                        <select value={draft?.supportStatus || "none"} onChange={(event) => setDraftField("supportStatus", event.target.value)}>
-                          <option value="none">none</option>
-                          <option value="open">open</option>
-                          <option value="pending">pending</option>
-                          <option value="resolved">resolved</option>
-                        </select>
-                      </label>
-                      <label style={{ gridColumn: "1 / -1" }}>
-                        Lý do khoá tài khoản (nếu bị Ban)
-                        <textarea value={draft?.bannedReason || ""} onChange={(event) => setDraftField("bannedReason", event.target.value)} placeholder="Nhập lý do khoá..." />
-                      </label>
-                     
-                    </div>
-
-                    <div className="admin-user-meta" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginTop: "24px" }}>
-                      <div><strong>UID người dùng</strong><span>{selectedUser.id}</span></div>
-                      <div><strong>Thời gian đăng ký</strong><span>{formatDate(selectedUser.createdAt)}</span></div>
-                      <div><strong>Đăng nhập cuối</strong><span>{formatDate(selectedUser.lastLoginAt)}</span></div>
-                      <div><strong>Cập nhật ghi chú lúc</strong><span>{formatDate(selectedUser.adminNotesUpdatedAt)}</span></div>
-                    </div>
-                  </section>
-
-                  <section className="admin-user-section">
-                    <div className="admin-user-section-head" style={{ marginBottom: "16px" }}>
-                      <h3 style={{ fontSize: "16px", fontWeight: "700", margin: 0 }}>Hộ chiếu & Chứng nhận</h3>
-                    </div>
-
-                    <div className="admin-user-meta" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
-                      <div><strong>Trạng thái Passport</strong><span>{selectedUser.isActivated ? "Đã kích hoạt" : "Chưa kích hoạt"}</span></div>
-                      <div><strong>Mã Passport</strong><span>{selectedUser.passportCode || "Không có"}</span></div>
-                      <div><strong>Ngày kích hoạt</strong><span>{formatDate(activationCodeData?.usedAt)}</span></div>
-                      <div><strong>Link Chứng nhận</strong><span>{selectedUser.certificateUrl || "Chưa lưu"}</span></div>
-                    </div>
-
-                    <div style={{ display: "flex", gap: "12px", marginBottom: "20px" }}>
-                      {selectedUser.certificateUrl ? (
-                        <a href={selectedUser.certificateUrl} target="_blank" rel="noreferrer" className="admin-user-link" style={{ background: "#052c24", color: "#ffffff", padding: "8px 16px", borderRadius: "6px", textDecoration: "none", fontSize: "13px", fontWeight: "700" }}>
-                          Mở Link Chứng nhận
-                        </a>
-                      ) : null}
-
-                      {selectedUser.passportCode ? (
-                        <a href={`/admin/activation-codes?code=${selectedUser.passportCode}`} className="admin-user-link" style={{ border: "1px solid rgba(5, 52, 44, 0.16)", color: "#052c24", padding: "8px 16px", borderRadius: "6px", textDecoration: "none", fontSize: "13px", fontWeight: "700" }}>
-                          Kiểm tra mã Passport liên kết
-                        </a>
-                      ) : null}
-                    </div>
-
-                    <div className="admin-user-cert-list" style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                      {CERTIFICATES.map((certificate) => {
-                        const unlocked = summary.completedStops >= certificate.required;
-                        return (
-                          <article 
-                            className={`admin-user-cert-card ${unlocked ? "is-unlocked" : ""}`} 
-                            key={certificate.id}
-                            style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 20px" }}
-                          >
-                            <div>
-                              <strong style={{ display: "block", fontSize: "14px", margin: 0, color: "#052c24", fontWeight: "700" }}>{certificate.title}</strong>
-                              <small style={{ color: "#64748b", fontSize: "12px" }}>Yêu cầu: {certificate.required}/6 trạm</small>
-                            </div>
-                            <span style={{ fontSize: "13px", fontWeight: "600", color: unlocked ? "#10b981" : "#64748b" }}>
-                              {unlocked ? "Đã mở khoá" : "Chưa mở khoá"}
-                            </span>
-                          </article>
-                        );
-                      })}
-                    </div>
-                  </section>
+              <section className="admin-user-section">
+                <div className="admin-user-section-head">
+                  <h3>Anh checkin va photobooth</h3>
                 </div>
+                {checkinPhotos.length === 0 && (details.photoboothPhotos || []).length === 0 ? (
+                  <EmptyState message="User nay chua co anh checkin hoac photobooth." />
+                ) : (
+                  <div className="admin-user-gallery-grid">
+                    {checkinPhotos.map((item) => (
+                      <article className="admin-user-gallery-card" key={`checkin-${item.id}`}>
+                        <img src={item.photoUrl} alt="" />
+                        <strong>{item.stationName || item.stationId || item.id}</strong>
+                        <small>Anh checkin · {formatDate(item.checkedInAt || item.updatedAt)}</small>
+                      </article>
+                    ))}
+                    {(details.photoboothPhotos || []).map((item) => (
+                      <article className="admin-user-gallery-card" key={`photo-${item.id}`}>
+                        <img src={item.url} alt="" />
+                        <strong>{item.caption || item.stationId || item.id}</strong>
+                        <small>Photobooth · {formatDate(item.createdAt)}</small>
+                      </article>
+                    ))}
+                  </div>
+                )}
+              </section>
+
+              <div className="admin-user-section-grid">
                 <section className="admin-user-section">
                   <div className="admin-user-section-head">
-                    <h3 style={{ fontSize: "16px", fontWeight: "700" }}>Địa điểm đã Check-in</h3>
+                    <h3>Don hang lien quan</h3>
                   </div>
-                  {(details.journeyProgress || []).length === 0 ? (
-                    <EmptyState message="Người dùng chưa thực hiện check-in trạm nào." />
+                  {(details.orders || []).length === 0 ? (
+                    <EmptyState message="User nay chua co don hang nao." />
                   ) : (
-                    <div className="admin-user-list-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "12px" }}>
-                      {details.journeyProgress.map((item) => (
+                    <div className="admin-user-list-grid">
+                      {details.orders.map((item) => (
+                        <article className="admin-user-list-card" key={item.id}>
+                          <strong>{item.orderCode || item.id}</strong>
+                          <span>{(item.paymentMethod || "cod").toUpperCase()} · {item.orderStatus || "pending"}</span>
+                          <small>Thanh toan: {item.paymentStatus || "pending"}</small>
+                          <small>{formatDate(item.createdAt)}</small>
+                          <small>Tong: {formatVnd(item.total || 0)}</small>
+                          <a href={`/admin/orders?order=${item.id}`} className="admin-user-link">
+                            Mo order detail
+                          </a>
+                        </article>
+                      ))}
+                    </div>
+                  )}
+                </section>
+
+                <section className="admin-user-section">
+                  <div className="admin-user-section-head">
+                    <h3>AR sessions</h3>
+                  </div>
+                  {(details.arExperiences || []).length === 0 ? (
+                    <EmptyState message="Chua co AR session." />
+                  ) : (
+                    <div className="admin-user-list-grid">
+                      {details.arExperiences.map((item) => (
                         <article className="admin-user-list-card" key={item.id}>
                           <strong>{item.stationName || item.stationId || item.id}</strong>
-                          <span>{item.stationId || item.id}</span>
-                          <small>Đã check-in: {formatDate(item.checkedInAt || item.updatedAt)}</small>
-                          <small>Thiết bị: {item.source || "app"}</small>
-                          {item.photoUrl ? <img src={item.photoUrl} alt="" className="admin-user-inline-image" /> : null}
+                          <span>{item.modelId || "Khong ro model"}</span>
+                          <small>Status: {item.status || "completed"}</small>
+                          <small>{formatDate(item.createdAt)}</small>
                         </article>
                       ))}
                     </div>
@@ -977,80 +1011,33 @@ export default function UsersOverview() {
 
                 <section className="admin-user-section">
                   <div className="admin-user-section-head">
-                    <h3 style={{ fontSize: "16px", fontWeight: "700" }}>Hình ảnh Check-in & Photobooth</h3>
+                    <h3>Gio hang hien co</h3>
                   </div>
-                  {checkinPhotos.length === 0 && (details.photoboothPhotos || []).length === 0 ? (
-                    <EmptyState message="Người dùng chưa có hình ảnh lưu trữ nào." />
+                  {(details.cart || []).length === 0 ? (
+                    <EmptyState message="Chua co du lieu gio hang." />
                   ) : (
-                    <div className="admin-user-gallery-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: "16px" }}>
-                      {checkinPhotos.map((item) => (
-                        <article className="admin-user-gallery-card" key={`checkin-${item.id}`}>
-                          <img src={item.photoUrl} alt="" style={{ width: "100%", height: "140px", objectFit: "cover", borderRadius: "8px" }} />
-                          <strong>{item.stationName || item.stationId || item.id}</strong>
-                          <small>Ảnh trạm · {formatDate(item.checkedInAt || item.updatedAt)}</small>
-                        </article>
-                      ))}
-                      {(details.photoboothPhotos || []).map((item) => (
-                        <article className="admin-user-gallery-card" key={`photo-${item.id}`}>
-                          <img src={item.url} alt="" style={{ width: "100%", height: "140px", objectFit: "cover", borderRadius: "8px" }} />
-                          <strong>{item.caption || item.stationId || item.id}</strong>
-                          <small>Photobooth · {formatDate(item.createdAt)}</small>
+                    <div className="admin-user-list-grid">
+                      {details.cart.map((item) => (
+                        <article className="admin-user-list-card" key={item.id}>
+                          <strong>{item.snapshot?.name || item.slug || item.productId || item.id}</strong>
+                          <span>So luong: {item.quantity || 0}</span>
+                          <small>Gia: {formatVnd(item.snapshot?.price || 0)}</small>
+                          <small>{formatDate(item.updatedAt)}</small>
                         </article>
                       ))}
                     </div>
                   )}
                 </section>
-
-                <div className="admin-user-section-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px" }}>
-                  <section className="admin-user-section">
-                    <div className="admin-user-section-head">
-                      <h3 style={{ fontSize: "16px", fontWeight: "700" }}>Đơn hàng mua sắm</h3>
-                    </div>
-                    {(details.orders || []).length === 0 ? (
-                      <EmptyState message="Người dùng chưa có đơn hàng nào." />
-                    ) : (
-                      <div className="admin-user-list-grid" style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                        {details.orders.map((item) => (
-                          <article className="admin-user-list-card" key={item.id}>
-                            <strong>{item.orderCode || item.id}</strong>
-                            <span>{(item.paymentMethod || "cod").toUpperCase()} · {item.orderStatus || "pending"}</span>
-                            <small>Thanh toán: {item.paymentStatus || "pending"}</small>
-                            <small>{formatDate(item.createdAt)}</small>
-                            <small>Tổng cộng: {formatVnd(item.total || 0)}</small>
-                            <a href={`/admin/orders?order=${item.id}`} className="admin-user-link">
-                              Xem chi tiết đơn hàng
-                            </a>
-                          </article>
-                        ))}
-                      </div>
-                    )}
-                  </section>
-
-                  <section className="admin-user-section">
-                    <div className="admin-user-section-head">
-                      <h3 style={{ fontSize: "16px", fontWeight: "700" }}>Giỏ hàng hiện tại</h3>
-                    </div>
-                    {(details.cart || []).length === 0 ? (
-                      <EmptyState message="Giỏ hàng hiện đang trống." />
-                    ) : (
-                      <div className="admin-user-list-grid" style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                        {details.cart.map((item) => (
-                          <article className="admin-user-list-card" key={item.id}>
-                            <strong>{item.snapshot?.name || item.slug || item.productId || item.id}</strong>
-                            <span>Số lượng: {item.quantity || 0}</span>
-                            <small>Đơn giá: {formatVnd(item.snapshot?.price || 0)}</small>
-                            <small>{formatDate(item.updatedAt)}</small>
-                          </article>
-                        ))}
-                      </div>
-                    )}
-                  </section>
-                </div>
               </div>
-            )}
-          </section>
-        </>
-      )}
+
+              <details className="admin-json-block">
+                <summary style={{ cursor: "pointer", fontWeight: 700, color: "#0f172a" }}>View data JSON</summary>
+                <pre>{JSON.stringify({ user: selectedUser, details, activationCodeData }, null, 2)}</pre>
+              </details>
+            </div>
+          )}
+        </section>
+      </div>
     </AdminLayout>
   );
 }

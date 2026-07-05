@@ -37,8 +37,9 @@ service cloud.firestore {
     }
 
     match /users/{uid} {
-      allow read, create, update: if signedIn() && request.auth.uid == uid;
-      allow read: if isAdmin();
+      allow read: if isAdmin() || (signedIn() && request.auth.uid == uid);
+      allow create: if signedIn() && request.auth.uid == uid;
+      allow update: if isAdmin() || (signedIn() && request.auth.uid == uid);
       allow delete: if isAdmin();
 
       match /cart/{itemId} {
@@ -60,6 +61,30 @@ service cloud.firestore {
         allow read, write: if signedIn() && request.auth.uid == uid;
         allow read: if isAdmin();
       }
+
+      match /adminEvents/{eventId} {
+        allow read, write: if isAdmin();
+      }
+    }
+
+    match /orders/{orderId} {
+      allow list: if isAdmin();
+      allow get: if isAdmin() || (signedIn() && resource.data.userId == request.auth.uid);
+      allow create: if isAdmin() || (signedIn() && request.resource.data.userId == request.auth.uid);
+      allow update, delete: if isAdmin();
+
+      match /events/{eventId} {
+        allow list: if isAdmin();
+        allow get: if isAdmin() || (signedIn() && get(/databases/$(database)/documents/orders/$(orderId)).data.userId == request.auth.uid);
+        allow create: if isAdmin() || (
+          signedIn()
+          && get(/databases/$(database)/documents/orders/$(orderId)).data.userId == request.auth.uid
+          && request.resource.data.actorUid == request.auth.uid
+          && request.resource.data.actorRole == "user"
+          && request.resource.data.type == "order_created"
+        );
+        allow update, delete: if isAdmin();
+      }
     }
 
     match /activationCodes/{code} {
@@ -67,13 +92,19 @@ service cloud.firestore {
       allow read: if signedIn();
       
       // Chỉ cho phép người dùng tự kích hoạt mã nếu mã đang ở trạng thái 'active'
-      allow update: if signedIn()
+      allow update: if isAdmin() || (
+        signedIn()
         && resource.data.status == "active"
         && request.resource.data.status == "used"
-        && request.resource.data.usedBy == request.auth.uid;
+        && request.resource.data.usedBy == request.auth.uid
+      );
         
       // Chỉ quản trị viên mới được tạo mới hoặc xóa mã kích hoạt
       allow create, delete: if isAdmin();
+
+      match /events/{eventId} {
+        allow read, write: if isAdmin();
+      }
     }
 
     match /{document=**} {

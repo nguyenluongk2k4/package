@@ -1,18 +1,26 @@
 "use client";
 
+import { AdminLoginCard } from "./AdminLayout";
+import ActivationCodesManager from "./ActivationCodesManager";
+import ArCharactersManager from "./ArCharactersManager";
 import CatalogManager from "./CatalogManager";
 import Dashboard from "./Dashboard";
+import OrdersManager from "./OrdersManager";
 import StationsManager from "./StationsManager";
 import UsersOverview from "./UsersOverview";
-export { AdminLoginCard } from "./AdminLayout";
+
+export { AdminLoginCard };
 
 export default function AdminShell({ resource }) {
   if (resource === "dashboard") return <Dashboard />;
   if (resource === "stations") return <StationsManager />;
   if (resource === "users") return <UsersOverview />;
+  if (resource === "orders") return <OrdersManager />;
+  if (resource === "arCharacters") return <ArCharactersManager />;
+  if (resource === "activationCodes") return <ActivationCodesManager />;
   if (resource === "products") {
-    return <CatalogManager resource="products" title="Sản phẩm" description="Quản lý list/detail/homepage flags, ảnh chi tiết và model 3D." />;
+    return <CatalogManager resource="products" title="San pham" description="Quan ly list/detail/homepage flags, anh chi tiet va media san pham." />;
   }
 
-  return <CatalogManager resource="arCharacters" title="Nhân vật AR" description="Upload GLB/USDZ/poster, preview model-viewer và set default." />;
+  return <Dashboard />;
 }

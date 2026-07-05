@@ -12,6 +12,7 @@ import { ArOnboardingGuide } from "./UtilityPages";
 const viewArBase = "/assets/view-ar";
 const fallbackArModelSrc = "/ar/sac-co-do-guide-v3.glb";
 const fallbackArIosModelSrc = "/ar/sac-co-do-guide-v3.usdz";
+const fallbackArCharacterId = "default-guide";
 const modelGreetingAnimation = "WaveOnceThenIdle";
 const sheetPositions = ["expanded", "middle", "collapsed"];
 
@@ -36,6 +37,7 @@ export default function CheckinExperiencePage({ stationId }) {
   const fallbackStation = useMemo(() => getStation(stationId), [stationId]);
   const [station, setStation] = useState(fallbackStation);
   const [arCharacter, setArCharacter] = useState({
+    id: fallbackArCharacterId,
     glbUrl: fallbackArModelSrc,
     usdzUrl: fallbackArIosModelSrc,
     posterUrl: "",
@@ -77,6 +79,7 @@ export default function CheckinExperiencePage({ stationId }) {
       if (!mounted) return;
       setStation(nextStation);
       setArCharacter({
+        id: character?.id || nextStation?.arGuide?.modelId || fallbackArCharacterId,
         glbUrl: character?.glbUrl || fallbackArModelSrc,
         usdzUrl: character?.usdzUrl || fallbackArIosModelSrc,
         posterUrl: character?.posterUrl || "",
@@ -290,7 +293,7 @@ export default function CheckinExperiencePage({ stationId }) {
           uid: user.uid,
           stationId: station.id || stationId,
           stationName: station.name,
-          modelId: station.arGuide?.modelId,
+          modelId: arCharacter.id || station.arGuide?.modelId || fallbackArCharacterId,
           status: "completed",
         });
       }

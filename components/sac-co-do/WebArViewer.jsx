@@ -7,6 +7,7 @@ import { useFirebaseAuth } from "./FirebaseAuthProvider";
 
 const AR_MODEL_SRC = "/ar/sac-co-do-guide-v3.glb";
 const AR_IOS_MODEL_SRC = "/ar/sac-co-do-guide-v3.usdz";
+const DEFAULT_AR_CHARACTER_ID = "default-guide";
 const MODEL_GREETING_ANIMATION = "WaveOnceThenIdle";
 
 // Định nghĩa thông tin thuyết minh và âm thanh cho từng trạm
@@ -84,6 +85,7 @@ export default function WebArViewer({ stationId, onClose, onCheckinSuccess }) {
   const defaultGuide = STATION_GUIDES[stationId] || STATION_GUIDES["trang-an"];
   const [guide, setGuide] = useState(defaultGuide);
   const [arCharacter, setArCharacter] = useState({
+    id: DEFAULT_AR_CHARACTER_ID,
     glbUrl: AR_MODEL_SRC,
     usdzUrl: AR_IOS_MODEL_SRC,
     posterUrl: "",
@@ -129,6 +131,7 @@ export default function WebArViewer({ stationId, onClose, onCheckinSuccess }) {
       }
 
       setArCharacter({
+        id: character?.id || station?.arGuide?.modelId || DEFAULT_AR_CHARACTER_ID,
         glbUrl: character?.glbUrl || AR_MODEL_SRC,
         usdzUrl: character?.usdzUrl || AR_IOS_MODEL_SRC,
         posterUrl: character?.posterUrl || "",
@@ -404,7 +407,7 @@ export default function WebArViewer({ stationId, onClose, onCheckinSuccess }) {
         uid: user?.uid,
         stationId,
         stationName: guide.name,
-        modelId: arCharacter.glbUrl,
+        modelId: arCharacter.id || DEFAULT_AR_CHARACTER_ID,
       });
 
       // Thông báo thành công ra trang ngoài sau 3 giây

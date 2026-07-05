@@ -106,6 +106,7 @@ export default function Dashboard() {
                 <div>
                   <strong>Activation + AR mapping</strong>
                   <p>Code kich hoat va station to AR character mapping dang duoc dieu hanh truc tiep tren Firebase.</p>
+                  <small>Module 3 + 4</small>
                 </div>
               </article>
             </div>

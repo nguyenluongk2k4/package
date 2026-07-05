@@ -793,10 +793,10 @@ export default function UsersOverview() {
               <p style={{ margin: 0 }}>Xem hồ sơ cá nhân, tiến trình check-in địa danh, lịch sử giao dịch và cập nhật thông tin hỗ trợ.</p>
             </div>
             <div style={{ display: "flex", gap: "12px" }}>
-              <button type="button" className="admin-btn-primary" onClick={saveProfile} disabled={saving}>
+              <button type="button" onClick={saveProfile} disabled={saving} style={{ background: "#052c24", color: "#ffffff", border: 0, borderRadius: "6px", padding: "8px 16px", fontWeight: "700", cursor: "pointer" }}>
                 {saving ? "Đang lưu..." : "Lưu thay đổi"}
               </button>
-              <button type="button" className="admin-btn-secondary" onClick={closeUserDetail}>
+              <button type="button" className="admin-secondary-button" onClick={closeUserDetail}>
                 Quay lại
               </button>
             </div>
@@ -806,7 +806,7 @@ export default function UsersOverview() {
             {!selectedUser ? (
               loadingDetails ? <EmptyState message="Đang tải chi tiết người dùng..." /> : <EmptyState message="Không tìm thấy người dùng." />
             ) : (
-              <div className="admin-editor-content-scroll">
+              <div style={{ display: "grid", gap: "24px" }}>
                 <div className="admin-editor-head" style={{ borderBottom: "1px solid rgba(5, 52, 44, 0.08)", paddingBottom: "16px", marginBottom: 0 }}>
                   <div>
                     <h2 style={{ fontSize: "22px", margin: 0, color: "#052c24", fontWeight: "800" }}>{getUserTitle(selectedUser)}</h2>
@@ -913,15 +913,15 @@ export default function UsersOverview() {
 
                     <div className="admin-user-meta" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
                       <div><strong>Trạng thái Passport</strong><span>{selectedUser.isActivated ? "Đã kích hoạt" : "Chưa kích hoạt"}</span></div>
-                      <div><strong>Mã Passport</strong><span>{selectedUser.passportCode || "Không có"}</span></div>
-                      <div><strong>Ngày kích hoạt</strong><span>{formatDate(activationCodeData?.usedAt)}</span></div>
-                      <div><strong>Link Chứng nhận</strong><span>{selectedUser.certificateUrl || "Chưa lưu"}</span></div>
+                      <div><strong>Mã Hộ chiếu (Passport Code)</strong><span>{selectedUser.passportCode || "Không có"}</span></div>
+                      <div><strong>Ngày kích hoạt mã</strong><span>{formatDate(activationCodeData?.usedAt)}</span></div>
+                      <div><strong>Link Certificate</strong><span>{selectedUser.certificateUrl || "Chưa lưu"}</span></div>
                     </div>
 
                     <div style={{ display: "flex", gap: "12px", marginBottom: "20px" }}>
                       {selectedUser.certificateUrl ? (
                         <a href={selectedUser.certificateUrl} target="_blank" rel="noreferrer" className="admin-user-link" style={{ background: "#052c24", color: "#ffffff", padding: "8px 16px", borderRadius: "6px", textDecoration: "none", fontSize: "13px", fontWeight: "700" }}>
-                          Mở Link Chứng nhận
+                          Mở Link Certificate
                         </a>
                       ) : null}
 
@@ -932,28 +932,40 @@ export default function UsersOverview() {
                       ) : null}
                     </div>
 
-                    <div className="admin-user-cert-list" style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                    <div className="admin-user-cert-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "12px" }}>
                       {CERTIFICATES.map((certificate) => {
                         const unlocked = summary.completedStops >= certificate.required;
                         return (
-                          <article 
-                            className={`admin-user-cert-card ${unlocked ? "is-unlocked" : ""}`} 
-                            key={certificate.id}
-                            style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 20px" }}
-                          >
-                            <div>
-                              <strong style={{ display: "block", fontSize: "14px", margin: 0, color: "#052c24", fontWeight: "700" }}>{certificate.title}</strong>
-                              <small style={{ color: "#64748b", fontSize: "12px" }}>Yêu cầu: {certificate.required}/6 trạm</small>
-                            </div>
-                            <span style={{ fontSize: "13px", fontWeight: "600", color: unlocked ? "#10b981" : "#64748b" }}>
-                              {unlocked ? "Đã mở khoá" : "Chưa mở khoá"}
-                            </span>
+                          <article className={`admin-user-cert-card ${unlocked ? "is-unlocked" : ""}`} key={certificate.id}>
+                            <strong>{certificate.title}</strong>
+                            <span>{certificate.required}/6 trạm</span>
+                            <small>{unlocked ? "Đã mở khoá" : "Chưa mở khoá"}</small>
                           </article>
                         );
                       })}
                     </div>
                   </section>
                 </div>
+
+                <section className="admin-user-section">
+                  <div className="admin-user-section-head">
+                    <h3 style={{ fontSize: "16px", fontWeight: "700" }}>Timeline hoạt động tổng hợp</h3>
+                  </div>
+                  {activityTimeline.length === 0 ? (
+                    <EmptyState message="Chưa có lịch sử hoạt động." />
+                  ) : (
+                    <div className="admin-user-list-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "12px" }}>
+                      {activityTimeline.map((item) => (
+                        <article className="admin-user-list-card" key={item.id}>
+                          <strong>{item.title}</strong>
+                          <span>{item.subtitle || item.type}</span>
+                          <small>{formatDate(item.createdAt)}</small>
+                        </article>
+                      ))}
+                    </div>
+                  )}
+                </section>
+
                 <section className="admin-user-section">
                   <div className="admin-user-section-head">
                     <h3 style={{ fontSize: "16px", fontWeight: "700" }}>Địa điểm đã Check-in</h3>
@@ -1001,7 +1013,7 @@ export default function UsersOverview() {
                   )}
                 </section>
 
-                <div className="admin-user-section-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px" }}>
+                <div className="admin-user-section-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "24px" }}>
                   <section className="admin-user-section">
                     <div className="admin-user-section-head">
                       <h3 style={{ fontSize: "16px", fontWeight: "700" }}>Đơn hàng mua sắm</h3>
@@ -1028,6 +1040,26 @@ export default function UsersOverview() {
 
                   <section className="admin-user-section">
                     <div className="admin-user-section-head">
+                      <h3 style={{ fontSize: "16px", fontWeight: "700" }}>Lịch sử quét AR</h3>
+                    </div>
+                    {(details.arExperiences || []).length === 0 ? (
+                      <EmptyState message="Chưa thực hiện quét mô hình AR nào." />
+                    ) : (
+                      <div className="admin-user-list-grid" style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                        {details.arExperiences.map((item) => (
+                          <article className="admin-user-list-card" key={item.id}>
+                            <strong>{item.stationName || item.stationId || item.id}</strong>
+                            <span>{item.modelId || "Không rõ nhân vật"}</span>
+                            <small>Trạng thái: {item.status || "completed"}</small>
+                            <small>{formatDate(item.createdAt)}</small>
+                          </article>
+                        ))}
+                      </div>
+                    )}
+                  </section>
+
+                  <section className="admin-user-section">
+                    <div className="admin-user-section-head">
                       <h3 style={{ fontSize: "16px", fontWeight: "700" }}>Giỏ hàng hiện tại</h3>
                     </div>
                     {(details.cart || []).length === 0 ? (
@@ -1046,6 +1078,11 @@ export default function UsersOverview() {
                     )}
                   </section>
                 </div>
+
+                <details className="admin-json-block">
+                  <summary style={{ cursor: "pointer", fontWeight: 700, color: "#0f172a" }}>Xem dữ liệu JSON gốc</summary>
+                  <pre>{JSON.stringify({ user: selectedUser, details, activationCodeData }, null, 2)}</pre>
+                </details>
               </div>
             )}
           </section>

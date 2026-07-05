@@ -22,6 +22,12 @@ Add these variables in **Vercel Project Settings > Environment Variables** for P
 - `NEXT_PUBLIC_ADMIN_EMAIL`
 - `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME`
 - `NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET`
+- `SEPAY_ENV`
+- `SEPAY_MERCHANT_ID`
+- `SEPAY_SECRET_KEY`
+- `SEPAY_IPN_SECRET_KEY` optional, defaults to `SEPAY_SECRET_KEY`
+- `SEPAY_APP_URL`
+- `SEPAY_PAYMENT_METHOD`
 
 Use `NEXT_PUBLIC_FIREBASE_USE_EMULATOR=false` on Vercel.
 
@@ -61,6 +67,18 @@ After changing `.env.local`, restart `npm run dev` because Next reads env at ser
 - Create an unsigned upload preset.
 - Copy the preset name into `NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET`.
 - Allow the preset to upload images and raw files, because product/AR assets can include `.glb` and `.usdz`.
+
+## SePay checklist
+
+- Bat dau voi `SEPAY_ENV=sandbox`.
+- Dien `SEPAY_MERCHANT_ID` va `SEPAY_SECRET_KEY` tu dashboard SePay.
+- Neu IPN dung secret rieng, dien `SEPAY_IPN_SECRET_KEY`; neu khong co the de trong va dung chung `SEPAY_SECRET_KEY`.
+- Dat `SEPAY_APP_URL` la domain public cua app, vi SePay can goi lai duoc IPN va redirect URL.
+- Cau hinh IPN URL trong SePay tro toi:
+  - `/api/sepay/ipn`
+- Checkout return URLs duoc tao tu dong tren server va quay ve:
+  - `/cua-toi?order=<orderId>&payment=success|error|cancel`
+- Khi test local, can expose app qua public HTTPS tunnel neu muon nhan IPN that.
 
 ## Notes
 

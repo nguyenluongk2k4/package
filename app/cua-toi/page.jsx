@@ -1,9 +1,9 @@
-import { DashboardPage } from "../../components/sac-co-do/UtilityPages";
+import AccountDashboardPage from "../../components/sac-co-do/AccountDashboardPage";
 
 export const metadata = {
-  title: "Của tôi | Sắc Cố Đô",
+  title: "Cua toi | Sac Co Do",
 };
 
 export default function Page() {
-  return <DashboardPage />;
+  return <AccountDashboardPage />;
 }
