@@ -467,6 +467,9 @@ export default function AccountDashboardPage() {
             }}
           >
             <div style={{ display: "grid", gap: "6px" }}>
+              <span style={{ color: "#8a6418", fontSize: "12px", fontWeight: 800, letterSpacing: "0.12em", textTransform: "uppercase" }}>
+                Module 2
+              </span>
               <h2 style={{ margin: 0, color: "#063823" }}>Don hang cua toi</h2>
               <p style={{ margin: 0, color: "#64748b", lineHeight: 1.7 }}>
                 Theo doi trang thai xu ly, thanh toan va giao hang ngay trong tai khoan.

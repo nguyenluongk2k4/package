@@ -8,6 +8,7 @@ const titleByResource = {
   arCharacters: "Quan ly nhan vat AR",
   users: "Quan ly nguoi dung",
   activationCodes: "Quan ly ma kich hoat",
+  settings: "Cau hinh van hanh",
 };
 
 const placeholderByResource = {
@@ -18,12 +19,15 @@ const placeholderByResource = {
   arCharacters: "Tim kiem nhan vat...",
   users: "Tim kiem nguoi dung...",
   activationCodes: "Tim kiem ma kich hoat...",
+  settings: "Tim kiem cau hinh...",
 };
 
 export default function AdminHeaderBar({ resource }) {
   return (
     <header className="admin-header-bar">
-      <h1>{titleByResource[resource] || "Quan tri he thong"}</h1>
+      <div className="admin-header-title">
+        <h1>{titleByResource[resource] || "Quan tri he thong"}</h1>
+      </div>
 
       <div className="admin-header-actions">
         <label className="admin-header-search">

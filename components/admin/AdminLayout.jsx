@@ -150,10 +150,30 @@ function AdminGate({ children }) {
 }
 
 export default function AdminLayout({ resource, children, contentClassName = "admin-content" }) {
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const saved = window.localStorage.getItem("admin-sidebar-collapsed");
+    if (saved === "true") {
+      setSidebarCollapsed(true);
+    }
+  }, []);
+
+  function toggleSidebarCollapsed() {
+    setSidebarCollapsed((current) => {
+      const next = !current;
+      if (typeof window !== "undefined") {
+        window.localStorage.setItem("admin-sidebar-collapsed", String(next));
+      }
+      return next;
+    });
+  }
+
   return (
     <AdminGate>
-      <main className="admin-page">
-        <AdminLeftSidebar resource={resource} />
+      <main className={`admin-page${sidebarCollapsed ? " is-sidebar-collapsed" : ""}`}>
+        <AdminLeftSidebar resource={resource} collapsed={sidebarCollapsed} onToggleSidebar={toggleSidebarCollapsed} />
         <div className="admin-main-shell">
           <AdminHeaderBar resource={resource} />
           <section className={contentClassName}>{children}</section>

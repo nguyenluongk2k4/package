@@ -25,33 +25,31 @@ export default function AdminLeftSidebar({ resource, collapsed, onToggleSidebar 
             <img src="/assets/anh-new/logo.png" alt="" />
           </span>
           <span className="admin-sidebar-brand-copy">
-            <h3>Sac Co Do</h3>
+            <strong>Sac Co Do</strong>
           </span>
         </Link>
 
-        <div className="admin-sidebar-top-actions">
-          <button
-            className="admin-sidebar-collapse"
-            type="button"
-            aria-label={collapsed ? "Mo rong sidebar" : "Thu gon sidebar"}
-            aria-pressed={collapsed}
-            onClick={onToggleSidebar}
-          >
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              {collapsed ? (
-                <>
-                  <path d="M9 6l6 6-6 6" />
-                  <path d="M5 5v14" />
-                </>
-              ) : (
-                <>
-                  <path d="M15 6l-6 6 6 6" />
-                  <path d="M19 5v14" />
-                </>
-              )}
-            </svg>
-          </button>
-        </div>
+        <button
+          className="admin-sidebar-collapse"
+          type="button"
+          aria-label={collapsed ? "Mo rong sidebar" : "Thu gon sidebar"}
+          aria-pressed={collapsed}
+          onClick={onToggleSidebar}
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            {collapsed ? (
+              <>
+                <path d="M9 6l6 6-6 6" />
+                <path d="M5 5v14" />
+              </>
+            ) : (
+              <>
+                <path d="M15 6l-6 6 6 6" />
+                <path d="M19 5v14" />
+              </>
+            )}
+          </svg>
+        </button>
       </div>
 
       <nav className="admin-sidebar-nav" aria-label="Admin navigation">

@@ -1017,7 +1017,7 @@ export default function UsersOverview() {
                             <small>Thanh toán: {item.paymentStatus || "pending"}</small>
                             <small>{formatDate(item.createdAt)}</small>
                             <small>Tổng cộng: {formatVnd(item.total || 0)}</small>
-                            <a href={`/admin/orders?order=${item.id}`} className="admin-user-link">
+                            <a href={`/admin/orders/${item.id}`} className="admin-user-link">
                               Xem chi tiết đơn hàng
                             </a>
                           </article>

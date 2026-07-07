@@ -18,7 +18,7 @@ export function CartPage() {
   const [items, setItems] = useState([]);
   const [cartStatus, setCartStatus] = useState("loading");
   const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const shippingFee = items.length > 0 ? 35000 : 0;
+  const shippingFee = items.length > 0 ? 0 : 0;
   const discount = 0;
   const total = subtotal + shippingFee - discount;
 

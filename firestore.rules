@@ -107,6 +107,11 @@ service cloud.firestore {
       }
     }
 
+    match /appSettings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }
