@@ -378,7 +378,7 @@ export default function HomePage() {
           <div className="ninh-binh-story-container">
             <div className="ninh-binh-story-images">
               <div className="story-img-left">
-                <img src="/assets/ninh-binh-co-do.jpg" alt="Cố Đô Hoa Lư cổ kính" loading="lazy" />
+                <img src="/assets/ninh-binh-culture.png" alt="Cố Đô Hoa Lư cổ kính" loading="lazy" />
               </div>
               <div className="story-img-right">
                 <img src="/assets/ninh-binh-story.png" alt="Tuyệt Tác Di Sản Ninh Bình" loading="lazy" />

@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useMemo, useState, useCallback } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
@@ -22,54 +22,39 @@ export function FirebaseAuthProvider({ children }) {
   const [authError, setAuthError] = useState("");
   const [loading, setLoading] = useState(true);
 
-  // Đọc dữ liệu từ cache trong useEffect đầu tiên (chạy sau khi mount ở client) để tránh lỗi hydration mismatch
   useEffect(() => {
     try {
-      const cachedUser = localStorage.getItem("firebase_user_cache");
       const cachedProfile = localStorage.getItem("firebase_profile_cache");
-      if (cachedUser) {
-        setUser(JSON.parse(cachedUser));
-        setLoading(false);
-      }
       if (cachedProfile) {
         setProfile(JSON.parse(cachedProfile));
       }
-    } catch (e) {
-      console.warn("⚠️ [FirebaseAuth] Lỗi nạp cache từ localStorage:", e);
+    } catch (error) {
+      console.warn("[FirebaseAuth] Load cached profile failed:", error);
     }
   }, []);
 
-  // Lắng nghe sự kiện pageshow để phát hiện và nạp lại trạng thái mới nhất từ cache/Firestore khi quay lại (Back/Forward) bằng trình duyệt
   useEffect(() => {
     const handlePageShow = () => {
-      console.log("🔄 [FirebaseAuth] Trình duyệt kích hoạt pageshow (bfcache). Đồng bộ trạng thái...");
       try {
-        const cachedUser = localStorage.getItem("firebase_user_cache");
         const cachedProfile = localStorage.getItem("firebase_profile_cache");
-        if (cachedUser) {
-          setUser(JSON.parse(cachedUser));
-        }
         if (cachedProfile) {
           setProfile(JSON.parse(cachedProfile));
         }
-      } catch (e) {
-        console.warn("⚠️ [FirebaseAuth] Lỗi làm mới dữ liệu từ cache trong pageshow:", e);
+      } catch (error) {
+        console.warn("[FirebaseAuth] Refresh cached profile failed:", error);
       }
 
-      // Đọc trực tiếp từ Firestore để lấy thông tin mới nhất trên server ngầm
-      if (services.auth && services.auth.currentUser && services.db) {
+      if (services.auth?.currentUser && services.db) {
         const uid = services.auth.currentUser.uid;
         const profileRef = doc(services.db, "users", uid);
         getDoc(profileRef)
           .then((profileSnapshot) => {
             if (profileSnapshot.exists()) {
-              const data = profileSnapshot.data();
-              setProfile({ id: uid, ...data });
-              console.log("🔄 [FirebaseAuth] Cập nhật profile ngầm thành công sau pageshow:", data);
+              setProfile({ id: uid, ...profileSnapshot.data() });
             }
           })
-          .catch((err) => {
-            console.warn("⚠️ [FirebaseAuth] Lỗi cập nhật profile ngầm sau pageshow:", err);
+          .catch((error) => {
+            console.warn("[FirebaseAuth] Refresh profile on pageshow failed:", error);
           });
       }
     };
@@ -78,24 +63,6 @@ export function FirebaseAuthProvider({ children }) {
     return () => window.removeEventListener("pageshow", handlePageShow);
   }, [services.auth, services.db]);
 
-  // Đồng bộ user vào localStorage để phục hồi tức thì khi Back/Reload
-  useEffect(() => {
-    if (user) {
-      localStorage.setItem(
-        "firebase_user_cache",
-        JSON.stringify({
-          uid: user.uid,
-          email: user.email,
-          displayName: user.displayName,
-          photoURL: user.photoURL,
-        })
-      );
-    } else {
-      localStorage.removeItem("firebase_user_cache");
-    }
-  }, [user]);
-
-  // Đồng bộ profile vào localStorage để giữ trạng thái mở khóa tức thì khi Back/Reload
   useEffect(() => {
     if (profile) {
       localStorage.setItem("firebase_profile_cache", JSON.stringify(profile));
@@ -106,18 +73,17 @@ export function FirebaseAuthProvider({ children }) {
 
   const refreshProfile = useCallback(async () => {
     if (!services.auth || !services.auth.currentUser || !services.db) return;
+
     const uid = services.auth.currentUser.uid;
     const profileRef = doc(services.db, "users", uid);
+
     try {
-      console.log("🔄 [FirebaseAuth] Đang nạp lại profile...");
       const profileSnapshot = await getDoc(profileRef);
       if (profileSnapshot.exists()) {
-        const data = profileSnapshot.data();
-        setProfile({ id: uid, ...data });
-        console.log("🔄 [FirebaseAuth] Nạp lại profile thành công:", data);
+        setProfile({ id: uid, ...profileSnapshot.data() });
       }
-    } catch (e) {
-      console.error("❌ [FirebaseAuth] Lỗi nạp lại profile:", e);
+    } catch (error) {
+      console.error("[FirebaseAuth] Refresh profile failed:", error);
     }
   }, [services.auth, services.db]);
 
@@ -128,7 +94,6 @@ export function FirebaseAuthProvider({ children }) {
     }
 
     return onAuthStateChanged(services.auth, async (nextUser) => {
-      console.log("🔄 [FirebaseAuth] onAuthStateChanged kích hoạt. User:", nextUser ? `${nextUser.email} (UID: ${nextUser.uid})` : "Chưa đăng nhập");
       setUser(nextUser);
       setAuthError("");
 
@@ -136,50 +101,27 @@ export function FirebaseAuthProvider({ children }) {
         setProfile(null);
         setAdminProfile(null);
         setLoading(false);
-        console.log("🔄 [FirebaseAuth] Không có user phiên hiện tại, dừng lại.");
         return;
       }
 
-      // Đặt loading = false ngay lập tức để giải phóng giao diện người dùng, tránh chớp nhoáng đăng xuất hoặc treo màn hình loading
       setLoading(false);
 
-      // Tải các thông tin profile bổ sung từ Firestore một cách bất đồng bộ ở background
-      (async () => {
-        try {
-          console.log("🔄 [FirebaseAuth] Bắt đầu tải dữ liệu Firestore cho user:", nextUser.uid);
+      try {
+        const adminRef = doc(services.db, "adminUsers", nextUser.uid);
+        const adminSnapshot = await getDoc(adminRef);
+        setAdminProfile(adminSnapshot.exists() ? { id: adminSnapshot.id, ...adminSnapshot.data() } : null);
+      } catch (error) {
+        console.warn("[FirebaseAuth] Load admin profile failed:", error);
+        setAdminProfile(null);
+      }
 
-          // 1. Tải admin profile
-          const adminRef = doc(services.db, "adminUsers", nextUser.uid);
-          const adminSnapshot = await getDoc(adminRef);
-          if (adminSnapshot.exists()) {
-            setAdminProfile({ id: adminSnapshot.id, ...adminSnapshot.data() });
-          } else {
-            setAdminProfile(null);
-          }
-        } catch (adminError) {
-          console.warn("⚠️ [FirebaseAuth] Không thể lấy admin profile:", adminError);
-        }
+      try {
+        const profileRef = doc(services.db, "users", nextUser.uid);
+        const profileSnapshot = await getDoc(profileRef);
 
-        try {
-          // 2. Tải user profile (Chỉ READ, không WRITE trên mỗi lượt tải trang để giữ dữ liệu an toàn và hiệu năng tốt)
-          const profileRef = doc(services.db, "users", nextUser.uid);
-          const profileSnapshot = await getDoc(profileRef);
-          if (profileSnapshot.exists()) {
-            const userProfileData = profileSnapshot.data();
-            setProfile({ id: nextUser.uid, ...userProfileData });
-            console.log("🔄 [FirebaseAuth] Đã đồng bộ user profile thành công:", userProfileData);
-          } else {
-            // Dùng thông tin mặc định từ Auth
-            setProfile({
-              id: nextUser.uid,
-              displayName: nextUser.displayName || "",
-              email: nextUser.email || "",
-              photoURL: nextUser.photoURL || "",
-            });
-          }
-        } catch (profileGetError) {
-          console.warn("⚠️ [FirebaseAuth] Không thể lấy user profile:", profileGetError);
-          // Fallback khi lỗi/offline
+        if (profileSnapshot.exists()) {
+          setProfile({ id: nextUser.uid, ...profileSnapshot.data() });
+        } else {
           setProfile({
             id: nextUser.uid,
             displayName: nextUser.displayName || "",
@@ -187,7 +129,15 @@ export function FirebaseAuthProvider({ children }) {
             photoURL: nextUser.photoURL || "",
           });
         }
-      })();
+      } catch (error) {
+        console.warn("[FirebaseAuth] Load user profile failed:", error);
+        setProfile({
+          id: nextUser.uid,
+          displayName: nextUser.displayName || "",
+          email: nextUser.email || "",
+          photoURL: nextUser.photoURL || "",
+        });
+      }
     });
   }, [services.auth, services.db]);
 
@@ -197,8 +147,7 @@ export function FirebaseAuthProvider({ children }) {
     }
 
     const credential = await signInWithPopup(services.auth, services.googleProvider);
-    
-    // Đồng bộ thông tin profile khi đăng nhập
+
     try {
       const profileRef = doc(services.db, "users", credential.user.uid);
       const profileSnapshot = await getDoc(profileRef);
@@ -208,13 +157,19 @@ export function FirebaseAuthProvider({ children }) {
         photoURL: credential.user.photoURL || "",
         lastLoginAt: serverTimestamp(),
       };
-      
-      await setDoc(profileRef, profileSnapshot.exists() ? profileData : {
-        ...profileData,
-        createdAt: serverTimestamp(),
-      }, { merge: true });
-    } catch (e) {
-      console.warn("⚠️ [FirebaseAuth] Không thể lưu profile khi đăng nhập Google:", e);
+
+      await setDoc(
+        profileRef,
+        profileSnapshot.exists()
+          ? profileData
+          : {
+              ...profileData,
+              createdAt: serverTimestamp(),
+            },
+        { merge: true }
+      );
+    } catch (error) {
+      console.warn("[FirebaseAuth] Save Google profile failed:", error);
     }
 
     return credential;
@@ -226,15 +181,18 @@ export function FirebaseAuthProvider({ children }) {
     }
 
     const credential = await signInWithEmailAndPassword(services.auth, email, password);
-    
-    // Cập nhật lastLoginAt khi đăng nhập email
+
     try {
       const profileRef = doc(services.db, "users", credential.user.uid);
-      await setDoc(profileRef, {
-        lastLoginAt: serverTimestamp(),
-      }, { merge: true });
-    } catch (e) {
-      console.warn("⚠️ [FirebaseAuth] Không thể cập nhật lastLoginAt:", e);
+      await setDoc(
+        profileRef,
+        {
+          lastLoginAt: serverTimestamp(),
+        },
+        { merge: true }
+      );
+    } catch (error) {
+      console.warn("[FirebaseAuth] Update lastLoginAt failed:", error);
     }
 
     return credential;
@@ -246,22 +204,26 @@ export function FirebaseAuthProvider({ children }) {
     }
 
     const credential = await createUserWithEmailAndPassword(services.auth, email, password);
+
     if (displayName) {
       await updateProfile(credential.user, { displayName });
     }
 
-    // Tạo tài liệu profile mới cho user trong database
     try {
       const profileRef = doc(services.db, "users", credential.user.uid);
-      await setDoc(profileRef, {
-        displayName: displayName || "",
-        email: email || "",
-        photoURL: "",
-        createdAt: serverTimestamp(),
-        lastLoginAt: serverTimestamp(),
-      }, { merge: true });
-    } catch (e) {
-      console.warn("⚠️ [FirebaseAuth] Không thể tạo profile ban đầu:", e);
+      await setDoc(
+        profileRef,
+        {
+          displayName: displayName || "",
+          email: email || "",
+          photoURL: "",
+          createdAt: serverTimestamp(),
+          lastLoginAt: serverTimestamp(),
+        },
+        { merge: true }
+      );
+    } catch (error) {
+      console.warn("[FirebaseAuth] Create initial profile failed:", error);
     }
 
     return credential;

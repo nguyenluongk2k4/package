@@ -368,7 +368,6 @@ export default function CartCheckoutPage() {
               {cartStatus === "loading" ? (
                 <article className="heritage-cart-state">
                   <h2>Đang tải giỏ hàng...</h2>
-                  <p>Giỏ hàng đang được đồng bộ từ database.</p>
                 </article>
               ) : null}
 
