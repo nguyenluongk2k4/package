@@ -83,7 +83,7 @@ export async function POST(request) {
 
     await orderRef.collection("events").add({
       type: "sepay_checkout_ready",
-      message: "Khoi tao phien thanh toan SePay",
+      message: "Khởi tạo phiên thanh toán",
       actorUid: decoded.uid,
       actorRole: "user",
       createdAt: FieldValue.serverTimestamp(),

@@ -124,10 +124,10 @@ export async function POST(request) {
         to: nextOrder.orderStatus || order.orderStatus || null,
         message:
           notificationType === "ORDER_PAID"
-            ? "SePay xac nhan thanh toan thanh cong"
+            ? "Xác nhận thanh toán thành công"
             : notificationType === "TRANSACTION_VOID"
-              ? "SePay thong bao giao dich bi void"
-              : `SePay gui thong bao ${notificationType}`,
+              ? "Thanh toán không thành công"
+              : `Cập nhật thanh toán: ${notificationType}`,
         actorRole: "system",
         createdAt: FieldValue.serverTimestamp(),
       });

@@ -12,24 +12,24 @@ import { useToast } from "./ToastProvider";
 const CERTS = [
   {
     id: "beginner",
-    title: "Ke lu hanh to mo",
-    description: "Da ghe tham 2 dia diem di san",
+    title: "Kẻ lữ hành tò mò",
+    description: "Đã ghé thăm 2 địa điểm di sản",
     required: 2,
     icon: "/assets/ho-chieu-hanh-trinh/desktop-icon/ic-cert-1.svg",
     svgUrl: "/certificate/begin.svg",
   },
   {
     id: "photographer",
-    title: "Nhiep anh gia Co do",
-    description: "Check-in tai 4 dia diem",
+    title: "Nhiếp ảnh gia Cố đô",
+    description: "Check-in tại 4 địa điểm",
     required: 4,
     icon: "/assets/ho-chieu-hanh-trinh/desktop-icon/ic-cert-2.svg",
     svgUrl: "/certificate/HERITAGE-PHOTOGRAPHER.svg",
   },
   {
     id: "champion",
-    title: "Nha chinh phuc Co do",
-    description: "Dong du 6 dau moc di san",
+    title: "Nhà chinh phục Cố đô",
+    description: "Đóng đủ 6 dấu mốc di sản",
     required: 6,
     icon: "/assets/ho-chieu-hanh-trinh/desktop-icon/ic-cert-3.svg",
     svgUrl: "/certificate/HERITAGE-CHAMPION.svg",
@@ -47,7 +47,7 @@ function toDateValue(value) {
 
 function formatDate(value) {
   const date = toDateValue(value);
-  if (!date) return "Chua co";
+  if (!date) return "Chưa có";
 
   return new Intl.DateTimeFormat("vi-VN", {
     dateStyle: "medium",
@@ -56,18 +56,18 @@ function formatDate(value) {
 }
 
 function formatVnd(value) {
-  return `${new Intl.NumberFormat("vi-VN").format(Number(value || 0))}d`;
+  return `${new Intl.NumberFormat("vi-VN").format(Number(value || 0))}đ`;
 }
 
 function orderStatusLabel(status) {
   return (
     {
-      pending: "Cho xu ly",
-      paid: "Da thanh toan",
-      shipping: "Dang giao",
-      completed: "Hoan thanh",
-      cancelled: "Da huy",
-      failed: "That bai",
+      pending: "Chờ xử lý",
+      paid: "Đã thanh toán",
+      shipping: "Đang giao",
+      completed: "Hoàn thành",
+      cancelled: "Đã hủy",
+      failed: "Thất bại",
     }[status] || status || "pending"
   );
 }
@@ -75,12 +75,43 @@ function orderStatusLabel(status) {
 function paymentStatusLabel(status) {
   return (
     {
-      pending: "Cho thanh toan",
-      paid: "Da thanh toan",
-      failed: "That bai",
-      refunded: "Da hoan tien",
+      pending: "Chờ thanh toán",
+      paid: "Đã thanh toán",
+      failed: "Thất bại",
+      refunded: "Đã hoàn tiền",
     }[status] || status || "pending"
   );
+}
+
+function timelineMessageLabel(item) {
+  const rawMessage = String(item?.message || item?.type || "Cập nhật đơn hàng");
+  const normalizedMessage = rawMessage.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+  if (item?.type === "sepay_ipn") {
+    if (item?.notificationType === "ORDER_PAID") return "Xác nhận thanh toán thành công";
+    if (item?.notificationType === "TRANSACTION_VOID") return "Thanh toán không thành công";
+    return "Cập nhật trạng thái thanh toán";
+  }
+
+  if (item?.type === "sepay_checkout_ready") {
+    return "Khởi tạo phiên thanh toán";
+  }
+
+  if (item?.type === "order_created" && /sepay/i.test(normalizedMessage)) {
+    return "Người dùng tạo đơn chờ thanh toán";
+  }
+
+  if (/xac nhan thanh toan sepay/i.test(normalizedMessage)) {
+    return "Xác nhận thanh toán thành công";
+  }
+
+  if (/khoi tao phien thanh toan sepay/i.test(normalizedMessage)) {
+    return "Khởi tạo phiên thanh toán";
+  }
+
+  return rawMessage
+    .replace(/SePay/gi, "Thanh toán")
+    .replace(/sepay/gi, "thanh toán");
 }
 
 function StatusBadge({ status, type = "order" }) {
@@ -285,18 +316,18 @@ export default function AccountDashboardPage() {
     if (!paymentReturn) return;
 
     if (paymentReturn === "success") {
-      showToast("Da quay lai tu SePay. He thong dang doi IPN xac nhan thanh toan.", "success");
+      showToast("Đã quay lại từ SePay. Hệ thống đang đợi IPN xác nhận thanh toán.", "success");
     } else if (paymentReturn === "cancel") {
-      showToast("Ban da huy thanh toan SePay. Co the thu lai bat cu luc nao.", "info");
+      showToast("Bạn đã hủy thanh toán SePay. Có thể thử lại bất cứ lúc nào.", "info");
     } else if (paymentReturn === "error") {
-      showToast("SePay tra ve trang thai loi. Vui long thu lai hoac lien he ho tro.", "error");
+      showToast("SePay trả về trạng thái lỗi. Vui lòng thử lại hoặc liên hệ hỗ trợ.", "error");
     }
   }, [paymentReturn, showToast]);
 
   async function handleSaveProfile(event) {
     event.preventDefault();
     if (!fullName.trim()) {
-      showToast("Vui long nhap ho va ten.", "error");
+      showToast("Vui lòng nhập họ và tên.", "error");
       return;
     }
 
@@ -318,10 +349,10 @@ export default function AccountDashboardPage() {
         localStorage.setItem("scd_guest_name", fullName.trim());
         localStorage.setItem("scd_guest_phone", phoneNumber.trim());
       }
-      showToast("Cap nhat thong tin thanh cong.", "success");
+      showToast("Cập nhật thông tin thành công.", "success");
     } catch (error) {
       console.error("Profile update failed:", error);
-      showToast("Khong the cap nhat thong tin. Vui long thu lai.", "error");
+      showToast("Không thể cập nhật thông tin. Vui lòng thử lại.", "error");
     } finally {
       setIsSaving(false);
     }
@@ -332,7 +363,7 @@ export default function AccountDashboardPage() {
 
   async function handleRetrySePay(order) {
     if (!order?.id || !user) {
-      showToast("Dang nhap de tiep tuc thanh toan.", "info");
+      showToast("Đăng nhập để tiếp tục thanh toán.", "info");
       return;
     }
 
@@ -340,11 +371,11 @@ export default function AccountDashboardPage() {
 
     try {
       const payment = await requestSePayCheckout({ orderId: order.id, user });
-      showToast(`Dang chuyen den cong thanh toan cho don ${order.orderCode || order.id}.`, "success");
+      showToast(`Đang chuyển đến cổng thanh toán cho đơn ${order.orderCode || order.id}.`, "success");
       submitSePayForm(payment);
     } catch (error) {
       console.error("Retry SePay failed:", error);
-      showToast(error.message || "Khong the mo lai phien thanh toan SePay.", "error");
+      showToast(error.message || "Không thể mở lại phiên thanh toán SePay.", "error");
     } finally {
       setIsPayingOrderId("");
     }
@@ -355,40 +386,40 @@ export default function AccountDashboardPage() {
       <SiteHeader />
       <main className="page-shell">
         <SectionTitle
-          eyebrow="Tai khoan"
-          title="Cua toi"
-          description="Quan ly thong tin ca nhan, theo doi certificate di san va kiem tra trang thai don hang cua ban."
+          eyebrow="Tài khoản"
+          title="Của tôi"
+          description="Quản lý thông tin cá nhân, theo dõi certificate di sản và kiểm tra trạng thái đơn hàng của bạn."
         />
 
         <div className="profile-page-container">
-          <section className="profile-card" aria-label="Thong tin ca nhan">
-            <h2>Thong tin ca nhan</h2>
+          <section className="profile-card" aria-label="Thông tin cá nhân">
+            <h2>Thông tin cá nhân</h2>
 
             {!user ? (
               <div className="profile-login-prompt font-baloo">
-                Ban dang truy cap o che do <strong>Khach tham quan</strong>. Dang nhap de dong bo don hang, tien trinh va certificate.
-                <a href="/dang-nhap">Dang nhap ngay</a>
+                Bạn đang truy cập ở chế độ <strong>Khách tham quan</strong>. Đăng nhập để đồng bộ đơn hàng, tiến trình và certificate.
+                <a href="/dang-nhap">Đăng nhập ngay</a>
               </div>
             ) : null}
 
             <form onSubmit={handleSaveProfile}>
               <div className="profile-form-group">
-                <label className="font-baloo">Ho va ten</label>
-                <input type="text" value={fullName} onChange={(event) => setFullName(event.target.value)} placeholder="Nhap ho va ten..." required />
+                <label className="font-baloo">Họ và tên</label>
+                <input type="text" value={fullName} onChange={(event) => setFullName(event.target.value)} placeholder="Nhập họ và tên..." required />
               </div>
 
               <div className="profile-form-group">
                 <label className="font-baloo">Email</label>
-                <input type="email" value={user?.email || "Chua dang nhap"} disabled />
+                <input type="email" value={user?.email || "Chưa đăng nhập"} disabled />
               </div>
 
               <div className="profile-form-group">
-                <label className="font-baloo">So dien thoai</label>
-                <input type="text" value={phoneNumber} onChange={(event) => setPhoneNumber(event.target.value)} placeholder="Nhap so dien thoai..." />
+                <label className="font-baloo">Số điện thoại</label>
+                <input type="text" value={phoneNumber} onChange={(event) => setPhoneNumber(event.target.value)} placeholder="Nhập số điện thoại..." />
               </div>
 
               <button type="submit" className="profile-submit-btn font-baloo" disabled={isSaving}>
-                {isSaving ? "Dang luu..." : "Luu thay doi"}
+                {isSaving ? "Đang lưu..." : "Lưu thay đổi"}
               </button>
             </form>
 
@@ -398,17 +429,17 @@ export default function AccountDashboardPage() {
                 className="profile-logout-btn font-baloo"
                 onClick={async () => {
                   await logout();
-                  showToast("Ban da dang xuat thanh cong.", "info");
+                  showToast("Bạn đã đăng xuất thành công.", "info");
                   window.location.href = "/";
                 }}
               >
-                Dang xuat tai khoan
+                Đăng xuất tài khoản
               </button>
             ) : null}
           </section>
 
-          <section className="profile-card" aria-label="Certificate di san">
-            <h2>Certificate dat duoc ({unlockedCerts.length}/3)</h2>
+          <section className="profile-card" aria-label="Certificate di sản">
+            <h2>Certificate đạt được ({unlockedCerts.length}/3)</h2>
             <div className="profile-certs-list">
               {CERTS.map((cert) => {
                 const isUnlocked = completedCount >= cert.required;
@@ -424,16 +455,16 @@ export default function AccountDashboardPage() {
                     <div className="profile-cert-status">
                       {isUnlocked ? (
                         <>
-                          <span className="badge-unlocked font-baloo">Da dat</span>
+                          <span className="badge-unlocked font-baloo">Đã đạt</span>
                           <button type="button" className="profile-cert-action-btn font-baloo" onClick={() => setSelectedCert(cert)}>
-                            Nhan certificate
+                            Nhận certificate
                           </button>
                         </>
                       ) : (
                         <>
-                          <span className="badge-locked font-baloo">Chua dat</span>
+                          <span className="badge-locked font-baloo">Chưa đạt</span>
                           <p style={{ fontSize: "11px", color: "#a0aec0", fontStyle: "italic" }}>
-                            Tien trinh: {completedCount}/{cert.required} chang
+                            Tiến trình: {completedCount}/{cert.required} chặng
                           </p>
                         </>
                       )}
@@ -467,27 +498,27 @@ export default function AccountDashboardPage() {
             }}
           >
             <div style={{ display: "grid", gap: "6px" }}>
-              <h2 style={{ margin: 0, color: "#063823" }}>Don hang cua toi</h2>
+              <h2 style={{ margin: 0, color: "#063823" }}>Đơn hàng của tôi</h2>
               <p style={{ margin: 0, color: "#64748b", lineHeight: 1.7 }}>
-                Theo doi trang thai xu ly, thanh toan va giao hang ngay trong tai khoan.
+                Theo dõi trạng thái xử lý, thanh toán và giao hàng ngay trong tài khoản.
               </p>
             </div>
 
-            {loadingOrders ? <EmptyCard title="Dang tai don hang..." description="He thong dang lay lich su order tu Firebase." /> : null}
+            {loadingOrders ? <EmptyCard title="Đang tải đơn hàng..." description="Hệ thống đang lấy lịch sử đơn hàng từ Firebase." /> : null}
             {!loadingOrders && !user ? (
               <EmptyCard
-                title="Dang nhap de xem don hang"
-                description="Lich su order duoc gan theo tai khoan Firebase cua ban."
+                title="Đăng nhập để xem đơn hàng"
+                description="Lịch sử đơn hàng được gắn theo tài khoản Firebase của bạn."
                 actionHref="/dang-nhap?next=/cua-toi"
-                actionLabel="Dang nhap ngay"
+                actionLabel="Đăng nhập ngay"
               />
             ) : null}
             {!loadingOrders && user && orders.length === 0 ? (
               <EmptyCard
-                title="Chua co don hang nao"
-                description="Sau khi dat hang tu gio hang, don se hien tai day de ban va admin cung theo doi."
+                title="Chưa có đơn hàng nào"
+                description="Sau khi đặt hàng từ giỏ hàng, đơn sẽ hiện tại đây để bạn và admin cùng theo dõi."
                 actionHref="/san-pham"
-                actionLabel="Kham pha san pham"
+                actionLabel="Khám phá sản phẩm"
               />
             ) : null}
 
@@ -542,8 +573,8 @@ export default function AccountDashboardPage() {
           >
             {!selectedOrder ? (
               <EmptyCard
-                title="Chon mot don hang"
-                description="Chi tiet xu ly, timeline va danh sach san pham se hien o day khi ban chon mot order."
+                title="Chọn một đơn hàng"
+                description="Chi tiết xử lý, timeline và danh sách sản phẩm sẽ hiện ở đây khi bạn chọn một đơn hàng."
               />
             ) : (
               <>
@@ -551,7 +582,7 @@ export default function AccountDashboardPage() {
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px", flexWrap: "wrap" }}>
                     <div>
                       <span style={{ color: "#8a6418", fontWeight: 800, letterSpacing: "0.1em", textTransform: "uppercase", fontSize: "12px" }}>
-                        Order tracking
+                        Theo dõi đơn hàng
                       </span>
                       <h2 style={{ margin: "6px 0 0", color: "#063823" }}>{selectedOrder.orderCode || selectedOrder.id}</h2>
                     </div>
@@ -561,7 +592,7 @@ export default function AccountDashboardPage() {
                     </div>
                   </div>
                   <p style={{ margin: 0, color: "#64748b", lineHeight: 1.7 }}>
-                    Phuong thuc thanh toan: <strong>{(selectedOrder.paymentMethod || "cod").toUpperCase()}</strong> · Cap nhat gan nhat {formatDate(selectedOrder.updatedAt || selectedOrder.createdAt)}
+                    Phương thức thanh toán: <strong>{(selectedOrder.paymentMethod || "cod").toUpperCase()}</strong> · Cập nhật gần nhất {formatDate(selectedOrder.updatedAt || selectedOrder.createdAt)}
                   </p>
                 </div>
 
@@ -573,15 +604,15 @@ export default function AccountDashboardPage() {
                   }}
                 >
                   <div style={{ padding: "16px", borderRadius: "18px", background: "#f8fafc", border: "1px solid #e2e8f0" }}>
-                    <strong style={{ color: "#063823" }}>Nguoi nhan</strong>
-                    <p style={{ margin: "8px 0 0", color: "#0f172a" }}>{selectedOrder.customer?.name || "Chua co"}</p>
-                    <small style={{ color: "#64748b" }}>{selectedOrder.customer?.phone || selectedOrder.customer?.email || "Chua co thong tin lien he"}</small>
+                    <strong style={{ color: "#063823" }}>Người nhận</strong>
+                    <p style={{ margin: "8px 0 0", color: "#0f172a" }}>{selectedOrder.customer?.name || "Chưa có"}</p>
+                    <small style={{ color: "#64748b" }}>{selectedOrder.customer?.phone || selectedOrder.customer?.email || "Chưa có thông tin liên hệ"}</small>
                   </div>
                   <div style={{ padding: "16px", borderRadius: "18px", background: "#f8fafc", border: "1px solid #e2e8f0" }}>
-                    <strong style={{ color: "#063823" }}>Tong thanh toan</strong>
+                    <strong style={{ color: "#063823" }}>Tổng thanh toán</strong>
                     <p style={{ margin: "8px 0 0", color: "#0f172a", fontSize: "20px", fontWeight: 900 }}>{formatVnd(selectedOrder.total)}</p>
                     <small style={{ color: "#64748b" }}>
-                      Tam tinh {formatVnd(selectedOrder.subtotal)} · Ship {formatVnd(selectedOrder.shippingFee)}
+                      Tạm tính {formatVnd(selectedOrder.subtotal)} · Ship {formatVnd(selectedOrder.shippingFee)}
                     </small>
                   </div>
                 </div>
@@ -597,9 +628,9 @@ export default function AccountDashboardPage() {
                       gap: "10px",
                     }}
                   >
-                    <strong style={{ color: "#1d4ed8" }}>Thanh toan SePay</strong>
+                    <strong style={{ color: "#1d4ed8" }}>Thanh toán SePay</strong>
                     <span style={{ color: "#1e3a8a", lineHeight: 1.7 }}>
-                      Don hang nay dang cho thanh toan. Ban co the mo lai cong thanh toan SePay de hoan tat giao dich.
+                      Đơn hàng này đang chờ thanh toán. Bạn có thể mở lại cổng thanh toán SePay để hoàn tất giao dịch.
                     </span>
                     <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "center" }}>
                       <button
@@ -617,11 +648,11 @@ export default function AccountDashboardPage() {
                           cursor: isPayingOrderId === selectedOrder.id ? "wait" : "pointer",
                         }}
                       >
-                        {isPayingOrderId === selectedOrder.id ? "Dang mo SePay..." : "Thanh toan voi SePay"}
+                        {isPayingOrderId === selectedOrder.id ? "Đang mở SePay..." : "Thanh toán với SePay"}
                       </button>
                       {selectedOrder.sepay?.orderInvoiceNumber ? (
                         <small style={{ color: "#1e3a8a" }}>
-                          Ma thanh toan: {selectedOrder.sepay.orderInvoiceNumber}
+                          Mã thanh toán: {selectedOrder.sepay.orderInvoiceNumber}
                         </small>
                       ) : null}
                     </div>
@@ -629,7 +660,7 @@ export default function AccountDashboardPage() {
                 ) : null}
 
                 <section style={{ display: "grid", gap: "12px" }}>
-                  <h3 style={{ margin: 0, color: "#063823" }}>San pham</h3>
+                  <h3 style={{ margin: 0, color: "#063823" }}>Sản phẩm</h3>
                   <div style={{ display: "grid", gap: "12px" }}>
                     {(selectedOrder.items || []).map((item, index) => (
                       <article
@@ -651,8 +682,8 @@ export default function AccountDashboardPage() {
                           </div>
                         )}
                         <div style={{ display: "grid", gap: "4px" }}>
-                          <strong style={{ color: "#063823" }}>{item.name || item.slug || "San pham"}</strong>
-                          <span style={{ color: "#64748b", fontSize: "13px" }}>So luong: {Number(item.quantity || 1)}</span>
+                          <strong style={{ color: "#063823" }}>{item.name || item.slug || "Sản phẩm"}</strong>
+                          <span style={{ color: "#64748b", fontSize: "13px" }}>Số lượng: {Number(item.quantity || 1)}</span>
                         </div>
                         <strong style={{ color: "#0f172a" }}>{formatVnd(Number(item.price || 0) * Number(item.quantity || 1))}</strong>
                       </article>
@@ -663,7 +694,7 @@ export default function AccountDashboardPage() {
                 <section style={{ display: "grid", gap: "12px" }}>
                   <h3 style={{ margin: 0, color: "#063823" }}>Timeline</h3>
                   {orderEvents.length === 0 ? (
-                    <EmptyCard title="Chua co event timeline" description="He thong se hien cac moc tao don, thanh toan, giao hang va hoan thanh tai day." />
+                    <EmptyCard title="Chưa có mốc timeline" description="Hệ thống sẽ hiện các mốc tạo đơn, thanh toán, giao hàng và hoàn thành tại đây." />
                   ) : (
                     <div style={{ display: "grid", gap: "12px" }}>
                       {orderEvents.map((item) => (
@@ -679,7 +710,7 @@ export default function AccountDashboardPage() {
                           }}
                         >
                           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px", flexWrap: "wrap" }}>
-                            <strong style={{ color: "#063823" }}>{item.message || item.type || "Event"}</strong>
+                            <strong style={{ color: "#063823" }}>{timelineMessageLabel(item)}</strong>
                             <small style={{ color: "#64748b" }}>{formatDate(item.createdAt)}</small>
                           </div>
                           {item.from || item.to ? (
@@ -703,7 +734,7 @@ export default function AccountDashboardPage() {
         <LocalCertificateModal
           certificate={selectedCert}
           onClose={() => setSelectedCert(null)}
-          initialName={fullName || profile?.fullName || user?.displayName || "Lu khach di san"}
+          initialName={fullName || profile?.fullName || user?.displayName || "Lữ khách di sản"}
         />
       ) : null}
     </>
@@ -711,7 +742,7 @@ export default function AccountDashboardPage() {
 }
 
 function LocalCertificateModal({ certificate, onClose, initialName }) {
-  const [customName, setCustomName] = useState(initialName || "Lu khach hieu ky");
+  const [customName, setCustomName] = useState(initialName || "Lữ khách hiếu kỳ");
   const [isDownloading, setIsDownloading] = useState(false);
 
   const handleDownload = () => {
@@ -781,21 +812,21 @@ function LocalCertificateModal({ certificate, onClose, initialName }) {
   return (
     <div className="cert-modal-backdrop" onClick={onClose}>
       <div className="cert-modal-content" onClick={(event) => event.stopPropagation()}>
-        <button type="button" className="cert-modal-close" onClick={onClose} aria-label="Dong">
+        <button type="button" className="cert-modal-close" onClick={onClose} aria-label="Đóng">
           ×
         </button>
 
         <div className="cert-modal-left">
-          <h3>Chung nhan di san</h3>
-          <p className="cert-modal-hint font-baloo">Ho ten in tren chung chi:</p>
+          <h3>Chứng nhận di sản</h3>
+          <p className="cert-modal-hint font-baloo">Họ tên in trên chứng chỉ:</p>
 
           <div className="cert-input-group">
-            <input type="text" value={customName} onChange={(event) => setCustomName(event.target.value)} placeholder="Nhap ho ten nhan chung chi..." maxLength={40} />
+            <input type="text" value={customName} onChange={(event) => setCustomName(event.target.value)} placeholder="Nhập họ tên nhận chứng chỉ..." maxLength={40} />
           </div>
 
           <div className="cert-modal-actions">
             <button type="button" className="cert-download-btn font-baloo" onClick={handleDownload} disabled={isDownloading}>
-              {isDownloading ? "Dang tao..." : "Tai xuong certificate (PNG)"}
+              {isDownloading ? "Đang tạo..." : "Tải xuống certificate (PNG)"}
             </button>
           </div>
         </div>
