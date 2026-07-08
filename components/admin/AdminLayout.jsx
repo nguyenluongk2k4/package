@@ -151,6 +151,7 @@ function AdminGate({ children }) {
 
 export default function AdminLayout({ resource, children, contentClassName = "admin-content" }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -173,9 +174,21 @@ export default function AdminLayout({ resource, children, contentClassName = "ad
   return (
     <AdminGate>
       <main className={`admin-page${sidebarCollapsed ? " is-sidebar-collapsed" : ""}`}>
-        <AdminLeftSidebar resource={resource} collapsed={sidebarCollapsed} onToggleSidebar={toggleSidebarCollapsed} />
+        <AdminLeftSidebar
+          resource={resource}
+          collapsed={sidebarCollapsed}
+          onToggleSidebar={toggleSidebarCollapsed}
+          isMobileOpen={mobileSidebarOpen}
+          onCloseMobileSidebar={() => setMobileSidebarOpen(false)}
+        />
+        {mobileSidebarOpen && (
+          <div className="admin-sidebar-backdrop" onClick={() => setMobileSidebarOpen(false)} />
+        )}
         <div className="admin-main-shell">
-          <AdminHeaderBar resource={resource} />
+          <AdminHeaderBar
+            resource={resource}
+            onToggleMobileSidebar={() => setMobileSidebarOpen(true)}
+          />
           <section className={contentClassName}>{children}</section>
         </div>
       </main>

@@ -6,7 +6,7 @@ import { useFirebaseAuth } from "../sac-co-do/FirebaseAuthProvider";
 const sidebarItems = [
   { href: "/admin", label: "Bảng điều khiển", resource: "dashboard", icon: "/assets/admin/left-sidebar/ic-dashboard.svg" },
   { href: "/admin/stations", label: "Địa danh", resource: "stations", icon: "/assets/admin/left-sidebar/ic-dia-danh.svg" },
-  { href: "/admin/products", label: "Sản phẩm", resource: "products", icon: "/assets/admin/left-sidebar/ic-ho-so.svg" },
+  { href: "/admin/products", label: "Sản phẩm", resource: "products", icon: "/assets/admin/left-sidebar/ic-san-pham.svg" },
   { href: "/admin/orders", label: "Đơn hàng", resource: "orders", icon: "/assets/admin/left-sidebar/ic-san-pham.svg" },
   { href: "/admin/ar-characters", label: "Nhân vật AR", resource: "arCharacters", icon: "/assets/admin/left-sidebar/ic-nhan-vat-ar.svg" },
   { href: "/admin/users", label: "Người dùng", resource: "users", icon: "/assets/admin/left-sidebar/ic-user.svg" },
@@ -70,13 +70,6 @@ export default function AdminLeftSidebar({ resource, collapsed, onToggleSidebar,
           </Link>
         ))}
       </nav>
-
-      <div className="admin-sidebar-footer">
-        <button type="button" onClick={logout}>
-          <img src="/assets/admin/left-sidebar/ic-dang-xuat.svg" alt="" />
-          <span className="admin-sidebar-link-label">Đăng xuất</span>
-        </button>
-      </div>
     </aside>
   );
 }
