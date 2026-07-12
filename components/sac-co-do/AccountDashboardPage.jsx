@@ -6,7 +6,6 @@ import SectionTitle from "./SectionTitle";
 import SiteFooter from "./SiteFooter";
 import SiteHeader from "./SiteHeader";
 import { useFirebaseAuth } from "./FirebaseAuthProvider";
-import { requestSePayCheckout, submitSePayForm } from "../../lib/sepay/browser";
 import { useToast } from "./ToastProvider";
 
 const CERTS = [
@@ -185,14 +184,11 @@ export default function AccountDashboardPage() {
   const [orderEvents, setOrderEvents] = useState([]);
   const [loadingOrders, setLoadingOrders] = useState(true);
   const [requestedOrderId, setRequestedOrderId] = useState("");
-  const [paymentReturn, setPaymentReturn] = useState("");
-  const [isPayingOrderId, setIsPayingOrderId] = useState("");
 
   useEffect(() => {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
     setRequestedOrderId(params.get("order") || "");
-    setPaymentReturn(params.get("payment") || "");
   }, []);
 
   useEffect(() => {
@@ -312,18 +308,6 @@ export default function AccountDashboardPage() {
     };
   }, [db, selectedOrderId, user]);
 
-  useEffect(() => {
-    if (!paymentReturn) return;
-
-    if (paymentReturn === "success") {
-      showToast("Đã quay lại từ SePay. Hệ thống đang đợi IPN xác nhận thanh toán.", "success");
-    } else if (paymentReturn === "cancel") {
-      showToast("Bạn đã hủy thanh toán SePay. Có thể thử lại bất cứ lúc nào.", "info");
-    } else if (paymentReturn === "error") {
-      showToast("SePay trả về trạng thái lỗi. Vui lòng thử lại hoặc liên hệ hỗ trợ.", "error");
-    }
-  }, [paymentReturn, showToast]);
-
   async function handleSaveProfile(event) {
     event.preventDefault();
     if (!fullName.trim()) {
@@ -360,26 +344,6 @@ export default function AccountDashboardPage() {
 
   const unlockedCerts = useMemo(() => CERTS.filter((item) => completedCount >= item.required), [completedCount]);
   const selectedOrder = useMemo(() => orders.find((item) => item.id === selectedOrderId) || null, [orders, selectedOrderId]);
-
-  async function handleRetrySePay(order) {
-    if (!order?.id || !user) {
-      showToast("Đăng nhập để tiếp tục thanh toán.", "info");
-      return;
-    }
-
-    setIsPayingOrderId(order.id);
-
-    try {
-      const payment = await requestSePayCheckout({ orderId: order.id, user });
-      showToast(`Đang chuyển đến cổng thanh toán cho đơn ${order.orderCode || order.id}.`, "success");
-      submitSePayForm(payment);
-    } catch (error) {
-      console.error("Retry SePay failed:", error);
-      showToast(error.message || "Không thể mở lại phiên thanh toán SePay.", "error");
-    } finally {
-      setIsPayingOrderId("");
-    }
-  }
 
   return (
     <>
@@ -616,48 +580,6 @@ export default function AccountDashboardPage() {
                     </small>
                   </div>
                 </div>
-
-                {selectedOrder.paymentMethod === "sepay" && selectedOrder.paymentStatus !== "paid" ? (
-                  <section
-                    style={{
-                      padding: "18px",
-                      borderRadius: "18px",
-                      border: "1px solid rgba(29, 78, 216, 0.16)",
-                      background: "#eff6ff",
-                      display: "grid",
-                      gap: "10px",
-                    }}
-                  >
-                    <strong style={{ color: "#1d4ed8" }}>Thanh toán SePay</strong>
-                    <span style={{ color: "#1e3a8a", lineHeight: 1.7 }}>
-                      Đơn hàng này đang chờ thanh toán. Bạn có thể mở lại cổng thanh toán SePay để hoàn tất giao dịch.
-                    </span>
-                    <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "center" }}>
-                      <button
-                        type="button"
-                        onClick={() => handleRetrySePay(selectedOrder)}
-                        disabled={isPayingOrderId === selectedOrder.id}
-                        style={{
-                          minHeight: "44px",
-                          borderRadius: "999px",
-                          border: "none",
-                          padding: "0 20px",
-                          background: "#1d4ed8",
-                          color: "#ffffff",
-                          fontWeight: 800,
-                          cursor: isPayingOrderId === selectedOrder.id ? "wait" : "pointer",
-                        }}
-                      >
-                        {isPayingOrderId === selectedOrder.id ? "Đang mở SePay..." : "Thanh toán với SePay"}
-                      </button>
-                      {selectedOrder.sepay?.orderInvoiceNumber ? (
-                        <small style={{ color: "#1e3a8a" }}>
-                          Mã thanh toán: {selectedOrder.sepay.orderInvoiceNumber}
-                        </small>
-                      ) : null}
-                    </div>
-                  </section>
-                ) : null}
 
                 <section style={{ display: "grid", gap: "12px" }}>
                   <h3 style={{ margin: 0, color: "#063823" }}>Sản phẩm</h3>

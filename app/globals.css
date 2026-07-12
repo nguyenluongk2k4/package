@@ -4655,6 +4655,140 @@ html.reveal-ready .reveal-target.is-revealed {
   background: radial-gradient(circle at 2px 2px, currentColor 0 2px, transparent 2.5px), radial-gradient(circle at calc(100% - 2px) 2px, currentColor 0 2px, transparent 2.5px);
 }
 
+.product-contact-actions {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.product-contact-actions.is-compact {
+  gap: 6px;
+  margin-top: 0;
+}
+
+.product-contact-toggle,
+.product-contact-button {
+  display: inline-flex;
+  min-height: 44px;
+  width: auto;
+  padding: 0 16px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 999px;
+  color: #ffffff;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 180ms ease, filter 180ms ease, opacity 180ms ease;
+}
+
+.product-contact-links {
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-6px) scale(0.92);
+  transform-origin: left center;
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.product-contact-actions.is-open .product-contact-links {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0) scale(1);
+}
+
+.product-contact-toggle {
+  background: #0f5a31;
+  box-shadow: 0 5px 14px rgba(15, 90, 49, 0.22);
+}
+
+.product-contact-button:hover,
+.product-contact-toggle:hover {
+  color: #ffffff;
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+}
+
+.product-contact-button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.product-contact-button img {
+  display: block;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  border-radius: 50%;
+  object-fit: contain;
+}
+
+.product-contact-actions:not(.is-compact) {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  width: 100%;
+}
+
+.product-contact-actions:not(.is-compact) .product-contact-toggle,
+.product-contact-actions:not(.is-compact) .product-contact-links {
+  width: 100%;
+}
+
+.product-contact-actions:not(.is-compact) .product-contact-toggle {
+  justify-content: center;
+}
+
+.product-contact-actions:not(.is-compact) .product-contact-links {
+  flex-direction: column;
+  align-items: stretch;
+  transform: translateY(-6px) scale(0.96);
+  transform-origin: top left;
+}
+
+.product-contact-actions:not(.is-compact) .product-contact-actions.is-open .product-contact-links,
+.product-contact-actions:not(.is-compact).is-open .product-contact-links {
+  transform: translateY(0) scale(1);
+}
+
+.product-contact-actions.is-compact .product-contact-toggle,
+.product-contact-actions.is-compact .product-contact-button {
+  width: 42px;
+  height: 42px;
+  min-height: 42px;
+  padding: 0;
+  border-radius: 50%;
+}
+
+.product-contact-actions.is-compact .product-contact-button span {
+  display: none;
+}
+
+.product-contact-actions.is-compact .product-contact-button img {
+  width: 100%;
+  height: 100%;
+  flex-basis: auto;
+}
+
+.product-contact-button.facebook {
+  background: var(--brand);
+}
+
+.product-contact-button.zalo {
+  background: var(--brand);
+}
+
+.product-contact-note {
+  color: #6b7a75;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
 .app-not-found {
   min-height: 100vh;
   display: grid;
@@ -16330,6 +16464,47 @@ html.reveal-ready .reveal-target.is-revealed {
   backdrop-filter: blur(2px) !important;
   transition: opacity 0.3s ease !important;
   z-index: 5;
+}
+
+/* Center the detail action and let the contact channels expand upward. */
+.product-card-hover-panel .quick-view {
+  position: absolute !important;
+  left: 50% !important;
+  bottom: 12px !important;
+  width: min(62%, 248px) !important;
+  flex: none !important;
+  transform: translate(-50%, 12px) !important;
+}
+
+.souvenir-product-media:hover .product-card-hover-panel .quick-view {
+  transform: translate(-50%, 0) !important;
+}
+
+.product-card-hover-panel .product-contact-actions.is-compact {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 1;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: 6px;
+}
+
+.product-card-hover-panel .product-contact-links {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  transform: translateY(6px) scale(0.92);
+  transform-origin: center bottom;
+}
+
+.product-card-hover-panel .product-contact-actions.is-open .product-contact-links {
+  transform: translateY(0) scale(1);
+}
+
+.product-card-hover-panel .product-contact-toggle {
+  flex: 0 0 auto;
 }
 
 .souvenir-product-media:hover .product-card-hover-panel {

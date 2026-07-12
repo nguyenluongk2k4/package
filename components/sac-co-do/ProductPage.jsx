@@ -3,11 +3,12 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getPublicProducts } from "../../lib/firebase/catalog";
+import { loadCommerceSettings } from "../../lib/firebase/appSettings";
 import { useFirebaseAuth } from "./FirebaseAuthProvider";
-import { useToast } from "./ToastProvider";
 import SiteFooter from "./SiteFooter";
 import SiteHeader from "./SiteHeader";
-import { Eye, ShoppingBag } from "lucide-react";
+import ProductContactActions from "./ProductContactActions";
+import { Eye } from "lucide-react";
 
 function productHref(product) {
   return product?.href || `/san-pham/${product?.slug || product?.id}`;
@@ -48,15 +49,14 @@ function getProductOptions(product) {
 }
 
 export default function ProductPage() {
-  const { user, db } = useFirebaseAuth();
-  const { showToast } = useToast();
+  const { db } = useFirebaseAuth();
   const router = useRouter();
 
   const [activeTab, setActiveTab] = useState("all");
   const [products, setProducts] = useState([]);
-  const [addingState, setAddingState] = useState({});
   const [hoveredCard, setHoveredCard] = useState(null);
   const [selectedOptions, setSelectedOptions] = useState({});
+  const [commerceSettings, setCommerceSettings] = useState(null);
 
   useEffect(() => {
     let mounted = true;
@@ -73,6 +73,20 @@ export default function ProductPage() {
       mounted = false;
     };
   }, []);
+
+  useEffect(() => {
+    let mounted = true;
+
+    loadCommerceSettings(db).then((settings) => {
+      if (mounted) setCommerceSettings(settings);
+    }).catch((error) => {
+      console.warn("Load product contact settings failed:", error);
+    });
+
+    return () => {
+      mounted = false;
+    };
+  }, [db]);
 
   useEffect(() => {
     const initial = {};
@@ -97,52 +111,6 @@ export default function ProductPage() {
   }, [activeTab, products]);
 
   const filteredProducts = getFilteredProducts();
-
-  async function handleQuickAdd(event, product) {
-    event.preventDefault();
-    event.stopPropagation();
-
-    if (!user || !db) {
-      showToast("Đăng nhập để lưu giỏ hàng vào tài khoản.", "info");
-      return;
-    }
-
-    const itemId = product.id;
-    const currentOption = selectedOptions[product.id] || getProductOptions(product)[0];
-    setAddingState((prev) => ({ ...prev, [itemId]: "saving" }));
-
-    try {
-      const { doc, collection, setDoc, increment, serverTimestamp } = await import("firebase/firestore");
-      const cartRef = doc(collection(db, "users", user.uid, "cart"), itemId);
-      const displayName = currentOption ? `${product.name} (${currentOption.label})` : product.name;
-      const finalPrice = currentOption ? currentOption.price : Number(product.price || 0);
-
-      await setDoc(
-        cartRef,
-        {
-          productId: product.id,
-          slug: product.slug || product.id,
-          quantity: increment(1),
-          updatedAt: serverTimestamp(),
-          snapshot: {
-            name: displayName,
-            price: finalPrice,
-            image: currentOption?.image || product.image || "",
-            badge: product.badge || product.category || "",
-            weight: currentOption?.label || product.weight || "",
-          },
-        },
-        { merge: true }
-      );
-
-      setAddingState((prev) => ({ ...prev, [itemId]: "idle" }));
-      showToast(`Đã thêm 1 ${product.shortName || product.name} (${currentOption?.label || ""}) vào giỏ hàng.`, "success");
-    } catch (error) {
-      console.error("Quick add failed:", error);
-      setAddingState((prev) => ({ ...prev, [itemId]: "idle" }));
-      showToast("Không thể thêm vào giỏ hàng.", "error");
-    }
-  }
 
   function handleCardClick(product) {
     router.push(productHref(product));
@@ -177,7 +145,6 @@ export default function ProductPage() {
             {filteredProducts.map((product) => {
               const optionsList = getProductOptions(product);
               const currentOption = selectedOptions[product.id] || optionsList[0];
-              const isSaving = addingState[product.id] === "saving";
               const displayedImage =
                 hoveredCard === product.id && product.images && product.images[1] ? product.images[1] : currentOption?.image || product.image;
 
@@ -207,16 +174,13 @@ export default function ProductPage() {
                         <Eye size={16} />
                         <span>Chi tiết</span>
                       </button>
-                      <button
-                        className="hover-action-btn quick-add"
-                        type="button"
-                        onClick={(event) => handleQuickAdd(event, product)}
-                        disabled={isSaving}
-                        aria-label="Thêm vào giỏ hàng"
-                      >
-                        <ShoppingBag size={16} />
-                        <span>{isSaving ? "Đang thêm..." : "Thêm giỏ"}</span>
-                      </button>
+                      <ProductContactActions
+                        product={product}
+                        option={currentOption}
+                        facebookUrl={commerceSettings?.facebookUrl}
+                        zaloUrl={commerceSettings?.zaloUrl}
+                        compact
+                      />
                     </div>
                   </div>
 

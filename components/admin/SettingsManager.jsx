@@ -341,7 +341,7 @@ export default function SettingsManager() {
   function setCommerceField(name, value) {
     setCommerceSettings((current) => ({
       ...current,
-      [name]: name === "notes" || name === "defaultProvince" ? value : Number(value),
+      [name]: name === "notes" || name === "defaultProvince" || name === "facebookUrl" || name === "zaloUrl" ? value : Number(value),
     }));
   }
 
@@ -452,6 +452,28 @@ export default function SettingsManager() {
                   value={commerceSettings.notes}
                   onChange={(event) => setCommerceField("notes", event.target.value)}
                   placeholder="Ví dụ: tạm miễn ship cho giai đoạn soft launch..."
+                />
+              </label>
+
+              <label style={SETTINGS_LABEL_STYLE}>
+                Link Facebook / Messenger
+                <input
+                  style={SETTINGS_FIELD_STYLE}
+                  type="url"
+                  value={commerceSettings.facebookUrl}
+                  onChange={(event) => setCommerceField("facebookUrl", event.target.value)}
+                  placeholder="https://m.me/..."
+                />
+              </label>
+
+              <label style={SETTINGS_LABEL_STYLE}>
+                Link Zalo
+                <input
+                  style={SETTINGS_FIELD_STYLE}
+                  type="url"
+                  value={commerceSettings.zaloUrl}
+                  onChange={(event) => setCommerceField("zaloUrl", event.target.value)}
+                  placeholder="https://zalo.me/..."
                 />
               </label>
 

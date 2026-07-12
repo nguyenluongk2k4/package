@@ -210,9 +210,6 @@ export default function SiteHeader() {
                 ))}
               </div>
             </div>
-            <a className="header-icon-button header-cart-link" href="/gio-hang" aria-label={t("header.actions.cart")}>
-              <img src="/assets/ic-gio-hang.svg" alt="" aria-hidden="true" />
-            </a>
             {mounted && user ? (
               <div className={`header-dropdown-control account-menu ${accountOpen ? "is-open" : ""}`}>
                 <button

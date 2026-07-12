@@ -2,9 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { getProductBySlugOrId } from "../../lib/firebase/catalog";
-import { useFirebaseAuth } from "./FirebaseAuthProvider";
-import { collection, doc, increment, serverTimestamp, setDoc } from "firebase/firestore";
-import { useToast } from "./ToastProvider";
+import { loadCommerceSettings } from "../../lib/firebase/appSettings";
+import ProductContactActions from "./ProductContactActions";
 
 const fallbackImages = [
   { src: "/assets/anh-new/frame-1.png", label: "Khung nhận diện Sắc Cố Đô" },
@@ -61,14 +60,12 @@ function isFallbackProductImage(src) {
 }
 
 export default function ProductConfigurator({ productId }) {
-  const { user, db } = useFirebaseAuth();
-  const { showToast } = useToast();
   const [product, setProduct] = useState(null);
   const [loadingProduct, setLoadingProduct] = useState(true);
   const [activeImage, setActiveImage] = useState(fallbackImages[0]);
   const [quantity, setQuantity] = useState(1);
-  const [cartState, setCartState] = useState("idle");
   const [selectedOption, setSelectedOption] = useState(null);
+  const [commerceSettings, setCommerceSettings] = useState(null);
 
   useEffect(() => {
     let mounted = true;
@@ -87,6 +84,20 @@ export default function ProductConfigurator({ productId }) {
       mounted = false;
     };
   }, [productId]);
+
+  useEffect(() => {
+    let mounted = true;
+
+    loadCommerceSettings().then((settings) => {
+      if (mounted) setCommerceSettings(settings);
+    }).catch((error) => {
+      console.warn("Load product contact settings failed:", error);
+    });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   const selected = useMemo(() => toProductOption(product), [product]);
 
@@ -133,51 +144,6 @@ export default function ProductConfigurator({ productId }) {
       ].filter((item) => item.value),
     [selected, selectedOption]
   );
-
-  async function addToCart() {
-    if (!user || !db || !selected) {
-      setCartState("auth");
-      showToast("Đăng nhập để lưu giỏ hàng vào tài khoản.", "info");
-      return;
-    }
-
-    setCartState("saving");
-
-    try {
-      const itemId = selected.id || selected.slug;
-      const cartRef = doc(collection(db, "users", user.uid, "cart"), itemId);
-      const displayName = selectedOption ? `${selected.name} (${selectedOption.label})` : selected.name;
-
-      await setDoc(
-        cartRef,
-        {
-          productId: selected.id,
-          slug: selected.slug || selected.id,
-          quantity: increment(quantity),
-          updatedAt: serverTimestamp(),
-          snapshot: {
-            name: displayName,
-            price: currentPrice,
-            image: selectedOption?.image || selected.image || fallbackImages[0].src,
-            badge: selected.badge || selected.category || "",
-            weight: selectedOption?.label || selected.weight || "",
-          },
-        },
-        { merge: true }
-      );
-
-      setCartState("saved");
-      showToast(`Đã thêm ${quantity} ${selected.shortName} (${selectedOption?.label || ""}) vào giỏ hàng.`, "success");
-
-      setTimeout(() => {
-        setCartState("idle");
-      }, 1500);
-    } catch (error) {
-      console.error("Add to cart failed:", error);
-      setCartState("idle");
-      showToast(error.message || "Không thể thêm vào giỏ hàng.", "error");
-    }
-  }
 
   if (loadingProduct) {
     return (
@@ -291,12 +257,13 @@ export default function ProductConfigurator({ productId }) {
           </div>
         </div>
 
-        <button className="add-cart-button" type="button" onClick={addToCart} disabled={cartState === "saving"}>
-          <span className="cart-glyph" aria-hidden="true" />
-          {cartState === "saving" ? "Đang thêm..." : "Thêm vào giỏ hàng"}
-        </button>
-        {cartState === "auth" ? <small className="product-cart-note">Đăng nhập để lưu giỏ hàng trên Firebase.</small> : null}
-        {cartState === "saved" ? <small className="product-cart-note">Đã lưu vào giỏ hàng.</small> : null}
+        <ProductContactActions
+          product={selected}
+          option={selectedOption}
+          quantity={quantity}
+          facebookUrl={commerceSettings?.facebookUrl}
+          zaloUrl={commerceSettings?.zaloUrl}
+        />
 
         {selected.story ? (
           <div className="product-story-panel">
