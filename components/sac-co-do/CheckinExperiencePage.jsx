@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { stations } from "../../data/sac-co-do";
-import { getDefaultArCharacter, getStationBySlugOrId } from "../../lib/firebase/catalog";
+import { getDefaultArCharacter, getStationArCharacter, getStationBySlugOrId } from "../../lib/firebase/catalog";
 import { saveArExperience, saveJourneyProgress } from "../../lib/firebase/userData";
 import { useFirebaseAuth } from "./FirebaseAuthProvider";
 import { uploadToCloudinary } from "../../lib/cloudinary/client";
@@ -74,15 +74,17 @@ export default function CheckinExperiencePage({ stationId }) {
     async function loadArConfig() {
       const firebaseStation = await getStationBySlugOrId(stationId);
       const nextStation = firebaseStation || fallbackStation;
-      const character = await getDefaultArCharacter(nextStation?.arGuide?.modelId);
+      const stationCharacter = getStationArCharacter(nextStation?.id || stationId);
+      const character = await getDefaultArCharacter(nextStation?.arGuide?.modelId || stationCharacter.id);
 
       if (!mounted) return;
       setStation(nextStation);
       setArCharacter({
-        id: character?.id || nextStation?.arGuide?.modelId || fallbackArCharacterId,
-        glbUrl: character?.glbUrl || fallbackArModelSrc,
-        usdzUrl: character?.usdzUrl || fallbackArIosModelSrc,
+        id: character?.id || stationCharacter.id || fallbackArCharacterId,
+        glbUrl: character?.glbUrl || stationCharacter.glbUrl || fallbackArModelSrc,
+        usdzUrl: character?.usdzUrl || stationCharacter.usdzUrl || fallbackArIosModelSrc,
         posterUrl: character?.posterUrl || "",
+        defaultAnimation: character?.defaultAnimation || "",
       });
     }
 
@@ -163,12 +165,12 @@ export default function CheckinExperiencePage({ stationId }) {
   useEffect(() => {
     playedGreetingRef.current = false;
     const viewer = modelViewerRef.current;
-    if (!viewer) return;
+    if (!viewer || !arCharacter.defaultAnimation) return;
 
     const playGreetingOnce = () => {
       if (playedGreetingRef.current) return;
       playedGreetingRef.current = true;
-      viewer.animationName = modelGreetingAnimation;
+      viewer.animationName = arCharacter.defaultAnimation;
       viewer.currentTime = 0;
       viewer.pause?.();
       requestAnimationFrame(() => {
@@ -191,7 +193,7 @@ export default function CheckinExperiencePage({ stationId }) {
       viewer.removeEventListener("load", playGreetingOnce);
       viewer.removeEventListener("finished", handleFinished);
     };
-  }, [hasMounted, arCharacter.glbUrl]);
+  }, [hasMounted, arCharacter.defaultAnimation, arCharacter.glbUrl]);
 
   // Monitor focus/visibility change to open upload modal when returning from iOS AR Quick Look
   useEffect(() => {
@@ -447,7 +449,7 @@ export default function CheckinExperiencePage({ stationId }) {
           ar-placement="floor"
           camera-controls
           shadow-intensity="0.2"
-          animation-name={modelGreetingAnimation}
+          animation-name={arCharacter.defaultAnimation || undefined}
         />
       ) : null}
 

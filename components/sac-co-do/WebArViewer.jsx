@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { getDefaultArCharacter, getStationBySlugOrId } from "../../lib/firebase/catalog";
+import { getDefaultArCharacter, getStationArCharacter, getStationBySlugOrId } from "../../lib/firebase/catalog";
 import { saveArExperience, saveJourneyProgress } from "../../lib/firebase/userData";
 import { useFirebaseAuth } from "./FirebaseAuthProvider";
 
@@ -89,6 +89,7 @@ export default function WebArViewer({ stationId, onClose, onCheckinSuccess }) {
     glbUrl: AR_MODEL_SRC,
     usdzUrl: AR_IOS_MODEL_SRC,
     posterUrl: "",
+    defaultAnimation: MODEL_GREETING_ANIMATION,
   });
   const videoRef = useRef(null);
   const modelViewerRef = useRef(null);
@@ -114,7 +115,8 @@ export default function WebArViewer({ stationId, onClose, onCheckinSuccess }) {
 
     async function loadArConfig() {
       const station = await getStationBySlugOrId(stationId);
-      const character = await getDefaultArCharacter(station?.arGuide?.modelId);
+      const stationCharacter = getStationArCharacter(station?.id || stationId);
+      const character = await getDefaultArCharacter(station?.arGuide?.modelId || stationCharacter.id);
 
       if (!mounted) return;
 
@@ -131,10 +133,11 @@ export default function WebArViewer({ stationId, onClose, onCheckinSuccess }) {
       }
 
       setArCharacter({
-        id: character?.id || station?.arGuide?.modelId || DEFAULT_AR_CHARACTER_ID,
-        glbUrl: character?.glbUrl || AR_MODEL_SRC,
-        usdzUrl: character?.usdzUrl || AR_IOS_MODEL_SRC,
+        id: character?.id || stationCharacter.id || DEFAULT_AR_CHARACTER_ID,
+        glbUrl: character?.glbUrl || stationCharacter.glbUrl || AR_MODEL_SRC,
+        usdzUrl: character?.usdzUrl || stationCharacter.usdzUrl || AR_IOS_MODEL_SRC,
         posterUrl: character?.posterUrl || "",
+        defaultAnimation: character?.defaultAnimation || "",
       });
     }
 
@@ -205,13 +208,13 @@ export default function WebArViewer({ stationId, onClose, onCheckinSuccess }) {
 
   useEffect(() => {
     const viewer = modelViewerRef.current;
-    if (!viewer) return;
+    if (!viewer || !arCharacter.defaultAnimation) return;
 
     const playGreetingOnce = () => {
       if (playedGreetingRef.current) return;
       playedGreetingRef.current = true;
-      setModelAnimation(MODEL_GREETING_ANIMATION);
-      viewer.animationName = MODEL_GREETING_ANIMATION;
+      setModelAnimation(arCharacter.defaultAnimation);
+      viewer.animationName = arCharacter.defaultAnimation;
       viewer.currentTime = 0;
       viewer.pause?.();
       requestAnimationFrame(() => {
@@ -248,7 +251,7 @@ export default function WebArViewer({ stationId, onClose, onCheckinSuccess }) {
       viewer.removeEventListener("error", handleError);
       viewer.removeEventListener("finished", handleFinished);
     };
-  }, [arCharacter.glbUrl]);
+  }, [arCharacter.defaultAnimation, arCharacter.glbUrl]);
 
   // 2. Xử lý giọng nói thuyết minh đồng bộ với phụ đề và cử chỉ nhân vật 3D
   const startSpeech = () => {
@@ -463,7 +466,7 @@ export default function WebArViewer({ stationId, onClose, onCheckinSuccess }) {
           shadow-intensity="1.5"
           shadow-softness="0.8"
           exposure="1.2"
-          animation-name={modelAnimation}
+          animation-name={arCharacter.defaultAnimation ? modelAnimation : undefined}
           className="webar-model"
           style={{ "--poster-color": "transparent" }}
         >

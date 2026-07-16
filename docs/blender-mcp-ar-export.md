@@ -1,111 +1,182 @@
-# Blender MCP AR Export Notes
+# Blender MCP AR Export Handoff For GPT-5.6 Terra
 
-This note captures the working Blender MCP flow used for the Sac Co Do AR guide model so future sessions can pick up quickly.
+This document is a direct handoff note for a future model session that needs to continue the Sac Co Do Blender MCP workflow.
 
-## Current MCP Setup
+Use it as operational context, not as a generic background note.
+
+## Goal
+
+Fix the Sac Co Do AR character export in Blender so the final AR asset is a single static waving pose instead of a two-frame swap effect, then export new versioned `.glb` and `.usdz` files.
+
+## Working Context
 
 - Blender MCP repo/context: `ahujasid/blender-mcp`
 - Blender addon socket host: `localhost`
 - Blender addon socket port: `9876`
-- Control method used: direct JSON socket calls to the Blender addon through the repo's `execute_code` command
+- Blender was already opened by the user during the original working session
+- Control style used before: direct MCP / addon code execution against the running Blender scene
 
-## Current Blender Scene Snapshot
+## Scene Problem Summary
 
-At the time of this export, the open Blender file was:
+The scene did not contain a true skeletal animation.
 
-- `C:\Users\Admin\Downloads\Untitled2222.blend`
+Instead, the visible result behaved like a fake animation made from two separate mesh states:
 
-The relevant objects in scene were:
+- one mesh for the first idle pose
+- one mesh for the later waving pose
+- the scene swapped them by scaling one down and the other up
+
+So when the user said:
+
+- keep the later frame
+- remove the first frame
+
+that meant:
+
+- keep the waving mesh only
+- remove or fully disable the idle mesh from the export result
+- make the export become a single static final pose
+
+## Known Relevant Objects
+
+At the time of the earlier pass, the important scene objects were:
 
 - `CoDo_Frame01_Idle_Textured`
 - `CoDo_Frame07_Wave_Textured`
 
-The existing "animation" was not a true skeletal animation. It was a visibility/pose swap effect made by scaling two separate mesh objects:
+The waving pose was the one to keep.
 
-- frame 1 / idle mesh shown large
-- frame 7 / wave mesh shown tiny
-- later the idle mesh scaled down and the wave mesh scaled up
+## Required Result
 
-## Export Decision For This Pass
+The final export should:
 
-The requested result was:
+- contain only the waving pose
+- not include the first idle pose
+- not produce an AR result that appears to switch between two frames
+- export both `.glb` and `.usdz`
+- keep version numbers increasing over time
 
-- keep only the later waving pose
-- remove the first idle frame from the final export
-- export versioned AR assets as `v3`, then continue increasing versions on later exports
+## Texture Source
 
-For this pass, the scene was converted to a single static waving model by:
-
-1. Setting the scene to the wave frame state at frame `30`
-2. Removing `CoDo_Frame01_Idle_Textured`
-3. Keeping the wave mesh visible at scale `1, 1, 1`
-4. Clearing animation from the wave object so the export stays in the waving pose
-
-## Texture Source Used
-
-Texture set used for the waving frame:
+Use the texture folder provided by the user:
 
 - `C:\Users\Admin\Downloads\codo_frame07_extracted`
 
-Mapped files:
+Expected maps:
 
 - `texture_diffuse.png` -> Base Color
 - `texture_roughness.png` -> Roughness
 - `texture_metallic.png` -> Metallic
 - `texture_normal.png` -> Normal
 
-Not used as the primary exported material maps in this pass:
+Secondary files that were not meant to be the primary material source in the earlier pass:
 
 - `shaded.png`
 - `texture_pbr.png`
 
 ## Versioning Rule
 
+Do not overwrite the old export blindly.
+
 Export names must keep increasing:
 
 - `sac-co-do-guide-v3.glb`
 - `sac-co-do-guide-v3.usdz`
-- next time: `v4`
-- then `v5`, etc.
+- next export becomes `v4`
+- then `v5`
+- and so on
 
 Rule:
 
-- scan `public/ar`
-- find the highest existing `sac-co-do-guide-vN`
-- export the next number
+1. scan `public/ar`
+2. find the highest existing `sac-co-do-guide-vN`
+3. export the next version number
 
-## Files Exported In This Pass
+## Default AR Asset Wiring
 
-Generated files:
-
-- `public/ar/sac-co-do-guide-v3.glb`
-- `public/ar/sac-co-do-guide-v3.usdz`
-
-These were then set as the default WebAR viewer assets in:
+After a successful export, if the new files should become the default AR assets, update:
 
 - `components/sac-co-do/WebArViewer.jsx`
 
-Current defaults after this change:
+Example prior default:
 
 - `GLB`: `/ar/sac-co-do-guide-v3.glb`
 - `USDZ`: `/ar/sac-co-do-guide-v3.usdz`
 
-## Repeatable Workflow
+## Repeatable Execution Plan
 
-Use this sequence next time:
+Follow this sequence:
 
-1. Open Blender and ensure the Blender MCP addon is running on `localhost:9876`
-2. Inspect scene objects and identify the idle mesh and the target final-pose mesh
-3. If the scene uses mesh-scale swapping instead of real animation, move to the desired final frame
-4. Remove or hide the unused mesh
-5. Clear animation from the kept mesh if the export should be static
-6. Rebuild or update the material using the intended texture folder
-7. Export both `.glb` and `.usdz` with the next version number
-8. Update `components/sac-co-do/WebArViewer.jsx` if the new version should become the new default
+1. Connect to the already running Blender instance through MCP on `localhost:9876`.
+2. Inspect the open scene and confirm whether the pose swap is still based on separate mesh objects rather than a real armature animation.
+3. Identify the idle object and the waving object.
+4. Move the scene to the later waving state if needed.
+5. Remove, hide, or fully exclude the idle object from export.
+6. Keep only the waving object visible and at correct scale.
+7. Clear animation data from the kept waving object if the target output is a static pose.
+8. Rebuild or verify the material using the texture folder `C:\Users\Admin\Downloads\codo_frame07_extracted`.
+9. Export the next versioned `.glb`.
+10. Export the matching `.usdz`.
+11. If requested, point `components/sac-co-do/WebArViewer.jsx` to the new version.
+12. Verify that the resulting AR asset behaves as a single-frame waving pose, not a 2-frame swap.
 
-## Notes And Caveats
+## Important Interpretation
 
-- The Blender MCP addon accepts direct JSON commands and supports `execute_code`, which was used here for inspection and export automation.
-- The scene used separate mesh objects for different poses, so "remove frame 1 and keep frame 7" meant keeping the second mesh, not trimming a skeletal animation track.
-- glTF export emitted a warning about more than one shader image node being used for a texture. The export still completed successfully.
-- If a future pass should preserve real animation instead of freezing a pose, do not clear animation data before export.
+Do not misread this as a timeline-edit task unless the scene truly uses animation keys.
+
+The earlier issue was specifically:
+
+- not a real motion clip
+- not a normal skeletal timeline trim
+- but a two-object pose swap
+
+So “remove frame 1” most likely means:
+
+- remove the idle mesh contribution from the final export
+
+not:
+
+- trim keyframes in a conventional animation stack
+
+## Earlier Export Decision
+
+The earlier successful logic was:
+
+1. switch to the later waving state
+2. remove `CoDo_Frame01_Idle_Textured`
+3. keep `CoDo_Frame07_Wave_Textured`
+4. ensure the kept wave mesh remains at scale `1, 1, 1`
+5. clear animation on the kept mesh so export stays frozen in the waving pose
+
+## Prior Output
+
+Earlier generated files were:
+
+- `public/ar/sac-co-do-guide-v3.glb`
+- `public/ar/sac-co-do-guide-v3.usdz`
+
+Those files represented the intended direction, but the user later reported that AR still seemed to load as if there were 2 frames, so the next session should verify carefully whether:
+
+- the idle object was truly excluded
+- there are hidden extra animated objects left in export
+- shape keys, drivers, visibility tracks, or extra actions still remain
+- Quick Look / viewer cache is showing an old asset version
+
+## Verification Checklist
+
+Before finishing, verify all of the following:
+
+- only the waving mesh is exported
+- no idle mesh survives in hidden/exported form
+- no extra object animation still drives the result
+- the material points to the intended texture set
+- the exported filenames use the next version number
+- both `.glb` and `.usdz` exist
+- the web viewer path is updated only if explicitly desired
+- AR playback appears as a single static waving pose
+
+## Notes
+
+- Blender MCP in this workflow was used mainly to inspect scene state, manipulate objects, and automate export.
+- glTF export previously produced a warning about multiple shader image nodes for a texture, but export still completed.
+- If the future goal changes from static pose to true animation preservation, do not clear animation data. That would be a different task.

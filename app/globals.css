@@ -10515,6 +10515,12 @@ html.reveal-ready .reveal-target.is-revealed {
   gap: 24px;
 }
 
+.admin-table-panel {
+  display: grid;
+  align-content: start;
+  min-height: 0;
+}
+
 .admin-table {
   display: grid;
   align-content: start;
@@ -10564,7 +10570,7 @@ html.reveal-ready .reveal-target.is-revealed {
   border-radius: 0 4px 4px 0;
 }
 
-.admin-table button {
+.admin-table article button {
   display: grid;
   gap: 6px;
   width: 100%;
@@ -10576,19 +10582,19 @@ html.reveal-ready .reveal-target.is-revealed {
   cursor: pointer;
 }
 
-.admin-table button strong {
+.admin-table article button strong {
   font-size: 15px;
   font-weight: 700;
   color: #052c24;
 }
 
-.admin-table button span {
+.admin-table article button span {
   color: #64748b;
   font-size: 12px;
   font-weight: 500;
 }
 
-.admin-table small {
+.admin-table article small {
   display: block;
   margin-top: 8px;
   color: #94a3b8;
@@ -19619,6 +19625,12 @@ body:has(.checkin-success-overlay) .scroll-to-top-btn {
   padding-top: 18px;
 }
 
+.admin-pagination-panel {
+  margin-top: 20px;
+  padding: 18px 0 0;
+  border-top: 1px solid #edf1ef;
+}
+
 .admin-pagination-status,
 .admin-pagination-page {
   color: #64748b;
@@ -19626,11 +19638,85 @@ body:has(.checkin-success-overlay) .scroll-to-top-btn {
   font-weight: 700;
 }
 
+.admin-pagination-page {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: #f8fbf9;
+  border: 1px solid rgba(5, 52, 44, 0.1);
+  color: #052c24;
+}
+
 .admin-pagination-actions {
   display: inline-flex;
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
+}
+
+.admin-pagination-button {
+  min-height: 42px !important;
+  padding: 0 18px !important;
+  border: 1px solid rgba(5, 52, 44, 0.16) !important;
+  border-radius: 10px !important;
+  background: #ffffff !important;
+  color: #052c24 !important;
+  font-family: inherit !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  box-shadow: 0 4px 12px rgba(5, 44, 36, 0.06) !important;
+  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease !important;
+}
+
+.admin-pagination-button:hover:not(:disabled) {
+  border-color: rgba(5, 52, 44, 0.28) !important;
+  background: #f8fbf9 !important;
+  color: #052c24 !important;
+}
+
+.admin-pagination-button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.admin-pagination-button:disabled {
+  background: #f8fafc;
+  color: #94a3b8 !important;
+  border-color: rgba(148, 163, 184, 0.35);
+  box-shadow: none !important;
+  cursor: not-allowed;
+}
+
+@media (max-width: 767px) {
+  .admin-pagination-panel {
+    align-items: stretch;
+  }
+
+  .admin-pagination-status {
+    width: 100%;
+  }
+
+  .admin-pagination-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .admin-pagination-button {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .admin-pagination-page {
+    order: -1;
+    width: 100%;
+  }
 }
 
 /* Order Detail Info Grid - spaced label/value rows */

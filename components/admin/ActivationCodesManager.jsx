@@ -30,6 +30,14 @@ function normalizeCode(value) {
   return String(value || "").trim().toUpperCase();
 }
 
+function normalizeSearchText(value) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
+}
+
 function isValidCodeFormat(value) {
   return /^[A-Z0-9]{2,12}(?:-[A-Z0-9]{2,12}){1,3}$/.test(normalizeCode(value));
 }
@@ -99,30 +107,110 @@ function csvEscape(value) {
   return text;
 }
 
-function PaginationControls({ page, totalPages, onPageChange }) {
+function PaginationControls({ page, totalPages, totalItems, onPageChange }) {
   if (totalPages <= 1) return null;
+
+  const start = (page - 1) * CODES_PER_PAGE + 1;
+  const end = Math.min(page * CODES_PER_PAGE, totalItems);
+  const buttonStyle = {
+    minHeight: "42px",
+    padding: "0 18px",
+    borderWidth: "1px",
+    borderStyle: "solid",
+    borderColor: "rgba(5, 52, 44, 0.16)",
+    borderRadius: "10px",
+    background: "#ffffff",
+    color: "#052c24",
+    fontFamily: "inherit",
+    fontSize: "14px",
+    fontWeight: 700,
+    lineHeight: 1,
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    cursor: "pointer",
+    boxShadow: "0 4px 12px rgba(5, 44, 36, 0.06)",
+    transition: "border-color 0.2s ease, background 0.2s ease, color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease",
+  };
+  const disabledButtonStyle = {
+    ...buttonStyle,
+    background: "#f8fafc",
+    color: "#94a3b8",
+    borderColor: "rgba(148, 163, 184, 0.35)",
+    boxShadow: "none",
+    cursor: "not-allowed",
+  };
 
   return (
     <div
+      className="admin-pagination admin-pagination-panel"
       style={{
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        gap: "12px",
-        marginTop: "16px",
-        paddingTop: "12px",
+        gap: "16px",
+        flexWrap: "wrap",
+        marginTop: "20px",
+        paddingTop: "18px",
         borderTop: "1px solid #edf1ef",
       }}
     >
-      <small style={{ color: "#64748b" }}>
-        Trang {page} / {totalPages}
-      </small>
-      <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-        <button type="button" className="admin-secondary-button" onClick={() => onPageChange(page - 1)} disabled={page <= 1}>
-          Trang truoc
+      <span
+        className="admin-pagination-status"
+        style={{
+          color: "#64748b",
+          fontSize: "13px",
+          fontWeight: 700,
+        }}
+      >
+        Hiển thị {start}-{end} / {totalItems} mã
+      </span>
+      <div
+        className="admin-pagination-actions"
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: "10px",
+          flexWrap: "wrap",
+        }}
+      >
+        <button
+          type="button"
+          className="admin-btn-secondary admin-pagination-button"
+          style={page <= 1 ? disabledButtonStyle : buttonStyle}
+          onClick={() => onPageChange(page - 1)}
+          disabled={page <= 1}
+        >
+          Trước
         </button>
-        <button type="button" className="admin-secondary-button" onClick={() => onPageChange(page + 1)} disabled={page >= totalPages}>
-          Trang sau
+        <span
+          className="admin-pagination-page"
+          style={{
+            color: "#052c24",
+            fontSize: "13px",
+            fontWeight: 700,
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            minHeight: "42px",
+            padding: "0 16px",
+            borderRadius: "999px",
+            background: "#f8fbf9",
+            borderWidth: "1px",
+            borderStyle: "solid",
+            borderColor: "rgba(5, 52, 44, 0.1)",
+          }}
+        >
+          Trang {page} / {totalPages}
+        </span>
+        <button
+          type="button"
+          className="admin-btn-secondary admin-pagination-button"
+          style={page >= totalPages ? disabledButtonStyle : buttonStyle}
+          onClick={() => onPageChange(page + 1)}
+          disabled={page >= totalPages}
+        >
+          Sau
         </button>
       </div>
     </div>
@@ -212,24 +300,37 @@ export default function ActivationCodesManager() {
   }, [db, requestedCode]);
 
   const filteredCodes = useMemo(() => {
+    const searchTerm = normalizeSearchText(search);
+
     return codes.filter((item) => {
       const linkedUser = item.usedBy ? usersById[item.usedBy] : null;
+      const status = item.status || "active";
+      const statusKeywords =
+        status === "used"
+          ? ["used", "da kich hoat", "da su dung", "kich hoat", "activated"]
+          : status === "inactive"
+            ? ["inactive", "vo hieu hoa", "disabled", "tat"]
+            : ["active", "chua kich hoat", "chua su dung", "san sang", "available"];
       const haystack = [
         item.id,
         item.code,
         item.usedEmail,
         item.usedBy,
         item.notes,
+        status,
+        ...statusKeywords,
         linkedUser?.fullName,
         linkedUser?.displayName,
         linkedUser?.email,
       ]
         .filter(Boolean)
         .join(" ")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
         .toLowerCase();
 
-      const matchesSearch = haystack.includes(search.toLowerCase());
-      const matchesStatus = statusFilter === "all" || (item.status || "active") === statusFilter;
+      const matchesSearch = haystack.includes(searchTerm);
+      const matchesStatus = statusFilter === "all" || status === statusFilter;
       return matchesSearch && matchesStatus;
     });
   }, [codes, search, statusFilter, usersById]);
@@ -744,34 +845,36 @@ export default function ActivationCodesManager() {
       </div>
 
       <div className="admin-manager-grid">
-        <div className="admin-table">
-          {loading ? <EmptyState message="Dang tai danh sach activation code..." /> : null}
-          {!loading && filteredCodes.length === 0 ? <EmptyState message="Khong tim thay ma kich hoat phu hop." /> : null}
-          {paginatedCodes.map((item) => {
-            const linkedUser = item.usedBy ? usersById[item.usedBy] : null;
-            const linkedLabel = linkedUser?.fullName || linkedUser?.displayName || linkedUser?.email || item.usedEmail || item.usedBy || "Chua gan cho user";
+        <div className="admin-table-panel">
+          <div className="admin-table">
+            {loading ? <EmptyState message="Dang tai danh sach activation code..." /> : null}
+            {!loading && filteredCodes.length === 0 ? <EmptyState message="Khong tim thay ma kich hoat phu hop." /> : null}
+            {paginatedCodes.map((item) => {
+              const linkedUser = item.usedBy ? usersById[item.usedBy] : null;
+              const linkedLabel = linkedUser?.fullName || linkedUser?.displayName || linkedUser?.email || item.usedEmail || item.usedBy || "Chua gan cho user";
 
-            return (
-              <article
-                className={`admin-table-item-card ${selectedCodeId === item.id ? "active" : ""}`}
-                key={item.id}
-                style={{ gridTemplateColumns: "auto auto 1fr" }}
-              >
-                <label style={{ display: "grid", placeItems: "center", paddingLeft: "12px" }}>
-                  <input type="checkbox" checked={selectedCodeIds.includes(item.id)} onChange={() => toggleSelectedCode(item.id)} />
-                </label>
-                <div className="admin-table-item-thumb-placeholder">#</div>
-                <div className="admin-table-item-info">
-                  <button type="button" onClick={() => setSelectedCodeId(item.id)}>
-                    <strong>{item.code || item.id}</strong>
-                    <span>{linkedLabel}</span>
-                  </button>
-                  <small>{`${(item.status || "active").toUpperCase()} · ${formatDate(item.usedAt || item.createdAt)}`}</small>
-                </div>
-              </article>
-            );
-          })}
-          <PaginationControls page={page} totalPages={totalPages} onPageChange={setPage} />
+              return (
+                <article
+                  className={`admin-table-item-card ${selectedCodeId === item.id ? "active" : ""}`}
+                  key={item.id}
+                  style={{ gridTemplateColumns: "auto auto 1fr" }}
+                >
+                  <label style={{ display: "grid", placeItems: "center", paddingLeft: "12px" }}>
+                    <input type="checkbox" checked={selectedCodeIds.includes(item.id)} onChange={() => toggleSelectedCode(item.id)} />
+                  </label>
+                  <div className="admin-table-item-thumb-placeholder">#</div>
+                  <div className="admin-table-item-info">
+                    <button type="button" onClick={() => setSelectedCodeId(item.id)}>
+                      <strong>{item.code || item.id}</strong>
+                      <span>{linkedLabel}</span>
+                    </button>
+                    <small>{`${(item.status || "active").toUpperCase()} · ${formatDate(item.usedAt || item.createdAt)}`}</small>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+          <PaginationControls page={page} totalPages={totalPages} totalItems={filteredCodes.length} onPageChange={setPage} />
         </div>
 
         <section className="admin-editor">

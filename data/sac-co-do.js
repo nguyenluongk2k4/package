@@ -127,6 +127,7 @@ export const steps = [
 export const stations = [
   {
     id: "trang-an",
+    arGuide: { modelId: "nibi-trang-an" },
     name: "Tràng An",
     image: stationAssets["trang-an"].hero,
     gallery: stationAssets["trang-an"].gallery,
@@ -139,6 +140,7 @@ export const stations = [
   },
   {
     id: "hoa-lu",
+    arGuide: { modelId: "nibi-co-do-hoa-lu" },
     name: "Cố Đô Hoa Lư",
     image: stationAssets["hoa-lu"].hero,
     gallery: stationAssets["hoa-lu"].gallery,
@@ -151,6 +153,7 @@ export const stations = [
   },
   {
     id: "bai-dinh",
+    arGuide: { modelId: "nibi-bai-dinh" },
     name: "Chùa Bái Đính",
     image: stationAssets["bai-dinh"].hero,
     gallery: stationAssets["bai-dinh"].gallery,
@@ -163,6 +166,7 @@ export const stations = [
   },
   {
     id: "pho-co-hoa-lu",
+    arGuide: { modelId: "nibi-pho-co-hoa-lu" },
     name: "Phố Cổ Hoa Lư",
     image: stationAssets["pho-co-hoa-lu"].hero,
     gallery: stationAssets["pho-co-hoa-lu"].gallery,
@@ -175,6 +179,7 @@ export const stations = [
   },
   {
     id: "tam-coc",
+    arGuide: { modelId: "nibi-tam-coc" },
     name: "Tam Cốc - Bích Động",
     image: stationAssets["tam-coc"].hero,
     gallery: stationAssets["tam-coc"].gallery,
@@ -187,6 +192,7 @@ export const stations = [
   },
   {
     id: "hang-mua",
+    arGuide: { modelId: "nibi-hang-mua" },
     name: "Hang Múa",
     image: stationAssets["hang-mua"].hero,
     gallery: stationAssets["hang-mua"].gallery,
