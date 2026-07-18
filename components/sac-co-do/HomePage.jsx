@@ -271,7 +271,7 @@ export default function HomePage() {
   return (
     <>
       <SiteHeader />
-      <main ref={containerRef}>
+      <main ref={containerRef} className="home-page-main">
         {/* Cinematic Hero Media Switcher */}
         <HeroMediaSwitcher
           heroImage={hero.image}

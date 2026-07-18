@@ -384,7 +384,7 @@ function Closing({ destination, circleImage = false }) {
             Bắt đầu hành trình
           </Link>
           <Link className="heritage-destination-outline-button" href="/ho-chieu">
-            Tải bản đồ
+            Hộ Chiếu của tôi
           </Link>
         </p>
       </div>
@@ -434,7 +434,7 @@ function TamCocLayout({ destination }) {
             </article>
           ))}
         </div>
-        <a className="heritage-destination-dark-button" href="/hanh-trinh">Book Your Journey</a>
+        <a className="heritage-destination-dark-button" href="/hanh-trinh">Khám phá hành trình</a>
       </section>
     </>
   );

@@ -8,23 +8,23 @@ import SiteHeader from "./SiteHeader";
 const coreValues = [
   {
     title: "Di sản",
-    description: "Trân trọng những giá trị văn hóa, lịch sử và nếp sống bản địa. Mỗi câu chuyện được kể lại để di sản luôn gần gũi với những hành trình hôm nay.",
+    description: "Tôn vinh những giá trị văn hóa và lịch sử.",
   },
   {
     title: "Kết nối",
-    description: "Gắn kết du khách với điểm đến, con người và cộng đồng địa phương. Từ một dấu mộc nhỏ, hành trình mở ra những cuộc gặp gỡ đầy ý nghĩa.",
+    description: "Gắn kết con người với điểm đến và cộng đồng địa phương.",
   },
   {
     title: "Sáng tạo",
-    description: "Làm mới cách khám phá di sản bằng pop-up, check-in và những trải nghiệm tương tác. Truyền thống vì thế trở nên sinh động, dễ chạm và đáng nhớ hơn.",
+    description: "Mang đến những trải nghiệm mới mẻ và khác biệt.",
   },
   {
     title: "Bền vững",
-    description: "Hướng tới sự phát triển hài hòa giữa kinh tế, văn hóa và cộng đồng. Mỗi lựa chọn đều góp phần gìn giữ bản sắc và lan tỏa giá trị địa phương lâu dài.",
+    description: "Phát triển hài hòa giữa kinh tế, văn hóa và cộng đồng.",
   },
   {
     title: "Lưu giữ",
-    description: "Biến mỗi chuyến đi thành những kỷ niệm có thể mang theo. Cuốn hộ chiếu, con dấu và bức ảnh sẽ nhắc bạn về một Ninh Bình rất riêng.",
+    description: "Biến mỗi chuyến đi thành những ký ức đáng nhớ.",
   },
 ];
 
@@ -77,7 +77,7 @@ export default function AboutPage() {
             </h1>
             
             <h3 style={{ fontSize: "19px", color: "var(--brand-2)", fontFamily: "var(--font-heading, 'Baloo 2'), sans-serif", fontWeight: "700", lineHeight: "1.4", marginTop: "20px", marginBottom: "16px" }}>
-              Khi chuyến đi không chỉ dừng lại ở những bức ảnh
+              Liệu một chuyến đi có thể để lại nhiều hơn những bức ảnh?
             </h3>
             
             <p style={{ color: "var(--ink)", fontSize: "15px", lineHeight: "1.7", margin: "0" }}>
@@ -107,7 +107,7 @@ export default function AboutPage() {
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: "18px", color: "var(--ink)", fontSize: "15px", lineHeight: "1.75" }}>
             <p>
-              Tuy nhiên, giữa nhịp sống hiện đại, nhiều chuyến đi thường chỉ dừng lại ở việc tham quan và check-in. Chúng tôi tin rằng du lịch không chỉ là nhìn ngắm, mà còn là hành trình trải nghiệm, kết nối và lưu giữ những giá trị văn hóa của mỗi vùng đất.
+              Tuy nhiên, giữa nhịp sống hiện đại, many chuyến đi thường chỉ dừng lại ở việc tham quan và check-in. Chúng tôi tin rằng du lịch không chỉ là nhìn ngắm, mà còn là hành trình trải nghiệm, kết nối và lưu giữ những giá trị văn hóa của mỗi vùng đất.
             </p>
             <p>
               Vì vậy, SẮC CỐ ĐÔ ra đời với mong muốn xây dựng một hệ sinh thái trải nghiệm di sản sáng tạo, giúp du khách khám phá Ninh Bình theo cách mới mẻ và có chiều sâu hơn. Thông qua Hộ chiếu Di sản Pop-up, hệ thống sưu tầm dấu mộc tại các điểm đến, những câu chuyện lịch sử được kể lại theo cách gần gũi cùng mạng lưới sản phẩm đặc trưng địa phương được tuyển chọn, chúng tôi hy vọng mỗi chuyến đi sẽ trở thành một hành trình đáng nhớ.
@@ -168,3 +168,4 @@ export default function AboutPage() {
     </>
   );
 }
+
