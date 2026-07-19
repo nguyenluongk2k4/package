@@ -506,14 +506,14 @@ function LocalCertificateModal({ certificate, onClose, initialName }) {
 
     img.src = certificate.svgUrl;
     img.onload = () => {
-      document.fonts.load('1em "HLT Burgues Script"').then(() => {
+      document.fonts.load('1em "Alex Brush"').then(() => {
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         ctx.fillStyle = "#f0f0f0";
         ctx.fillRect(110 * scale, 396 * scale, 375 * scale, 58 * scale);
         ctx.fillStyle = "#1a1a1a";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.font = `${32 * scale}px "HLT Burgues Script", cursive`;
+        ctx.font = `${32 * scale}px "Alex Brush", cursive`;
         ctx.fillText(customName, (595.5 / 2) * scale, 428 * scale);
 
         try {
@@ -537,7 +537,7 @@ function LocalCertificateModal({ certificate, onClose, initialName }) {
         ctx.fillStyle = "#1a1a1a";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.font = `italic 700 ${28 * scale}px "Dancing Script", cursive`;
+        ctx.font = `${28 * scale}px "Alex Brush", cursive`;
         ctx.fillText(customName, (595.5 / 2) * scale, 428 * scale);
         try {
           const dataUrl = canvas.toDataURL("image/png");

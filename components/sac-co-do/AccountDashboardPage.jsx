@@ -35,6 +35,8 @@ const CERTS = [
   },
 ];
 
+const ORDER_HISTORY_ENABLED = false;
+
 function toDateValue(value) {
   if (!value) return null;
   if (typeof value?.toDate === "function") return value.toDate();
@@ -238,7 +240,7 @@ export default function AccountDashboardPage() {
   }, [db, user]);
 
   useEffect(() => {
-    if (!db || !user) {
+    if (!ORDER_HISTORY_ENABLED || !db || !user) {
       setOrders([]);
       setLoadingOrders(false);
       return;
@@ -278,7 +280,7 @@ export default function AccountDashboardPage() {
   }, [db, requestedOrderId, selectedOrderId, user]);
 
   useEffect(() => {
-    if (!db || !selectedOrderId || !user) {
+    if (!ORDER_HISTORY_ENABLED || !db || !selectedOrderId || !user) {
       setOrderEvents([]);
       return;
     }
@@ -352,7 +354,7 @@ export default function AccountDashboardPage() {
         <SectionTitle
           eyebrow="Tài khoản"
           title="Của tôi"
-          description="Quản lý thông tin cá nhân, theo dõi certificate di sản và kiểm tra trạng thái đơn hàng của bạn."
+          description="Quản lý thông tin cá nhân, theo dõi hành trình và certificate di sản của bạn."
         />
 
         <div className="profile-page-container">
@@ -361,7 +363,7 @@ export default function AccountDashboardPage() {
 
             {!user ? (
               <div className="profile-login-prompt font-baloo">
-                Bạn đang truy cập ở chế độ <strong>Khách tham quan</strong>. Đăng nhập để đồng bộ đơn hàng, tiến trình và certificate.
+                Bạn đang truy cập ở chế độ <strong>Khách tham quan</strong>. Đăng nhập để đồng bộ tiến trình và certificate.
                 <a href="/dang-nhap">Đăng nhập ngay</a>
               </div>
             ) : null}
@@ -441,6 +443,7 @@ export default function AccountDashboardPage() {
         </div>
 
         <section
+          className="legacy-orders-section"
           style={{
             width: "min(1180px, calc(100% - 32px))",
             margin: "40px auto 0",
@@ -679,14 +682,14 @@ function LocalCertificateModal({ certificate, onClose, initialName }) {
 
     img.src = certificate.svgUrl;
     img.onload = () => {
-      document.fonts.load('1em "HLT Burgues Script"').then(() => {
+      document.fonts.load('1em "Alex Brush"').then(() => {
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         ctx.fillStyle = "#f0f0f0";
         ctx.fillRect(110 * scale, 396 * scale, 375 * scale, 58 * scale);
         ctx.fillStyle = "#1a1a1a";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.font = `${32 * scale}px "HLT Burgues Script", cursive`;
+        ctx.font = `${32 * scale}px "Alex Brush", cursive`;
         ctx.fillText(customName, (595.5 / 2) * scale, 428 * scale);
 
         try {
@@ -709,7 +712,7 @@ function LocalCertificateModal({ certificate, onClose, initialName }) {
         ctx.fillStyle = "#1a1a1a";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.font = `italic 700 ${28 * scale}px "Dancing Script", cursive`;
+        ctx.font = `${28 * scale}px "Alex Brush", cursive`;
         ctx.fillText(customName, (595.5 / 2) * scale, 428 * scale);
 
         try {

@@ -17086,6 +17086,10 @@ html.reveal-ready .reveal-target.is-revealed {
   text-decoration-thickness: 1px;
 }
 
+.legacy-orders-section {
+  display: none !important;
+}
+
 /* Fix font family, sticky header overlap, and alignment for passport cards */
 .passport-stop-heading h2 {
   font-family: var(--font-header, "Baloo 2", sans-serif) !important;
@@ -17262,14 +17266,15 @@ html.reveal-ready .reveal-target.is-revealed {
 }
 
 @font-face {
-  font-family: 'HLT Burgues Script';
-  src: url('/assets/fonts/HLT-Burgues-Script/HLT Burgues Script.ttf') format('truetype');
+  font-family: "Alex Brush";
+  src: url("/assets/fonts/Alex_Brush/AlexBrush-Regular.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 .cert-overlay-text {
-  font-family: "HLT Burgues Script", cursive !important;
+  font-family: "Alex Brush", cursive !important;
   font-size: 26px !important;
   color: #1a1a1a !important;
   font-weight: normal !important;

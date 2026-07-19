@@ -238,8 +238,8 @@ function CertificatePreviewModal({ certificate, onClose, initialName }) {
     // Remove crossOrigin for same-origin local assets to avoid CORS errors, and append download link to body for iOS/mobile compatibility
     img.src = certificate.svgUrl;
     img.onload = () => {
-      // Ensure local font 'HLT Burgues Script' is loaded before drawing on canvas
-      document.fonts.load('1em "HLT Burgues Script"').then(() => {
+      // Ensure the local certificate font is loaded before drawing on canvas.
+      document.fonts.load('1em "Alex Brush"').then(() => {
         // Draw background SVG
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
@@ -247,11 +247,11 @@ function CertificatePreviewModal({ certificate, onClose, initialName }) {
         ctx.fillStyle = "#f0f0f0";
         ctx.fillRect(110 * scale, 396 * scale, 375 * scale, 58 * scale);
 
-        // Draw custom name overlay using HLT Burgues Script
+        // Draw the custom name overlay using Alex Brush.
         ctx.fillStyle = "#1a1a1a";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.font = `${32 * scale}px "HLT Burgues Script", cursive`;
+        ctx.font = `${32 * scale}px "Alex Brush", cursive`;
 
         ctx.fillText(customName, (595.5 / 2) * scale, 428 * scale);
 
@@ -277,7 +277,7 @@ function CertificatePreviewModal({ certificate, onClose, initialName }) {
         ctx.fillStyle = "#1a1a1a";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.font = `italic 700 ${28 * scale}px "Dancing Script", cursive`;
+        ctx.font = `${28 * scale}px "Alex Brush", cursive`;
         ctx.fillText(customName, (595.5 / 2) * scale, 428 * scale);
         try {
           const dataUrl = canvas.toDataURL("image/png");
