@@ -32,6 +32,25 @@ export default function ProductContactActions({ product, option = null, quantity
     return <small className="product-contact-note">Kênh liên hệ đang được cập nhật.</small>;
   }
 
+  if (!compact) {
+    return (
+      <div className="product-contact-actions is-direct" aria-label="Kênh liên hệ">
+        {resolvedFacebookUrl ? (
+          <a href={resolvedFacebookUrl} target="_blank" rel="noreferrer" className="product-contact-button facebook" aria-label={`Nhắn Facebook về ${context}`}>
+            <img src="/assets/icons/ic-facebook.webp" alt="" aria-hidden="true" />
+            <span>Liên hệ qua Facebook</span>
+          </a>
+        ) : null}
+        {zaloUrl ? (
+          <a href={zaloUrl} target="_blank" rel="noreferrer" className="product-contact-button zalo" aria-label={`Nhắn Zalo về ${context}`}>
+            <img src="/assets/icons/ic-zalo.webp" alt="" aria-hidden="true" />
+            <span>Liên hệ qua Zalo</span>
+          </a>
+        ) : null}
+      </div>
+    );
+  }
+
   return (
     <div className={`product-contact-actions ${compact ? "is-compact" : ""} ${open ? "is-open" : ""}`.trim()}>
       <button

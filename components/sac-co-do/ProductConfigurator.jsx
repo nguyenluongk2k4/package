@@ -28,6 +28,22 @@ function formatVnd(value) {
   return `${new Intl.NumberFormat("vi-VN").format(Number(value || 0))}đ`;
 }
 
+function getPricePresentation(product, option) {
+  const price = Number(option?.price ?? product?.price ?? 0);
+  const compareAtPrice = Number(option?.compareAtPrice ?? product?.compareAtPrice ?? 0);
+  const hasDiscount = compareAtPrice > price;
+  const discountPercent = hasDiscount ? Math.round(((compareAtPrice - price) / compareAtPrice) * 100) : 0;
+
+  return {
+    price,
+    compareAtPrice,
+    hasDiscount,
+    discountPercent,
+    saleLabel: option?.saleLabel || product?.saleLabel || "",
+    saleNote: option?.saleNote || product?.saleNote || "",
+  };
+}
+
 function toProductOption(product) {
   if (!product) return null;
 
@@ -63,7 +79,6 @@ export default function ProductConfigurator({ productId }) {
   const [product, setProduct] = useState(null);
   const [loadingProduct, setLoadingProduct] = useState(true);
   const [activeImage, setActiveImage] = useState(fallbackImages[0]);
-  const [quantity, setQuantity] = useState(1);
   const [selectedOption, setSelectedOption] = useState(null);
   const [commerceSettings, setCommerceSettings] = useState(null);
 
@@ -125,18 +140,25 @@ export default function ProductConfigurator({ productId }) {
     return images.length ? images : fallbackImages;
   }, [selected]);
 
-  const currentPrice = useMemo(() => {
-    return selectedOption ? selectedOption.price : Number(selected?.price || 0);
-  }, [selectedOption, selected]);
+  const pricePresentation = useMemo(
+    () => getPricePresentation(selected, selectedOption),
+    [selected, selectedOption]
+  );
 
-  const total = useMemo(() => currentPrice * quantity, [currentPrice, quantity]);
   const activeImageModeClass = isFallbackProductImage(activeImage?.src) ? "is-contain" : "is-cover";
 
-  const detailFacts = useMemo(
+  const specificationFacts = useMemo(
     () =>
       [
         { label: "Khối lượng tịnh", value: selectedOption ? selectedOption.label : selected?.weight },
         { label: "Thành phần", value: selected?.ingredients },
+      ].filter((item) => item.value),
+    [selected, selectedOption]
+  );
+
+  const usageFacts = useMemo(
+    () =>
+      [
         { label: "Hướng dẫn sử dụng", value: selected?.usage },
         { label: "Hạn sử dụng", value: selected?.shelfLife },
         { label: "Bảo quản", value: selected?.storage },
@@ -168,7 +190,8 @@ export default function ProductConfigurator({ productId }) {
 
   return (
     <section className="product-detail" aria-label="Chi tiết sản phẩm Sắc Cố Đô">
-      <div className="product-gallery-panel">
+      <div className="product-detail-top">
+        <div className="product-gallery-panel">
         <div className={`product-main-image ${activeImageModeClass}`}>
           <img src={activeImage.src} alt={activeImage.label} loading="eager" decoding="async" />
         </div>
@@ -186,15 +209,53 @@ export default function ProductConfigurator({ productId }) {
             </button>
           ))}
         </div>
-      </div>
+        </div>
 
-      <div className="product-buy-panel">
+        <div className="product-buy-panel">
         <span className="product-kicker">{selected.category || "Sản phẩm du lịch"}</span>
         <h1>{selected.name || "Sản phẩm Sắc Cố Đô"}</h1>
         <div className="rating-row">
           <span aria-label="5 sao">★★★★★</span>
           <small>(48 đánh giá của người đi phượt)</small>
         </div>
+
+        <div className={`product-price-panel ${pricePresentation.hasDiscount ? "has-discount" : ""}`}>
+          {pricePresentation.hasDiscount ? (
+            <div className="product-sale-banner">
+              <span>{pricePresentation.saleLabel || "Ưu đãi hành trình"}</span>
+              <strong>Giảm {pricePresentation.discountPercent}%</strong>
+            </div>
+          ) : null}
+          <div className="product-price-row">
+            <div>
+              <span className="product-price-label">{pricePresentation.hasDiscount ? "Giá ưu đãi" : "Giá sản phẩm"}</span>
+              <strong>{formatVnd(pricePresentation.price)}</strong>
+            </div>
+            {pricePresentation.hasDiscount ? (
+              <div className="product-compare-price">
+                <span>Giá niêm yết</span>
+                <del>{formatVnd(pricePresentation.compareAtPrice)}</del>
+              </div>
+            ) : null}
+          </div>
+          {pricePresentation.hasDiscount && pricePresentation.saleNote ? (
+            <p className="product-sale-note">{pricePresentation.saleNote}</p>
+          ) : null}
+        </div>
+
+        {specificationFacts.length ? (
+          <section className="product-specification-block" aria-labelledby="product-specification-heading">
+            <span id="product-specification-heading" className="product-specification-heading">Thông tin sản phẩm</span>
+            <dl className="product-specification-line">
+              {specificationFacts.map((item) => (
+                <div key={item.label}>
+                  <dt>{item.label}</dt>
+                  <dd>{item.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+        ) : null}
 
         {optionsList.length > 1 ? (
           <div style={{ marginTop: "16px", marginBottom: "16px" }}>
@@ -222,56 +283,42 @@ export default function ProductConfigurator({ productId }) {
 
         <p>{selected.description || "Sản phẩm di sản Ninh Bình được tuyển chọn cho hành trình Sắc Cố Đô."}</p>
 
-        {detailFacts.length ? (
-          <div className="product-facts-panel">
-            <div className="product-facts-header">
-              <span className="product-section-kicker">Chi tiết sản phẩm</span>
-            </div>
-            <dl className="product-facts-list">
-              {detailFacts.map((item) => (
-                <div key={item.label}>
-                  <dt>{item.label}</dt>
-                  <dd>{item.value}</dd>
-                </div>
-              ))}
-            </dl>
-          </div>
-        ) : null}
-
-        <div className="purchase-box">
-          <div>
-            <small>Số lượng:</small>
-            <div className="quantity-control">
-              <button type="button" onClick={() => setQuantity((value) => Math.max(1, value - 1))} aria-label="Giảm số lượng">
-                -
-              </button>
-              <span>{quantity}</span>
-              <button type="button" onClick={() => setQuantity((value) => value + 1)} aria-label="Tăng số lượng">
-                +
-              </button>
-            </div>
-          </div>
-          <div className="total-box">
-            <small>Tổng cộng:</small>
-            <strong>{formatVnd(total)}</strong>
-          </div>
-        </div>
-
         <ProductContactActions
           product={selected}
           option={selectedOption}
-          quantity={quantity}
           facebookUrl={commerceSettings?.facebookUrl}
           zaloUrl={commerceSettings?.zaloUrl}
         />
 
-        {selected.story ? (
-          <div className="product-story-panel">
-            <span className="product-section-kicker">Câu chuyện sản phẩm</span>
-            <p>{selected.story}</p>
-          </div>
-        ) : null}
+        </div>
       </div>
+
+      {usageFacts.length ? (
+        <section className="product-information-section" aria-labelledby="product-information-heading">
+          <div className="product-information-heading">
+            <span className="product-section-kicker">Hướng dẫn</span>
+            <h2 id="product-information-heading">Cách dùng & bảo quản</h2>
+          </div>
+          <dl className="product-facts-list">
+            {usageFacts.map((item) => (
+              <div key={item.label}>
+                <dt>{item.label}</dt>
+                <dd>{item.value}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      ) : null}
+
+      {selected.story ? (
+        <section className="product-story-section" aria-labelledby="product-story-heading">
+          <div className="product-information-heading">
+            <span className="product-section-kicker">Câu chuyện</span>
+            <h2 id="product-story-heading">{selected.storyTitle || "Câu chuyện sản phẩm"}</h2>
+          </div>
+          <p>{selected.story}</p>
+        </section>
+      ) : null}
     </section>
   );
 }

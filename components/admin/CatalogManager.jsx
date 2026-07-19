@@ -152,9 +152,12 @@ function RepeatableVariantList({ label, values = [], onChange }) {
   function updateItem(index, key, val) {
     const next = [...items];
     const item = { ...next[index] };
-    if (key === "price") {
-      item.price = Number(val || 0);
-      item.priceFormatted = new Intl.NumberFormat("vi-VN").format(item.price) + "đ";
+    if (key === "price" || key === "compareAtPrice") {
+      const numericValue = Number(val || 0);
+      item[key] = numericValue;
+      if (key === "price") {
+        item.priceFormatted = new Intl.NumberFormat("vi-VN").format(numericValue) + "đ";
+      }
     } else {
       item[key] = val;
     }
@@ -163,7 +166,7 @@ function RepeatableVariantList({ label, values = [], onChange }) {
   }
 
   function addItem() {
-    onChange([...items, { label: "", price: 0, priceFormatted: "0đ" }]);
+    onChange([...items, { label: "", price: 0, compareAtPrice: 0, priceFormatted: "0đ" }]);
   }
 
   function removeItem(index) {
@@ -189,6 +192,13 @@ function RepeatableVariantList({ label, values = [], onChange }) {
               placeholder="Giá (ví dụ: 175000)"
               value={item.price || ""}
               onChange={(e) => updateItem(index, "price", e.target.value)}
+              style={{ flex: 1 }}
+            />
+            <input
+              type="number"
+              placeholder="Giá niêm yết"
+              value={item.compareAtPrice || ""}
+              onChange={(e) => updateItem(index, "compareAtPrice", e.target.value)}
               style={{ flex: 1 }}
             />
             <span className="admin-formatted-price">
@@ -272,7 +282,11 @@ function ProductFields({ selected, setField, setNested, uploadFile, uploadInline
             </div>
             <div className="admin-form-row">
               <TextField label="Giá tiền (price)" value={selected.price} type="number" onChange={(value) => setField("price", value)} />
+              <TextField label="Giá niêm yết (compareAtPrice)" value={selected.compareAtPrice || ""} type="number" onChange={(value) => setField("compareAtPrice", Number(value || 0))} />
+            </div>
+            <div className="admin-form-row">
               <TextField label="Khối lượng (weight)" value={selected.weight} onChange={(value) => setField("weight", value)} />
+              <TextField label="Nhãn ưu đãi (saleLabel)" value={selected.saleLabel || ""} onChange={(value) => setField("saleLabel", value)} />
             </div>
             <div className="admin-form-row">
               <TextField label="Badge nổi bật" value={selected.badge} onChange={(value) => setField("badge", value)} />
@@ -301,6 +315,7 @@ function ProductFields({ selected, setField, setNested, uploadFile, uploadInline
         {activeTab === "details" && (
           <div className="admin-form-section">
             <TextArea label="Mô tả ngắn" value={selected.description} onChange={(value) => setField("description", value)} />
+            <TextField label="Tiêu đề câu chuyện (storyTitle)" value={selected.storyTitle || ""} onChange={(value) => setField("storyTitle", value)} />
             <TextArea label="Câu chuyện di sản (story)" value={selected.story || ""} onChange={(value) => setField("story", value)} />
             <TextArea label="Thành phần (ingredients)" value={selected.ingredients || ""} onChange={(value) => setField("ingredients", value)} />
             <TextArea label="Hướng dẫn sử dụng (usage)" value={selected.usage || ""} onChange={(value) => setField("usage", value)} />
@@ -309,6 +324,7 @@ function ProductFields({ selected, setField, setNested, uploadFile, uploadInline
               <TextField label="Cách bảo quản (storage)" value={selected.storage || ""} onChange={(value) => setField("storage", value)} />
             </div>
             <TextArea label="Lưu ý (note)" value={selected.note || ""} onChange={(value) => setField("note", value)} />
+            <TextArea label="Ghi chú ưu đãi (saleNote)" value={selected.saleNote || ""} onChange={(value) => setField("saleNote", value)} />
           </div>
         )}
 
@@ -549,6 +565,7 @@ export default function CatalogManager({ resource, title, description }) {
 
       if (resource === "products") {
         payload.price = Number(selected.price || 0);
+        payload.compareAtPrice = Number(selected.compareAtPrice || 0);
         payload.images = selected.images || [];
         payload.detailImages = selected.detailImages || [];
         payload.features = selected.features || [];

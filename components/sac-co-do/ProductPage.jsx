@@ -14,6 +14,10 @@ function productHref(product) {
   return product?.href || `/san-pham/${product?.slug || product?.id}`;
 }
 
+function formatVnd(value) {
+  return `${new Intl.NumberFormat("vi-VN").format(Number(value || 0))}đ`;
+}
+
 function getProductOptions(product) {
   if (!product) return [];
   if (Array.isArray(product.variants) && product.variants.length > 0) {
@@ -147,6 +151,12 @@ export default function ProductPage() {
               const currentOption = selectedOptions[product.id] || optionsList[0];
               const displayedImage =
                 hoveredCard === product.id && product.images && product.images[1] ? product.images[1] : currentOption?.image || product.image;
+              const currentPrice = Number(currentOption?.price ?? product.price ?? 0);
+              const compareAtPrice = Number(
+                currentOption?.compareAtPrice || (currentPrice === Number(product.price || 0) ? product.compareAtPrice : 0)
+              );
+              const hasDiscount = compareAtPrice > currentPrice;
+              const discountPercent = hasDiscount ? Math.round(((compareAtPrice - currentPrice) / compareAtPrice) * 100) : 0;
 
               return (
                 <div
@@ -207,7 +217,15 @@ export default function ProductPage() {
                     <h2>{product.name}</h2>
                     <div className="souvenir-product-footer-info">
                       <span className="product-card-cat">{product.category}</span>
-                      <strong className="product-card-price">{currentOption ? currentOption.priceFormatted : product.priceFormatted}</strong>
+                      <div className="product-card-price-stack">
+                        {hasDiscount ? (
+                          <span className="product-card-sale-meta">
+                            <b>-{discountPercent}%</b>
+                            <del>{formatVnd(compareAtPrice)}</del>
+                          </span>
+                        ) : null}
+                        <strong className="product-card-price">{formatVnd(currentPrice)}</strong>
+                      </div>
                     </div>
                   </div>
                 </div>

@@ -57,6 +57,28 @@ function serverTimestamp() {
   return FieldValue.serverTimestamp();
 }
 
+function saleCompareAtPrice(value) {
+  const price = Number(value || 0);
+  if (!price) return 0;
+
+  const min = Math.ceil((price * 1.05) / 1000);
+  const max = Math.floor((price * 1.1) / 1000);
+  const candidates = [];
+
+  for (let amount = min; amount <= max; amount += 1) {
+    candidates.push(amount);
+  }
+
+  const target = (price / 1000) * 1.08;
+  const saleEndingCandidates = candidates.filter((amount) => amount % 10 === 9);
+  const choices = saleEndingCandidates.length ? saleEndingCandidates : candidates;
+  const closest = choices.reduce((best, amount) =>
+    Math.abs(amount - target) < Math.abs(best - target) ? amount : best,
+  choices[0]);
+
+  return closest * 1000;
+}
+
 function slugFrom(value) {
   return String(value || "")
     .trim()
@@ -99,8 +121,11 @@ async function seedProducts() {
         shortName: product.shortName || product.name || "",
         description: product.description || "",
         story: product.story || "",
+        storyTitle: product.storyTitle || "",
         price: Number(product.price || 0),
         priceFormatted: product.priceFormatted || "",
+        compareAtPrice: Number(product.compareAtPrice || saleCompareAtPrice(product.price)),
+        saleLabel: product.saleLabel || "Ưu đãi hành trình",
         weight: product.weight || "",
         badge: product.badge || "",
         category: product.category || "",
@@ -133,6 +158,32 @@ async function seedProducts() {
 
       return db.collection("products").doc(id).set(
         payload,
+        { merge: true }
+      );
+    })
+  );
+}
+
+async function seedProductSales() {
+  const snapshot = await db.collection("products").get();
+
+  if (snapshot.empty) {
+    await seedProducts();
+    return;
+  }
+
+  await Promise.all(
+    snapshot.docs.map((productDoc) => {
+      const product = productDoc.data();
+      const price = Number(product.price || 0);
+
+      return productDoc.ref.set(
+        {
+          storyTitle: product.storyTitle || "",
+          compareAtPrice: saleCompareAtPrice(price),
+          saleLabel: product.saleLabel || "Ưu đãi hành trình",
+          updatedAt: serverTimestamp(),
+        },
         { merge: true }
       );
     })
@@ -212,6 +263,9 @@ async function seedAdminUser() {
 if (seedMode === "products-only") {
   await seedProducts();
   console.log("Firebase product seed completed.");
+} else if (seedMode === "product-sales-only") {
+  await seedProductSales();
+  console.log("Firebase product sale metadata seed completed.");
 } else {
   await seedStations();
   await seedProducts();
