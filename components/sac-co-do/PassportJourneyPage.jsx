@@ -49,14 +49,26 @@ const passportStops = [
 ];
 
 // Passive stop card representing a stamp in the album
-function PassportStampCard({ stop, progress, index, onPhotoClick }) {
+function PassportStampCard({ stop, progress, index, onPhotoClick, onLockedClick }) {
   const isCompleted = !!progress?.checkedIn;
   const hasPhoto = !!progress?.photoUrl;
   
   const defaultStampImage = stop.icon || `${assetBase}/desktop-icon/ic-lock.svg`;
 
   return (
-    <article className={`passport-stop-card ${isCompleted ? "is-unlocked" : "is-locked"}`}>
+    <article
+      className={`passport-stop-card ${isCompleted ? "is-unlocked" : "is-locked"}`}
+      role={isCompleted ? undefined : "link"}
+      tabIndex={isCompleted ? undefined : 0}
+      onClick={isCompleted ? undefined : onLockedClick}
+      onKeyDown={isCompleted ? undefined : (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          onLockedClick();
+        }
+      }}
+      style={isCompleted ? undefined : { cursor: "pointer" }}
+    >
       <div className="passport-stop-heading">
         <h2>{stop.title}</h2>
         <p>{stop.subtitle}</p>
@@ -85,13 +97,8 @@ function PassportStampCard({ stop, progress, index, onPhotoClick }) {
         )}
       </div>
 
-      <div className="passport-card-actions" style={{ marginTop: "12px", textAlign: "center" }}>
-        {isCompleted ? (
-          <a className="passport-detail-link" href={`/checkin/${stop.id}`} style={{ justifyContent: "center" }}>
-            Xem chi tiết
-            <img src={`${assetBase}/desktop-icon/ic-xem-chi-tiet.svg`} alt="" aria-hidden="true" />
-          </a>
-        ) : (
+      {!isCompleted && (
+        <div className="passport-card-actions" style={{ marginTop: "12px", textAlign: "center" }}>
           <div 
             style={{ 
               display: "inline-block", 
@@ -104,13 +111,13 @@ function PassportStampCard({ stop, progress, index, onPhotoClick }) {
               fontWeight: "bold", 
               fontSize: "12px", 
               textAlign: "center",
-              cursor: "default"
+              cursor: "pointer"
             }}
           >
-            Chưa khám phá
+            Khám phá trên Bản đồ hành trình
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </article>
   );
 }
@@ -477,6 +484,9 @@ export default function PassportJourneyPage() {
                 progress={visitedStops[stop.id]} 
                 index={index} 
                 onPhotoClick={(url, name) => setActiveViewerPhoto({ url, name })}
+                onLockedClick={() => {
+                  window.location.href = "/hanh-trinh";
+                }}
               />
             ))}
           </section>
@@ -551,9 +561,6 @@ export default function PassportJourneyPage() {
           <a className="passport-primary-action" href="/hanh-trinh">
             Tiếp tục hành trình
           </a>
-          <button className="passport-secondary-action" type="button">
-            Chia sẻ thành tựu
-          </button>
         </div>
       </main>
       <SiteFooter />

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { collection, getDocs } from "firebase/firestore";
 import { stations } from "../../data/sac-co-do";
 import { getDefaultArCharacter, getStationArCharacter, getStationBySlugOrId } from "../../lib/firebase/catalog";
 import { saveArExperience, saveJourneyProgress } from "../../lib/firebase/userData";
@@ -60,6 +61,7 @@ export default function CheckinExperiencePage({ stationId }) {
   const [sheetPosition, setSheetPosition] = useState("middle");
   const [showArGuide, setShowArGuide] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [hasCompletedAllStops, setHasCompletedAllStops] = useState(false);
 
   // AR Upload States
   const [showUploadModal, setShowUploadModal] = useState(false);
@@ -67,6 +69,28 @@ export default function CheckinExperiencePage({ stationId }) {
   const [isUploading, setIsUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
+
+  async function checkAllStationsCompleted() {
+    const completedStationIds = new Set();
+
+    if (user && db) {
+      try {
+        const progressSnapshot = await getDocs(collection(db, "users", user.uid, "journeyProgress"));
+        progressSnapshot.forEach((progressDoc) => completedStationIds.add(progressDoc.id));
+      } catch (error) {
+        console.warn("Could not read cloud journey progress:", error);
+      }
+    } else if (typeof window !== "undefined") {
+      try {
+        const visitedStations = JSON.parse(localStorage.getItem("scd_visited_stations") || "[]");
+        visitedStations.forEach((id) => completedStationIds.add(id));
+      } catch (error) {
+        console.warn("Could not read local journey progress:", error);
+      }
+    }
+
+    return stations.every((item) => completedStationIds.has(item.id));
+  }
 
   useEffect(() => {
     let mounted = true;
@@ -316,6 +340,7 @@ export default function CheckinExperiencePage({ stationId }) {
       setShowUploadModal(false);
       setSelectedFile(null);
       setPreviewUrl(null);
+      setHasCompletedAllStops(await checkAllStationsCompleted());
 
       showToast(`Chúc mừng! Bạn đã hoàn thành check-in tại ${station.name} và đóng dấu mộc thành công!`, "success");
 
@@ -384,6 +409,7 @@ export default function CheckinExperiencePage({ stationId }) {
         stationName: station.name,
         modelId: station.arGuide?.modelId,
       });
+      setHasCompletedAllStops(await checkAllStationsCompleted());
 
       showToast(`Chúc mừng! Bạn đã hoàn thành check-in tại ${station.name} và đóng dấu mộc thành công!`, "success");
 
@@ -627,9 +653,13 @@ export default function CheckinExperiencePage({ stationId }) {
                 <polyline points="22 4 12 14.01 9 11.01" />
               </svg>
             </div>
-            <h3>Ghi Nhận Thành Công!</h3>
+            <h3>{hasCompletedAllStops ? "Chúc mừng bạn đã hoàn thành hành trình!" : "Ghi Nhận Thành Công!"}</h3>
             <p>
-              Chúc mừng bạn đã hoàn thành check-in tại <strong>{station.name}</strong> và đóng dấu mộc hành trình thành công!
+              {hasCompletedAllStops ? (
+                <>Bạn đã check-in đủ 6 điểm đến và hoàn thành hành trình di sản Ninh Bình. Hộ Chiếu của bạn đã ghi nhận trọn vẹn các dấu mộc!</>
+              ) : (
+                <>Chúc mừng bạn đã hoàn thành check-in tại <strong>{station.name}</strong> và đóng dấu mộc hành trình thành công!</>
+              )}
             </p>
             
             <div className="checkin-success-buttons">
@@ -640,51 +670,20 @@ export default function CheckinExperiencePage({ stationId }) {
                   window.location.href = "/ho-chieu";
                 }}
               >
-                Xem Hộ chiếu của tôi
+                Xem Hộ Chiếu của tôi
               </button>
               
-              {(() => {
-                const currentIndex = stations.findIndex(s => s.id === (station.id || stationId));
-                const nextSt = currentIndex !== -1 && currentIndex < stations.length - 1 
-                  ? stations[currentIndex + 1] 
-                  : null;
-                
-                if (nextSt) {
-                  return (
-                    <button 
-                      type="button"
-                      className="checkin-success-btn-secondary"
-                      onClick={() => {
-                        window.location.href = `/hanh-trinh/${nextSt.id}`;
-                      }}
-                    >
-                      Đến trạm tiếp theo: {nextSt.name}
-                    </button>
-                  );
-                } else {
-                  return (
-                    <button 
-                      type="button"
-                      className="checkin-success-btn-secondary"
-                      onClick={() => {
-                        window.location.href = "/hanh-trinh";
-                      }}
-                    >
-                      Hoàn thành Bản đồ Hành trình
-                    </button>
-                  );
-                }
-              })()}
-
-              <button 
-                type="button"
-                className="checkin-success-btn-link"
-                onClick={() => {
-                  window.location.href = "/hanh-trinh";
-                }}
-              >
-                Về bản đồ Hành trình
-              </button>
+              {!hasCompletedAllStops && (
+                <button
+                  type="button"
+                  className="checkin-success-btn-secondary"
+                  onClick={() => {
+                    window.location.href = "/hanh-trinh";
+                  }}
+                >
+                  Về Bản đồ hành trình
+                </button>
+              )}
             </div>
           </div>
         </div>

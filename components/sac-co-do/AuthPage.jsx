@@ -82,7 +82,7 @@ export default function AuthPage() {
                 </button>
               </div>
 
-              <form onSubmit={submit}>
+              <form onSubmit={submit} suppressHydrationWarning>
                 {mode === "register" ? (
                   <div className="customer-auth-field">
                     <label>Tên hiển thị</label>
@@ -93,7 +93,7 @@ export default function AuthPage() {
                           <circle cx="12" cy="7" r="4" stroke="currentColor" strokeWidth="2" />
                         </svg>
                       </span>
-                      <input value={displayName} onChange={(event) => setDisplayName(event.target.value)} />
+                      <input suppressHydrationWarning value={displayName} onChange={(event) => setDisplayName(event.target.value)} />
                     </div>
                   </div>
                 ) : null}
@@ -106,7 +106,7 @@ export default function AuthPage() {
                         <path d="m22 6-10 7L2 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
                     </span>
-                    <input value={email} onChange={(event) => setEmail(event.target.value)} type="email" placeholder="you@example.com" required />
+                    <input suppressHydrationWarning value={email} onChange={(event) => setEmail(event.target.value)} type="email" placeholder="you@example.com" required />
                   </div>
                 </div>
                 <div className="customer-auth-field">
@@ -119,6 +119,7 @@ export default function AuthPage() {
                       </svg>
                     </span>
                     <input
+                      suppressHydrationWarning
                       value={password}
                       onChange={(event) => setPassword(event.target.value)}
                       type={showPassword ? "text" : "password"}
@@ -159,7 +160,7 @@ export default function AuthPage() {
               <button
                 className="google-auth-button"
                 type="button"
-                disabled={submitting || loading || !isConfigured}
+                disabled={submitting || !isConfigured}
                 onClick={() => finishAuth(loginWithGoogle, "Đăng nhập Google thành công!")}
               >
                 <img src="/logo-google.jpg" alt="" aria-hidden="true" />
