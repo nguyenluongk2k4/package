@@ -190,6 +190,37 @@ async function seedProductSales() {
   );
 }
 
+async function seedPassportProduct() {
+  const detailImages = [
+    "/assets/san-pham/pop-up-passport/IMG_3447.JPG",
+    "/assets/san-pham/pop-up-passport/IMG_3448.JPG",
+    "/assets/san-pham/pop-up-passport/IMG_3449.JPG",
+    "/assets/san-pham/pop-up-passport/IMG_3450.JPG",
+    "/assets/san-pham/pop-up-passport/IMG_3451.JPG",
+    "/assets/san-pham/pop-up-passport/IMG_3452.JPG",
+    "/assets/san-pham/pop-up-passport/IMG_3453.JPG",
+  ];
+  const removeBackgroundImage = "/assets/san-pham/remove-bg/popup-passport.png";
+
+  await db.collection("products").doc("pop-up-passport-ninh-binh").set(
+    {
+      id: "passport",
+      slug: "pop-up-passport-ninh-binh",
+      price: 289000,
+      priceFormatted: "289.000đ",
+      compareAtPrice: 329000,
+      saleLabel: "Ưu đãi hành trình",
+      image: removeBackgroundImage,
+      homeImage: removeBackgroundImage,
+      images: [removeBackgroundImage, ...detailImages],
+      detailImages,
+      href: "/san-pham/pop-up-passport-ninh-binh",
+      updatedAt: serverTimestamp(),
+    },
+    { merge: true }
+  );
+}
+
 async function seedDefaultArCharacter() {
   await db.collection("arCharacters").doc("sac-co-do-guide").set(
     {
@@ -266,6 +297,9 @@ if (seedMode === "products-only") {
 } else if (seedMode === "product-sales-only") {
   await seedProductSales();
   console.log("Firebase product sale metadata seed completed.");
+} else if (seedMode === "passport-only") {
+  await seedPassportProduct();
+  console.log("Firebase passport product seed completed.");
 } else {
   await seedStations();
   await seedProducts();

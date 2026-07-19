@@ -11,6 +11,7 @@
     "firebase:seed": "node scripts/seed-firebase.mjs",
     "firebase:seed:products": "node scripts/seed-firebase.mjs products-only",
     "firebase:seed:product-sales": "node scripts/seed-firebase.mjs product-sales-only",
+    "firebase:seed:passport": "node scripts/seed-firebase.mjs passport-only",
     "firebase:seed-qr": "node scripts/seed-qr-codes.mjs",
     "build:css": "npx @tailwindcss/cli -i ./src/assets/css/tailwind.css -o ./src/assets/css/style.css",
     "dev:css": "npx @tailwindcss/cli -i ./src/assets/css/tailwind.css -o ./src/assets/css/style.css --watch"
