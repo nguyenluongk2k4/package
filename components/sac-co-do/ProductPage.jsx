@@ -36,7 +36,7 @@ function getProductOptions(product) {
     case "thit-chung-mam-tep-thanh-nguyen":
       return [
         { label: "Hũ 275g", price: 175000, priceFormatted: "175.000đ" },
-        { label: "Hũ 90g", price: 65000, priceFormatted: "65.000đ" },
+        { label: "Hũ 90g", price: 65000, priceFormatted: "65.000đ", compareAtPrice: 69000 },
       ];
     case "ruoc-ca-ro-tong-truong":
       return [{ label: "Hộp 100g", price: 239000, priceFormatted: "239.000đ" }];
@@ -115,6 +115,19 @@ export default function ProductPage() {
   }, [activeTab, products]);
 
   const filteredProducts = getFilteredProducts();
+  const marqueeItems = products.flatMap((product) => {
+    const images = product.detailImages?.length
+      ? product.detailImages
+      : product.images?.length
+        ? product.images
+        : [product.image].filter(Boolean);
+
+    return [...new Set(images)].map((image, imageIndex) => ({
+      product,
+      image,
+      imageIndex,
+    }));
+  });
 
   function handleCardClick(product) {
     router.push(productHref(product));
@@ -236,10 +249,10 @@ export default function ProductPage() {
 
         <div className="souvenir-products-marquee-images" aria-hidden="true" style={{ marginTop: "60px", marginBottom: "40px" }}>
           <div className="souvenir-products-marquee-images-track">
-            {[...products, ...products].map((product, index) => (
-              <a href={productHref(product)} className="marquee-image-item" key={`${product.id}-${index}`}>
+            {[...marqueeItems, ...marqueeItems].map(({ product, image, imageIndex }, index) => (
+              <a href={productHref(product)} className="marquee-image-item" key={`${product.id}-${imageIndex}-${index}`}>
                 <div className="marquee-image-wrapper">
-                  <img src={product.image} alt={product.name} loading="lazy" decoding="async" />
+                  <img src={image} alt={product.name} loading="lazy" decoding="async" />
                 </div>
                 <div className="marquee-image-meta">
                   <span className="font-baloo">{product.shortName || product.name}</span>

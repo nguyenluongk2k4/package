@@ -176,12 +176,19 @@ async function seedProductSales() {
     snapshot.docs.map((productDoc) => {
       const product = productDoc.data();
       const price = Number(product.price || 0);
+      const variants = Array.isArray(product.variants)
+        ? product.variants.map((variant) => ({
+            ...variant,
+            compareAtPrice: saleCompareAtPrice(variant.price),
+          }))
+        : [];
 
       return productDoc.ref.set(
         {
           storyTitle: product.storyTitle || "",
           compareAtPrice: saleCompareAtPrice(price),
           saleLabel: product.saleLabel || "Ưu đãi hành trình",
+          variants,
           updatedAt: serverTimestamp(),
         },
         { merge: true }

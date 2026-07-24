@@ -7,19 +7,13 @@ import SiteHeader from "./SiteHeader";
 import { useI18n } from "./I18nProvider";
 import { heritageDestinations } from "./heritageDestinations";
 
-const englishNarration = {
-  "trang-an":
-    "Trang An is a UNESCO mixed heritage site in Ninh Binh, where limestone mountains, emerald waterways, ancient temples, and cave systems come together. The journey by boat through Hang Sang, Hang Toi, Hang Nau Ruou, and Hang Dia Linh reveals a quiet landscape shaped by nature, history, and the memory of Hoa Lu ancient capital.",
-  "hoa-lu":
-    "Hoa Lu Ancient Capital marks the beginning of Dai Co Viet. Surrounded by limestone mountains and natural waterways, it was chosen by King Dinh Tien Hoang as the first capital of an independent Vietnamese state. Today, the temples of King Dinh and King Le preserve the solemn atmosphere of a thousand years of history.",
-  "bai-dinh":
-    "Bai Dinh Pagoda is one of the largest Buddhist complexes in Southeast Asia. Set among mountains and valleys, it combines traditional Vietnamese architecture with monumental bronze statues, long Arhat corridors, bell towers, and sacred spaces where visitors can slow down and find balance.",
-  "tam-coc":
-    "Tam Coc and Bich Dong are known as Ha Long Bay on land. A small boat follows the Ngo Dong River through rice fields, limestone cliffs, and three natural caves. Nearby, Bich Dong Pagoda rests against the mountain, adding a peaceful cultural layer to the river landscape.",
-  "pho-co-hoa-lu":
-    "Hoa Lu Old Quarter comes alive at night beside Ky Lan Lake. Inspired by traditional Dai Viet architecture, it blends tiled roofs, lanterns, local food, souvenirs, cafes, night markets, and cultural performances into a warm meeting point between heritage and modern life.",
-  "hang-mua":
-    "Hang Mua is a high viewpoint over Ninh Binh. After climbing nearly five hundred stone steps toward Ngoa Long peak, visitors are rewarded with sweeping views of the Ngo Dong River, Tam Coc rice fields, and limestone mountains. It is a place of effort, wind, and quiet triumph.",
+const destinationNarrationAudio = {
+  "trang-an": "/assets/am-thanh/TM%20Tr%C3%A0ng%20An.MP3",
+  "hoa-lu": "/assets/am-thanh/TM%20C%E1%BB%91%20%C4%90%C3%B4%20Hoa%20L%C6%B0.MP3",
+  "bai-dinh": "/assets/am-thanh/TM%20chua%20Bai%20Dinh.MP3",
+  "tam-coc": "/assets/am-thanh/TM%20Tam%20Coc%20-%20Bich%20Dong.MP3",
+  "pho-co-hoa-lu": "/assets/am-thanh/TM%20Ph%E1%BB%91%20c%E1%BB%95%20Hoa%20L%C6%B0.MP3",
+  "hang-mua": "/assets/am-thanh/TM%20Hang%20M%C3%BAa.MP3",
 };
 
 function LazyImage({ src, alt, className = "", loading = "lazy", ...props }) {
@@ -95,20 +89,13 @@ function AudioChip({ destination }) {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isLoadingAudio, setIsLoadingAudio] = useState(false);
   const audioRef = useRef(null);
-  const audioObjectUrlRef = useRef(null);
+  const narrationUrl = destinationNarrationAudio[destination.slug];
 
   useEffect(() => {
     return () => {
-      if (typeof window !== "undefined" && window.speechSynthesis) {
-        window.speechSynthesis.cancel();
-      }
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current = null;
-      }
-      if (audioObjectUrlRef.current) {
-        URL.revokeObjectURL(audioObjectUrlRef.current);
-        audioObjectUrlRef.current = null;
       }
     };
   }, []);
@@ -119,74 +106,24 @@ function AudioChip({ destination }) {
       audioRef.current.currentTime = 0;
       audioRef.current = null;
     }
-    if (audioObjectUrlRef.current) {
-      URL.revokeObjectURL(audioObjectUrlRef.current);
-      audioObjectUrlRef.current = null;
-    }
-    if (typeof window !== "undefined" && window.speechSynthesis) {
-      window.speechSynthesis.cancel();
-    }
     setIsSpeaking(false);
   }
 
-  async function playAudioWithRetry(audioUrl) {
-    let lastError = null;
-
-    for (let attempt = 0; attempt < 5; attempt += 1) {
-      const source = audioUrl.startsWith("blob:") ? audioUrl : `${audioUrl}${audioUrl.includes("?") ? "&" : "?"}t=${Date.now()}`;
-      const audio = new Audio(source);
-      audio.preload = "auto";
-      audioRef.current = audio;
-      audio.onended = () => setIsSpeaking(false);
-      audio.onerror = () => setIsSpeaking(false);
-
-      try {
-        await audio.play();
-        return;
-      } catch (error) {
-        lastError = error;
-        audio.pause();
-        audioRef.current = null;
-        await wait(1200);
-      }
-    }
-
-    throw lastError || new Error("Không phát được audio thuyết minh.");
-  }
-
-  async function playFptNarration(text) {
+  async function playNarration() {
+    if (!narrationUrl) return;
     setIsLoadingAudio(true);
-    const response = await fetch("/api/tts", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text }),
-    });
+    const audio = new Audio(narrationUrl);
+    audio.preload = "auto";
+    audioRef.current = audio;
+    audio.onended = () => setIsSpeaking(false);
+    audio.onerror = () => setIsSpeaking(false);
 
-    if (!response.ok) {
-      const payload = await response.json().catch(() => null);
-      throw new Error(payload.error || "Không tạo được audio thuyết minh.");
+    try {
+      await audio.play();
+      setIsSpeaking(true);
+    } finally {
+      setIsLoadingAudio(false);
     }
-
-    const audioBlob = await response.blob();
-    const audioUrl = URL.createObjectURL(audioBlob);
-    audioObjectUrlRef.current = audioUrl;
-    setIsSpeaking(true);
-    await playAudioWithRetry(audioUrl);
-  }
-
-  function playEnglishNarration(text) {
-    if (typeof window === "undefined" || !window.speechSynthesis) return;
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = "en-US";
-    const voice = findNarrationVoice("en-US");
-    if (voice) utterance.voice = voice;
-    utterance.rate = 0.95;
-    utterance.onend = () => setIsSpeaking(false);
-    utterance.onerror = () => setIsSpeaking(false);
-
-    window.speechSynthesis.cancel();
-    setIsSpeaking(true);
-    window.speechSynthesis.speak(utterance);
   }
 
   async function handleNarration() {
@@ -195,21 +132,12 @@ function AudioChip({ destination }) {
       return;
     }
 
-    const activeLocale = getActiveLocale(locale);
-    const text = activeLocale === "en" ? englishNarration[destination.slug] : buildVietnameseNarration(destination);
-
     try {
       stopNarration();
-      if (activeLocale === "vi") {
-        await playFptNarration(text);
-      } else {
-        playEnglishNarration(text);
-      }
+      await playNarration();
     } catch (error) {
       console.error(error);
       setIsSpeaking(false);
-    } finally {
-      setIsLoadingAudio(false);
     }
   }
 
@@ -218,7 +146,7 @@ function AudioChip({ destination }) {
       <span aria-hidden="true">{isLoadingAudio ? "…" : isSpeaking ? "■" : "▶"}</span>
       <div>
         <strong>{locale === "en" ? "Audio Guide" : "Thuyết minh"}</strong>
-        <small>{locale === "en" ? "English narration" : "FPT giọng Việt"}</small>
+        <small>{locale === "en" ? "Vietnamese narration" : "Âm thanh thuyết minh địa danh"}</small>
       </div>
       <em>{isLoadingAudio ? (locale === "en" ? "Loading" : "Đang tạo") : isSpeaking ? (locale === "en" ? "Stop" : "Dừng") : (locale === "en" ? "Play" : "Nghe")}</em>
     </button>

@@ -19,7 +19,7 @@ const PRODUCT_OPTIONS = {
   "com-chay-vuong-lut": [{ label: "Túi 200g", price: 54000, priceFormatted: "54.000đ" }],
   "thit-chung-mam-tep-thanh-nguyen": [
     { label: "Hũ 275g", price: 175000, priceFormatted: "175.000đ" },
-    { label: "Hũ 90g", price: 65000, priceFormatted: "65.000đ" },
+    { label: "Hũ 90g", price: 65000, priceFormatted: "65.000đ", compareAtPrice: 69000 },
   ],
   "ruoc-ca-ro-tong-truong": [{ label: "Hộp 100g", price: 239000, priceFormatted: "239.000đ" }],
 };
