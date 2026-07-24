@@ -14,8 +14,10 @@ import {
 } from "lucide-react";
 import { stations } from "../../data/sac-co-do";
 import { getStationBySlugOrId } from "../../lib/firebase/catalog";
+import { hasLocalStationQrUnlock, hasStationQrUnlock, saveLocalStationQrUnlock, saveStationQrUnlock } from "../../lib/firebase/userData";
 import SiteFooter from "./SiteFooter";
 import SiteHeader from "./SiteHeader";
+import { useFirebaseAuth } from "./FirebaseAuthProvider";
 import { useToast } from "./ToastProvider";
 
 // ─── Nội dung gợi ý vị trí QR cho từng trạm ───
@@ -187,9 +189,13 @@ function stepImageFor(station, stationId, index) {
 export default function JourneyDetailPage({ station, stationId }) {
   const router = useRouter();
   const { showToast } = useToast();
+  const { user, db, loading: authLoading } = useFirebaseAuth();
   const [activeStation, setActiveStation] = useState(station);
   const [showQrDialog, setShowQrDialog] = useState(false);
   const [cameraError, setCameraError] = useState("");
+  const [isQrUnlocked, setIsQrUnlocked] = useState(false);
+  const [isQrUnlockLoading, setIsQrUnlockLoading] = useState(true);
+  const isSavingQrUnlockRef = useRef(false);
   const guide = getGuide(stationId || station?.id);
 
   useEffect(() => {
@@ -211,6 +217,61 @@ export default function JourneyDetailPage({ station, stationId }) {
   const sid = st?.id || stationId;
   const checkinSlug = st?.slug || st?.id || stationId;
   const expectedQrValue = `SAC-CODO:${sid}`;
+
+  useEffect(() => {
+    let active = true;
+
+    async function loadQrUnlock() {
+      if (!sid || authLoading) return;
+
+      setIsQrUnlockLoading(true);
+      try {
+        const unlocked = user && db
+          ? await hasStationQrUnlock({ db, uid: user.uid, stationId: sid })
+          : hasLocalStationQrUnlock(sid);
+        if (active) setIsQrUnlocked(unlocked);
+      } catch (error) {
+        console.warn("Could not load QR unlock:", error);
+        if (active) setIsQrUnlocked(false);
+      } finally {
+        if (active) setIsQrUnlockLoading(false);
+      }
+    }
+
+    loadQrUnlock();
+    return () => { active = false; };
+  }, [authLoading, db, sid, user]);
+
+  const openCheckin = useCallback(() => {
+    router.push(`/checkin/${checkinSlug}`);
+  }, [checkinSlug, router]);
+
+  const handleCheckinCta = useCallback(() => {
+    if (isQrUnlocked) {
+      openCheckin();
+      return;
+    }
+    setShowQrDialog(true);
+  }, [isQrUnlocked, openCheckin]);
+
+  const saveQrUnlockAndOpenCheckin = useCallback(async () => {
+    if (isSavingQrUnlockRef.current) return;
+    isSavingQrUnlockRef.current = true;
+
+    try {
+      if (user && db) {
+        await saveStationQrUnlock({ db, uid: user.uid, stationId: sid, stationName: st?.name });
+      } else {
+        saveLocalStationQrUnlock(sid);
+      }
+      setIsQrUnlocked(true);
+    } catch (error) {
+      console.warn("Could not save QR unlock:", error);
+      showToast("Đã quét đúng QR. Lần sau hãy quét lại nếu trạng thái chưa được lưu.", "info");
+    }
+
+    openCheckin();
+  }, [db, openCheckin, showToast, sid, st?.name, user]);
 
   // ── Camera / QR scan using html5-qrcode ──
   useEffect(() => {
@@ -247,7 +308,7 @@ export default function JourneyDetailPage({ station, stationId }) {
               setShowQrDialog(false);
 
               showToast("Kết nối thành công! Đang chuyển hướng...", "success");
-              router.push(`/checkin/${checkinSlug}`);
+              saveQrUnlockAndOpenCheckin();
             } else {
               // Mismatched or invalid QR scanned
               if (!active) return;
@@ -273,7 +334,7 @@ export default function JourneyDetailPage({ station, stationId }) {
         html5QrCode.stop().catch(() => {});
       }
     };
-  }, [showQrDialog, expectedQrValue, checkinSlug, router, showToast]);
+  }, [showQrDialog, expectedQrValue, checkinSlug, router, showToast, saveQrUnlockAndOpenCheckin]);
 
   return (
     <>
@@ -294,13 +355,14 @@ export default function JourneyDetailPage({ station, stationId }) {
           <button
             type="button"
             className="qr-cta"
-            onClick={() => setShowQrDialog(true)}
+            onClick={handleCheckinCta}
+            disabled={isQrUnlockLoading}
             style={{ margin: "10px 0 32px 0" }}
           >
             <Smartphone size={36} className="qr-cta-icon" strokeWidth={1.6} />
             <span className="qr-cta-text">
-              <strong>Tôi đã đến nơi — Quét QR ngay</strong>
-              <small>Quét đúng mã QR tại trạm để mở AR + Photobooth</small>
+              <strong>{isQrUnlocked ? "Tiếp tục trải nghiệm" : "Tôi đã đến nơi — Quét QR ngay"}</strong>
+              <small>{isQrUnlocked ? "Địa danh này đã được mở khóa bằng QR" : "Quét đúng mã QR tại trạm để mở AR + Photobooth"}</small>
             </span>
             <ArrowRight size={28} className="qr-cta-arrow" strokeWidth={2.4} />
           </button>

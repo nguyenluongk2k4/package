@@ -52,6 +52,11 @@ service cloud.firestore {
         allow read: if isAdmin();
       }
 
+      match /journeyQrUnlocks/{stationId} {
+        allow read, write: if signedIn() && request.auth.uid == uid;
+        allow read: if isAdmin();
+      }
+
       match /photoboothPhotos/{photoId} {
         allow read, write: if signedIn() && request.auth.uid == uid;
         allow read: if isAdmin();

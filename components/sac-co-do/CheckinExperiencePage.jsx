@@ -16,6 +16,14 @@ const fallbackArIosModelSrc = "/ar/sac-co-do-guide-v3.usdz";
 const fallbackArCharacterId = "default-guide";
 const modelGreetingAnimation = "WaveOnceThenIdle";
 const sheetPositions = ["expanded", "middle", "collapsed"];
+const stationNarrationAudio = {
+  "trang-an": "/assets/am-thanh/TM%20Tr%C3%A0ng%20An.MP3",
+  "hoa-lu": "/assets/am-thanh/TM%20C%E1%BB%91%20%C4%90%C3%B4%20Hoa%20L%C6%B0.MP3",
+  "bai-dinh": "/assets/am-thanh/TM%20chua%20Bai%20Dinh.MP3",
+  "tam-coc": "/assets/am-thanh/TM%20Tam%20Coc%20-%20Bich%20Dong.MP3",
+  "pho-co-hoa-lu": "/assets/am-thanh/TM%20Ph%E1%BB%91%20c%E1%BB%95%20Hoa%20L%C6%B0.MP3",
+  "hang-mua": "/assets/am-thanh/TM%20Hang%20M%C3%BAa.MP3",
+};
 
 function getStation(stationId) {
   return stations.find((station) => station.id === stationId) || stations[0];
@@ -49,9 +57,11 @@ export default function CheckinExperiencePage({ stationId }) {
   const modelViewerRef = useRef(null);
   const playedGreetingRef = useRef(false);
   const dragStartRef = useRef(null);
+  const narrationAudioRef = useRef(null);
   
   const [isTracking, setIsTracking] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
+  const [isNarrating, setIsNarrating] = useState(false);
   const [isStamped, setIsStamped] = useState(false);
   const [arStatus, setArStatus] = useState("idle");
   const [arMessage, setArMessage] = useState("");
@@ -183,6 +193,15 @@ export default function CheckinExperiencePage({ stationId }) {
 
     return () => {
       stopCamera();
+    };
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (narrationAudioRef.current) {
+        narrationAudioRef.current.pause();
+        narrationAudioRef.current = null;
+      }
     };
   }, []);
 
@@ -367,18 +386,43 @@ export default function CheckinExperiencePage({ stationId }) {
   };
 
   function handleNarration() {
-    if (typeof window === "undefined" || !window.speechSynthesis) {
-      setArMessage("Trình duyệt này chưa hỗ trợ phát thuyết minh.");
+    const narrationUrl = stationNarrationAudio[station.id || stationId];
+    if (!narrationUrl) {
+      setArMessage("Chưa có file thuyết minh cho địa danh này.");
       return;
     }
 
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(
-      `Chào mừng bạn đến với ${station.name}. Hãy lia camera xuống nền phẳng để hệ thống nhận diện mặt đất, sau đó đặt hướng dẫn viên ảo vào không gian di sản.`
-    );
-    utterance.lang = "vi-VN";
-    utterance.rate = 0.94;
-    window.speechSynthesis.speak(utterance);
+    if (narrationAudioRef.current && !narrationAudioRef.current.paused) {
+      narrationAudioRef.current.pause();
+      narrationAudioRef.current.currentTime = 0;
+      setIsNarrating(false);
+      return;
+    }
+
+    const audio = new Audio(narrationUrl);
+    audio.preload = "auto";
+    audio.muted = isMuted;
+    audio.onended = () => setIsNarrating(false);
+    audio.onerror = () => {
+      setIsNarrating(false);
+      setArMessage("Không thể phát file thuyết minh. Vui lòng thử lại.");
+    };
+    narrationAudioRef.current = audio;
+
+    audio.play()
+      .then(() => {
+        setArMessage("");
+        setIsNarrating(true);
+      })
+      .catch(() => setArMessage("Không thể phát file thuyết minh. Vui lòng thử lại."));
+  }
+
+  function toggleNarrationMute() {
+    setIsMuted((currentMuted) => {
+      const nextMuted = !currentMuted;
+      if (narrationAudioRef.current) narrationAudioRef.current.muted = nextMuted;
+      return nextMuted;
+    });
   }
 
   async function handleStamp() {
@@ -547,11 +591,11 @@ export default function CheckinExperiencePage({ stationId }) {
         )}
 
         <div className="ar-live-secondary-row">
-          <button className="ar-live-secondary" type="button" onClick={handleNarration}>
+          <button className={`ar-live-secondary ${isNarrating ? "is-playing" : ""}`} type="button" onClick={handleNarration}>
             <img src={`${viewArBase}/mobile-app/ic-phat-thuyet-minh.svg`} alt="" aria-hidden="true" />
-            Phát thuyết minh
+            {isNarrating ? "Dừng thuyết minh" : "Phát thuyết minh"}
           </button>
-          <button className={`ar-live-icon-button ${isMuted ? "is-active" : ""}`} type="button" onClick={() => setIsMuted((value) => !value)} aria-label="Bật tắt âm thanh">
+          <button className={`ar-live-icon-button ${isMuted ? "is-active" : ""}`} type="button" onClick={toggleNarrationMute} aria-label="Bật tắt âm thanh">
             <img src={`${viewArBase}/mobile-app/ic-mute-voice.svg`} alt="" aria-hidden="true" />
           </button>
         </div>
