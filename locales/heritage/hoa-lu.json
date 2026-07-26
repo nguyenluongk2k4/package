@@ -1,0 +1,64 @@
+{
+  "vi": {
+    "name": "Cố Đô Hoa Lư",
+    "navName": "HOA LƯ",
+    "eyebrow": "Hành trình đại cồ việt",
+    "title": "Cố Đô Hoa Lư - Nơi khởi nguồn của nước Đại Cồ Việt",
+    "subtitle": "Tòa kinh đô đầu tiên của Đại Cồ Việt nằm trong địa thế núi làm thành, sông làm hào.",
+    "featureCaption": "Núi làm thành, sông làm hào - địa thế tự nhiên bảo vệ kinh đô xưa.",
+    "sectionLabel": "Di sản lịch sử",
+    "introTitle": "Núi làm thành, sông làm hào",
+    "introParagraphs": [
+      "Ẩn mình giữa những dãy núi đá vôi hùng vĩ, Cố đô Hoa Lư là nơi lưu giữ dấu ấn đầu tiên của nhà nước phong kiến tập quyền Việt Nam.",
+      "Hơn một nghìn năm trước, vua Đinh Tiên Hoàng chọn nơi đây làm kinh đô của nước Đại Cồ Việt, mở ra một giai đoạn mới trong lịch sử dựng nước.",
+      "Nhờ địa thế núi làm thành, sông làm hào, Hoa Lư sở hữu vị trí phòng thủ tự nhiên vô cùng thuận lợi. Chính nơi đây đã chứng kiến sự ra đời của triều đại nhà Đinh, nhà Tiền Lê và những chiến công oanh liệt góp phần đặt nền móng cho quốc gia độc lập đầu tiên của Việt Nam."
+    ],
+    "storyTitle": "Lòng thành kính hướng về cội nguồn",
+    "storyParagraphs": [
+      "Ngày nay, dù kinh đô đã chuyển về Thăng Long, dấu tích lịch sử vẫn hiện diện qua đền thờ vua Đinh Tiên Hoàng, đền vua Lê Đại Hành và nhiều công trình cổ kính.",
+      "Bước qua từng cánh cổng đá rêu phong, du khách như quay ngược thời gian để lắng nghe câu chuyện về những vị anh hùng đã làm nên lịch sử.",
+      "Không chỉ là một di tích lịch sử đặc biệt, Cố đô Hoa Lư còn mang vẻ đẹp yên bình và trầm mặc của vùng đất cố đô. Giữa không gian thanh tịnh, tiếng chuông chùa vang vọng cùng những hàng cây cổ thụ xanh mát tạo nên cảm giác bình yên khó tìm thấy ở những đô thị hiện đại.",
+      "Đến với Hoa Lư, du khách không chỉ khám phá một điểm đến, mà còn được chạm vào những trang sử hào hùng của dân tộc, nơi khởi đầu cho hành trình hình thành và phát triển của đất nước Việt Nam."
+    ],
+    "highlights": [
+      { "number": "01", "title": "Đền thờ Vua Đinh Tiên Hoàng", "description": "Công trình cổ kính tưởng nhớ vị vua lập nên nhà nước Đại Cồ Việt độc lập." },
+      { "number": "02", "title": "Đền thờ Vua Lê Đại Hành", "description": "Dấu ấn triều Tiền Lê, nơi lưu giữ câu chuyện tiếp nối và bảo vệ kinh đô." }
+    ],
+    "galleryEyebrow": "Kỷ nghệ ngàn năm",
+    "galleryTitle": "Dấu vết kiến trúc Hoa Lư",
+    "galleryCaptions": ["Long mạch cố đô", "Mái đền cổ kính", "Dấu ấn thành cổ", "Lối vào di tích", "Thung lũng Hoa Lư"],
+    "closingTitle": "Chạm vào lịch sử",
+    "closingText": "Bước qua những thành quách phủ rêu phong, ta như nghe tiếng vọng của quá khứ và nhịp thở của vùng đất từng khai mở một chương mới."
+  },
+  "en": {
+    "name": "Hoa Lu Ancient Capital",
+    "navName": "HOA LU",
+    "eyebrow": "The Dai Co Viet journey",
+    "title": "Hoa Lu Ancient Capital - The Birthplace of Dai Co Viet",
+    "subtitle": "The first capital of Dai Co Viet, guarded by mountains as walls and rivers as moats.",
+    "featureCaption": "Mountains as walls, rivers as moats — the natural fortress that protected the ancient capital.",
+    "sectionLabel": "Historic heritage",
+    "introTitle": "Mountains as walls, rivers as moats",
+    "introParagraphs": [
+      "Nestled among majestic limestone mountains, the ancient capital of Hoa Lu holds the earliest marks of Vietnam's centralized feudal state.",
+      "More than a thousand years ago, King Dinh Tien Hoang chose this land as the capital of Dai Co Viet, opening a new chapter in the nation's founding history.",
+      "Thanks to its natural fortress of mountains and rivers, Hoa Lu enjoyed an exceptionally favorable defensive position. It was here that the Dinh and Early Le dynasties rose, along with the glorious feats that laid the foundation for Vietnam's first independent nation."
+    ],
+    "storyTitle": "A Heartfelt Return to Our Roots",
+    "storyParagraphs": [
+      "Today, although the capital has long since moved to Thang Long, historical traces still live on through the temples of King Dinh Tien Hoang and King Le Dai Hanh, and many other ancient structures.",
+      "Passing through moss-covered stone gates, visitors feel as though they are stepping back in time to hear the stories of the heroes who shaped history.",
+      "Beyond being a remarkable historical site, the ancient capital of Hoa Lu also carries the peaceful, contemplative beauty of a bygone royal city. Amid its tranquil atmosphere, echoing temple bells and shady old trees create a sense of peace rarely found in modern cities.",
+      "Visiting Hoa Lu, travelers do more than discover a destination — they touch the glorious pages of the nation's history, the very starting point of Vietnam's formation and growth."
+    ],
+    "highlights": [
+      { "number": "01", "title": "Temple of King Dinh Tien Hoang", "description": "An ancient structure honoring the king who founded the independent state of Dai Co Viet." },
+      { "number": "02", "title": "Temple of King Le Dai Hanh", "description": "A mark of the Early Le dynasty, preserving the story of continuity and the defense of the capital." }
+    ],
+    "galleryEyebrow": "A thousand years of craft",
+    "galleryTitle": "Traces of Hoa Lu's architecture",
+    "galleryCaptions": ["The lifeblood of the ancient capital", "Timeless temple roofs", "Marks of the old citadel", "Gateway to the relic", "Hoa Lu valley"],
+    "closingTitle": "Touch history",
+    "closingText": "Walking past moss-covered ramparts, you can almost hear the echoes of the past and the pulse of a land that once opened a new chapter."
+  }
+}

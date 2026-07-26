@@ -9,17 +9,20 @@ import SectionTitle from "./SectionTitle";
 import SiteFooter from "./SiteFooter";
 import SiteHeader from "./SiteHeader";
 import HeroMediaSwitcher from "./HeroMediaSwitcher";
-import { useI18n } from "./I18nProvider";
+import { translate, useI18n } from "./I18nProvider";
+import homeDict from "../../locales/home.json";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { heritageDestinations } from "./heritageDestinations";
+import { localizeStations } from "./stationLocalization";
 import { Leaf, History, Compass } from "lucide-react";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 export default function HomePage() {
-  const { t } = useI18n();
+  const { locale } = useI18n();
+  const th = (key) => translate(homeDict, locale, key);
   const [firebaseStations, setFirebaseStations] = useState(stations);
   const [homeProducts, setHomeProducts] = useState([]);
   const [nibiData, setNibiData] = useState(null);
@@ -33,8 +36,9 @@ export default function HomePage() {
     const selected = firebaseStations
       .filter((station) => station.isFeatured !== false)
       .sort((a, b) => (a.sortOrder ?? 999) - (b.sortOrder ?? 999));
-    return selected.length ? selected : firebaseStations;
-  }, [firebaseStations]);
+    const list = selected.length ? selected : firebaseStations;
+    return localizeStations(list, locale);
+  }, [firebaseStations, locale]);
 
   const activeStation = useMemo(() => {
     return featuredStations.find((s) => s.id === activeStationId) || featuredStations[0];
@@ -73,7 +77,7 @@ export default function HomePage() {
         return match.caption;
       }
     }
-    return `${station.name} - Góc nhìn ${index + 1}`;
+    return `${station.name} - ${th("gallery.viewSuffix")} ${index + 1}`;
   };
 
   useEffect(() => {
@@ -276,11 +280,11 @@ export default function HomePage() {
         <HeroMediaSwitcher
           heroImage={hero.image}
           heroVideo={hero.video}
-          title={t("home.hero.title")}
-          subtitle={t("home.hero.description")}
-          badge={t("home.hero.eyebrow")}
-          primaryCTA={{ label: t("home.hero.primaryCta"), href: "#tram-trai-nghiem" }}
-          secondaryCTA={{ label: t("home.hero.secondaryCta"), imageLabel: t("home.hero.imageCta") }}
+          title={th("hero.title")}
+          subtitle={th("hero.description")}
+          badge={th("hero.eyebrow")}
+          primaryCTA={{ label: th("hero.primaryCta"), href: "#tram-trai-nghiem" }}
+          secondaryCTA={{ label: th("hero.secondaryCta"), imageLabel: th("hero.imageCta") }}
         />
 
         {/* About Us Mini Section */}
@@ -293,8 +297,8 @@ export default function HomePage() {
           <div className="home-about-inner content-section">
 
             <div className="about-intro-wrapper">
-              <h2 className="about-question">{t("home.about.question")}</h2>
-              <p className="about-desc">{t("home.about.paragraph")}</p>
+              <h2 className="about-question">{th("about.question")}</h2>
+              <p className="about-desc">{th("about.paragraph")}</p>
             </div>
             
             <div className="about-pillars-grid">
@@ -302,24 +306,24 @@ export default function HomePage() {
                 <div className="card-decor-header">
                   <img src="/assets/ban-do/lotus-decor.png" className="card-lotus-image" alt="" />
                 </div>
-                <h3 className="pillar-title">{t("home.about.nature.title")}</h3>
-                <p className="pillar-desc">{t("home.about.nature.desc")}</p>
+                <h3 className="pillar-title">{th("about.nature.title")}</h3>
+                <p className="pillar-desc">{th("about.nature.desc")}</p>
               </div>
               
               <div className="about-pillar-card">
                 <div className="card-decor-header">
                   <img src="/assets/ban-do/lotus-decor.png" className="card-lotus-image" alt="" />
                 </div>
-                <h3 className="pillar-title">{t("home.about.history.title")}</h3>
-                <p className="pillar-desc">{t("home.about.history.desc")}</p>
+                <h3 className="pillar-title">{th("about.history.title")}</h3>
+                <p className="pillar-desc">{th("about.history.desc")}</p>
               </div>
               
               <div className="about-pillar-card">
                 <div className="card-decor-header">
                   <img src="/assets/ban-do/lotus-decor.png" className="card-lotus-image" alt="" />
                 </div>
-                <h3 className="pillar-title">{t("home.about.culture.title")}</h3>
-                <p className="pillar-desc">{t("home.about.culture.desc")}</p>
+                <h3 className="pillar-title">{th("about.culture.title")}</h3>
+                <p className="pillar-desc">{th("about.culture.desc")}</p>
               </div>
             </div>
           </div>
@@ -328,9 +332,9 @@ export default function HomePage() {
         {/* Timeline Redesign with Nibi Guide */}
         <section className="content-section" id="cach-hoat-dong">
           <SectionTitle
-            eyebrow={t("home.timeline.eyebrow")}
-            title={t("home.timeline.title")}
-            description={t("home.timeline.description")}
+            eyebrow={th("timeline.eyebrow")}
+            title={th("timeline.title")}
+            description={th("timeline.description")}
           />
           
           <div className="nibi-guide-card">
@@ -346,7 +350,7 @@ export default function HomePage() {
                 ) : null}
               </div>
               <div className="nibi-speech">
-                <strong>{t("home.timeline.nibiLabel")}</strong> "{t("home.timeline.nibiAdvice")}"
+                <strong>{th("timeline.nibiLabel")}</strong> "{th("timeline.nibiAdvice")}"
               </div>
             </div>
           </div>
@@ -354,21 +358,21 @@ export default function HomePage() {
           <div className="timeline-unified-card">
             <div className="timeline-unified-steps">
               <article className="timeline-unified-step">
-                <span className="step-badge">{t("home.timeline.step1.badge")}</span>
-                <h3>{t("home.timeline.step1.title")}</h3>
-                <p>{t("home.timeline.step1.description")}</p>
+                <span className="step-badge">{th("timeline.step1.badge")}</span>
+                <h3>{th("timeline.step1.title")}</h3>
+                <p>{th("timeline.step1.description")}</p>
               </article>
               <div className="timeline-divider" />
               <article className="timeline-unified-step">
-                <span className="step-badge">{t("home.timeline.step2.badge")}</span>
-                <h3>{t("home.timeline.step2.title")}</h3>
-                <p>{t("home.timeline.step2.description")}</p>
+                <span className="step-badge">{th("timeline.step2.badge")}</span>
+                <h3>{th("timeline.step2.title")}</h3>
+                <p>{th("timeline.step2.description")}</p>
               </article>
               <div className="timeline-divider" />
               <article className="timeline-unified-step">
-                <span className="step-badge">{t("home.timeline.step3.badge")}</span>
-                <h3>{t("home.timeline.step3.title")}</h3>
-                <p>{t("home.timeline.step3.description")}</p>
+                <span className="step-badge">{th("timeline.step3.badge")}</span>
+                <h3>{th("timeline.step3.title")}</h3>
+                <p>{th("timeline.step3.description")}</p>
               </article>
             </div>
           </div>
@@ -378,22 +382,22 @@ export default function HomePage() {
           <div className="ninh-binh-story-container">
             <div className="ninh-binh-story-images">
               <div className="story-img-left">
-                <img src="/assets/ninh-binh-co-do.jpg" alt="Cố Đô Hoa Lư cổ kính" loading="lazy" />
+                <img src="/assets/ninh-binh-co-do.jpg" alt={th("story.imageAlt1")} loading="lazy" />
               </div>
               <div className="story-img-right">
-                <img src="/assets/ninh-binh-story.png" alt="Tuyệt Tác Di Sản Ninh Bình" loading="lazy" />
+                <img src="/assets/ninh-binh-story.png" alt={th("story.imageAlt2")} loading="lazy" />
               </div>
             </div>
             <div className="ninh-binh-story-content">
-              <span className="pill" style={{ width: "fit-content", marginBottom: "6px" }}>ĐÔ THỊ DI SẢN MỚI</span>
+              <span className="pill" style={{ width: "fit-content", marginBottom: "6px" }}>{th("story.badge")}</span>
               <h2 className="story-title">
-                Tuyệt Tác Di Sản Ninh Bình: Một Điểm Đến, Triệu Trải Nghiệm Đi Qua Ba Vùng Đất Cố Đô
+                {th("story.title")}
               </h2>
               <p className="story-paragraph">
-                Ninh Bình mới sau khi hợp nhất toàn diện từ ba tỉnh Hà Nam, Nam Định và Ninh Bình đã vươn mình trở thành một "siêu đô thị di sản" sở hữu quy mô và tầm vóc vượt trội tại cửa ngõ phía Nam đồng bằng sông Hồng. Với diện tích mở rộng lên gần 3.943 km<sup>2</sup> cùng quy mô dân số hơn 4,4 triệu người, tỉnh Ninh Bình mới không chỉ giải quyết được bài toán không gian phát triển mà còn tối ưu hóa được thế mạnh của ba vùng đất: từ chiều sâu văn hóa - giáo dục của đất học Thành Nam, sự năng động công nghiệp của Hà Nam, cho đến thương hiệu du lịch toàn cầu của cố đô Hoa Lư.
+                {th("story.paragraph1")}
               </p>
               <p className="story-paragraph">
-                Tỉnh sở hữu vị trí chiến lược kết nối hoàn hảo với thủ đô Hà Nội và các vùng kinh tế trọng điểm qua mạng lưới cao tốc đồng bộ, đồng thời mở toang cánh cửa hướng ra đại dương nhờ Khu kinh tế Ninh Cơ và hệ thống cảng biển phát triển. Sự cộng hưởng từ chuỗi du lịch tâm linh – sinh thái tầm cỡ quốc tế như Tràng An, Tam Chúc, kết hợp cùng các khu công nghiệp công nghệ cao và logistics ven biển đang tạo nên bệ phóng vững chắc cho Ninh Bình. Vận hành theo mô hình chính quyền địa phương hai cấp tinh gọn và hiện đại, Ninh Bình mới đang tăng tốc mạnh mẽ trên hành trình trở thành thành phố trực thuộc Trung ương – một đô thị di sản xanh, thông minh, giàu bản sắc và là cực tăng trưởng mới đầy năng động của cả nước.
+                {th("story.paragraph2")}
               </p>
             </div>
           </div>
@@ -402,9 +406,9 @@ export default function HomePage() {
         {/* 6 Locations Redesign (Horizontal Cards) */}
         <section className="content-section" id="tram-trai-nghiem">
           <SectionTitle
-            eyebrow={t("home.locations.eyebrow")}
-            title={t("home.locations.title")}
-            description={t("home.locations.description")}
+            eyebrow={th("locations.eyebrow")}
+            title={th("locations.title")}
+            description={th("locations.description")}
           />
           
           <div className="locations-horizontal-grid">
@@ -413,7 +417,7 @@ export default function HomePage() {
                 <div className="location-card-image-wrapper">
                   <img src={station.image} alt={station.name} loading="lazy" decoding="async" />
                   <a className="location-image-overlay" href={`/dia-danh/${station.id}`}>
-                    <span className="location-overlay-btn">{t("home.locations.learnMore")}</span>
+                    <span className="location-overlay-btn">{th("locations.learnMore")}</span>
                   </a>
                 </div>
                 <div className="location-card-content">
@@ -424,7 +428,7 @@ export default function HomePage() {
                     href={`/dia-danh/${station.id}`}
                     style={{ fontWeight: "800", color: "var(--brand)", display: "inline-flex", alignItems: "center", gap: "6px" }}
                   >
-                    {t("home.locations.detail")}
+                    {th("locations.detail")}
                   </a>
                 </div>
               </article>
@@ -438,9 +442,9 @@ export default function HomePage() {
         {/* Interactive Location Circles & Loop Gallery (Heritage Moments) */}
         <section className="content-section interactive-gallery-section" style={{ paddingBottom: 0 }}>
           <SectionTitle
-            eyebrow="KHOẢNH KHẮC DI SẢN"
-            title="Góc Nhìn Sắc Cố Đô"
-            description="Nhấn chọn từng địa danh bên dưới để chiêm ngưỡng những thước phim, hình ảnh tuyệt đẹp được lưu lại suốt hành trình khám phá di sản Ninh Bình."
+            eyebrow={th("gallery.eyebrow")}
+            title={th("gallery.title")}
+            description={th("gallery.description")}
           />
 
           <div className="destination-circles-container">
@@ -462,7 +466,7 @@ export default function HomePage() {
             })}
           </div>
 
-          <div className="infinite-ticker-wrapper" aria-label={t("home.ticker.aria")} style={{ marginTop: "40px" }}>
+          <div className="infinite-ticker-wrapper" aria-label={th("ticker.aria")} style={{ marginTop: "40px" }}>
             <div className="infinite-ticker-track" ref={tickerRef}>
               {/* Group 1 */}
               {loopGalleryItems.map((item, index) => (

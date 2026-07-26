@@ -1,0 +1,86 @@
+{
+  "trang-an": {
+    "vi": {
+      "name": "Tràng An",
+      "tag": "Non nước",
+      "stamp": "Dấu sóng đá vôi",
+      "description": "Không gian di sản với núi đá vôi và dòng nước xanh, phù hợp làm trạm mở đầu của hành trình."
+    },
+    "en": {
+      "name": "Trang An",
+      "tag": "Rivers & mountains",
+      "stamp": "Limestone wave stamp",
+      "description": "A heritage landscape of limestone mountains and emerald water, a fitting opening stop for the journey."
+    }
+  },
+  "hoa-lu": {
+    "vi": {
+      "name": "Cố Đô Hoa Lư",
+      "tag": "Kinh đô xưa",
+      "stamp": "Dấu cổng thành",
+      "description": "Dấu mốc lịch sử của vùng đất cố đô, nơi cuốn passport bắt đầu kể chuyện bằng ký ức triều đại."
+    },
+    "en": {
+      "name": "Hoa Lu Ancient Capital",
+      "tag": "Former capital",
+      "stamp": "Citadel gate stamp",
+      "description": "A historic landmark of the ancient capital, where your passport begins telling its story through dynastic memory."
+    }
+  },
+  "bai-dinh": {
+    "vi": {
+      "name": "Chùa Bái Đính",
+      "tag": "Tâm linh",
+      "stamp": "Dấu chuông đồng",
+      "description": "Một trạm lắng và rộng, dành cho trải nghiệm đóng dấu sau khi đi qua hành lang văn hóa tâm linh."
+    },
+    "en": {
+      "name": "Bai Dinh Pagoda",
+      "tag": "Spiritual site",
+      "stamp": "Bronze bell stamp",
+      "description": "A calm, spacious station for stamping your passport after passing through the spiritual cultural corridor."
+    }
+  },
+  "pho-co-hoa-lu": {
+    "vi": {
+      "name": "Phố Cổ Hoa Lư",
+      "tag": "Đêm phố",
+      "stamp": "Dấu đèn phố",
+      "description": "Sắc đèn, mái ngói và nhịp dạo chơi chậm rãi, phù hợp cho check-in và photobooth kỷ niệm."
+    },
+    "en": {
+      "name": "Hoa Lu Old Quarter",
+      "tag": "Evening quarter",
+      "stamp": "Street lantern stamp",
+      "description": "Glowing lanterns, curved roofs, and an unhurried pace — perfect for check-ins and keepsake photos."
+    }
+  },
+  "tam-coc": {
+    "vi": {
+      "name": "Tam Cốc - Bích Động",
+      "tag": "Sông núi",
+      "stamp": "Dấu thuyền lúa",
+      "description": "Một lát cắt mềm mại của Ninh Bình, nơi trải nghiệm giấy pop-up gặp cảnh quan ngoài đời."
+    },
+    "en": {
+      "name": "Tam Coc - Bich Dong",
+      "tag": "Mountains & rivers",
+      "stamp": "Rice boat stamp",
+      "description": "A gentle slice of Ninh Binh, where the pop-up paper experience meets real-life scenery."
+    }
+  },
+  "hang-mua": {
+    "vi": {
+      "name": "Hang Múa",
+      "tag": "Tầm nhìn",
+      "stamp": "Dấu long đỉnh",
+      "description": "Trạm kết giàu năng lượng với góc nhìn toàn cảnh, mở khóa phần thưởng sau khi hoàn thành hành trình."
+    },
+    "en": {
+      "name": "Hang Mua",
+      "tag": "Panoramic viewpoint",
+      "stamp": "Dragon peak stamp",
+      "description": "An energetic final stop with panoramic views, unlocking rewards after completing the journey."
+    }
+  }
+}

@@ -1,0 +1,192 @@
+{
+  "vi": {
+    "banner": {
+      "eyebrow": "Hành trình",
+      "title": "Bản đồ 6 trạm văn hóa Ninh Bình",
+      "description": "Mỗi trạm được thiết kế để người dùng có lý do dừng lại, quét QR và ghi dấu vào passport."
+    },
+    "nibi": {
+      "label": "Nibi:",
+      "text": "Hãy theo sát lộ trình 3 bước dưới đây để kết nối trọn vẹn di sản Ninh Bình và mở khóa các phần quà hấp dẫn!"
+    },
+    "steps": [
+      { "number": "01", "title": "Mua sổ passport", "description": "Chọn gói Sắc Cố Đô, nhận cuốn sổ pop-up kèm mã ID in riêng." },
+      { "number": "02", "title": "Kích hoạt ID", "description": "Nhập mã SCD trên website để mở hành trình cá nhân trên thiết bị." },
+      { "number": "03", "title": "Đi trạm và đóng dấu", "description": "Quét QR tại điểm đến, nhập mã ngày, mở photobooth và phần thưởng số." }
+    ],
+    "lock": {
+      "title": "Mở Khóa Hành Trình Của Bạn",
+      "text": "Bản đồ di sản và thông tin chi tiết các trạm văn hóa Ninh Bình đang được bảo vệ. Vui lòng kích hoạt Hộ chiếu di sản để bắt đầu ghi dấu bước chân và nhận các ưu đãi đặc quyền!",
+      "activateCta": "Kích hoạt Hộ chiếu ngay",
+      "loginCta": "Đăng nhập tài khoản"
+    },
+    "map": {
+      "ariaLabel": "Lộ trình khám phá Ninh Bình",
+      "eyebrow": "Lộ trình khám phá Ninh Bình",
+      "title": "Khám phá 6 điểm đến nổi bật",
+      "visitedAria": "Đã ghé thăm",
+      "trackingLabel": "Bạn ở đây",
+      "footnoteLabel": "Ghi chú",
+      "footnoteText": "Thứ tự gợi ý có thể đổi theo thời gian lưu trú, thời tiết và điểm xuất phát.",
+      "minutesSuffix": "phút",
+      "groups": { "route1": "Hành trình 1", "route2": "Hành trình 2" },
+      "nodes": {
+        "trang-an": { "label": "Tràng An", "note": "Non nước" },
+        "tam-coc": { "label": "Tam Cốc - Bích Động", "note": "Dòng sông di sản" },
+        "hoa-lu": { "label": "Cố Đô Hoa Lư", "note": "Kinh đô xưa" },
+        "pho-co-hoa-lu": { "label": "Phố Cổ Hoa Lư", "note": "Trung tâm hành trình" },
+        "hang-mua": { "label": "Hang Múa", "note": "Điểm ngắm toàn cảnh" },
+        "bai-dinh": { "label": "Chùa Bái Đính", "note": "Tâm linh" }
+      },
+      "assets": {
+        "sun": "Mặt trời",
+        "gate": "Cổ đô Ninh Bình",
+        "boat1": "Thuyền du lịch",
+        "boat2": "Thuyền chở khách",
+        "boat3": "Người lái đò",
+        "mountainBack": "Núi đá Ninh Bình",
+        "mountainFront": "Dãy núi đá vôi"
+      }
+    },
+    "stationCard": {
+      "hoursLabel": "Giờ mở",
+      "stampLabel": "Dấu mốc",
+      "viewDetail": "Xem chi tiết",
+      "chooseImageAria": "Chọn ảnh",
+      "viewImageAria": "Xem ảnh"
+    },
+    "detail": {
+      "defaultTag": "Trạm văn hóa",
+      "defaultName": "Địa điểm",
+      "ctaUnlockedTitle": "Tiếp tục trải nghiệm",
+      "ctaLockedTitle": "Tôi đã đến nơi — Quét QR ngay",
+      "ctaUnlockedNote": "Địa danh này đã được mở khóa bằng QR",
+      "ctaLockedNote": "Quét đúng mã QR tại trạm để mở AR + Photobooth",
+      "openHoursLabel": "Giờ mở cửa",
+      "defaultHours": "07:00 - 17:00",
+      "areaLabel": "Khu vực",
+      "defaultArea": "Non nước",
+      "stampLabel": "Dấu mốc",
+      "defaultStamp": "Dấu",
+      "findQrHeading": "Tìm vị trí đặt mã QR",
+      "findQrSubtitle": "Mỗi trạm có một mã QR riêng — hãy tìm đúng vị trí dưới đây để bắt đầu trải nghiệm.",
+      "qrLocationLabel": "Vị trí QR:",
+      "qrPhotoAltPrefix": "Vị trí đặt QR tại",
+      "howToFindHeading": "Cách tìm QR",
+      "howToFindSubtitle": "Đi theo các bước sau để đến đúng vị trí đặt mã QR.",
+      "routeMapAria": "Bản đồ chỉ đường tới mã QR",
+      "stepImageAltPrefix": "Minh họa bước",
+      "stepImageAltInfix": "tại",
+      "quickMapLabel": "Sơ đồ nhanh:",
+      "quickMapNote": "Xem ảnh bên trên để biết vị trí chính xác",
+      "rememberBadge": "Ghi nhớ",
+      "tipsHeading": "Lưu ý khi tới trạm",
+      "openHoursNote": "Nên sắp xếp thời gian tới trong khung giờ này để đảm bảo có thể check-in.",
+      "toast": {
+        "qrSavedOffline": "Đã quét đúng QR. Lần sau hãy quét lại nếu trạng thái chưa được lưu.",
+        "qrMatchSuccess": "Kết nối thành công! Đang chuyển hướng...",
+        "qrMismatch": "Mã QR không khớp với địa điểm này! Vui lòng quét đúng mã QR tại trạm."
+      },
+      "cameraError": "Không thể kích hoạt camera quét QR. Vui lòng cấp quyền truy cập camera cho trình duyệt.",
+      "closeAria": "Đóng",
+      "verifyBadge": "Xác thực tại trạm",
+      "scanTitlePrefix": "Quét mã QR tại",
+      "scanInstruction": "Đưa mã QR của trạm vào giữa khung hình để tự động mở trải nghiệm."
+    }
+  },
+  "en": {
+    "banner": {
+      "eyebrow": "Journey",
+      "title": "Map of Ninh Binh's 6 cultural stations",
+      "description": "Every station is designed to give travelers a reason to stop, scan a QR code, and stamp their passport."
+    },
+    "nibi": {
+      "label": "Nibi:",
+      "text": "Follow the 3-step route below to connect with Ninh Binh heritage and unlock memorable rewards!"
+    },
+    "steps": [
+      { "number": "01", "title": "Buy a passport booklet", "description": "Choose a Sac Co Do package and receive a pop-up booklet with your own printed ID code." },
+      { "number": "02", "title": "Activate your ID", "description": "Enter your SCD code on the website to unlock your personal journey on your device." },
+      { "number": "03", "title": "Visit stations & collect stamps", "description": "Scan the QR code at each destination, enter the daily code, and unlock the photobooth and digital rewards." }
+    ],
+    "lock": {
+      "title": "Unlock Your Journey",
+      "text": "The heritage map and detailed information for Ninh Binh's cultural stations are protected. Please activate your Heritage Passport to start recording your steps and unlock exclusive perks!",
+      "activateCta": "Activate your Passport now",
+      "loginCta": "Log in to your account"
+    },
+    "map": {
+      "ariaLabel": "Explore Ninh Binh's route",
+      "eyebrow": "Explore Ninh Binh's route",
+      "title": "Discover 6 featured destinations",
+      "visitedAria": "Visited",
+      "trackingLabel": "You are here",
+      "footnoteLabel": "Note",
+      "footnoteText": "The suggested order may change depending on length of stay, weather, and starting point.",
+      "minutesSuffix": "min",
+      "groups": { "route1": "Route 1", "route2": "Route 2" },
+      "nodes": {
+        "trang-an": { "label": "Trang An", "note": "Rivers & mountains" },
+        "tam-coc": { "label": "Tam Coc - Bich Dong", "note": "Heritage river" },
+        "hoa-lu": { "label": "Hoa Lu Ancient Capital", "note": "Former capital" },
+        "pho-co-hoa-lu": { "label": "Hoa Lu Old Quarter", "note": "Journey hub" },
+        "hang-mua": { "label": "Hang Mua", "note": "Panoramic viewpoint" },
+        "bai-dinh": { "label": "Bai Dinh Pagoda", "note": "Spiritual site" }
+      },
+      "assets": {
+        "sun": "Sun",
+        "gate": "Ninh Binh ancient gate",
+        "boat1": "Tourist boat",
+        "boat2": "Passenger boat",
+        "boat3": "Boatman",
+        "mountainBack": "Ninh Binh limestone mountain",
+        "mountainFront": "Limestone mountain range"
+      }
+    },
+    "stationCard": {
+      "hoursLabel": "Open hours",
+      "stampLabel": "Stamp",
+      "viewDetail": "View details",
+      "chooseImageAria": "Choose photo",
+      "viewImageAria": "View photo"
+    },
+    "detail": {
+      "defaultTag": "Cultural station",
+      "defaultName": "Destination",
+      "ctaUnlockedTitle": "Continue the experience",
+      "ctaLockedTitle": "I've arrived — Scan the QR now",
+      "ctaUnlockedNote": "This destination has already been unlocked via QR",
+      "ctaLockedNote": "Scan the correct QR code at the station to unlock AR + Photobooth",
+      "openHoursLabel": "Open hours",
+      "defaultHours": "7:00 AM - 5:00 PM",
+      "areaLabel": "Area",
+      "defaultArea": "Rivers & mountains",
+      "stampLabel": "Stamp",
+      "defaultStamp": "Stamp",
+      "findQrHeading": "Find the QR code location",
+      "findQrSubtitle": "Each station has its own QR code — find the right spot below to start the experience.",
+      "qrLocationLabel": "QR location:",
+      "qrPhotoAltPrefix": "QR code location at",
+      "howToFindHeading": "How to find the QR",
+      "howToFindSubtitle": "Follow these steps to reach the QR code location.",
+      "routeMapAria": "Route map to the QR code",
+      "stepImageAltPrefix": "Step",
+      "stepImageAltInfix": "illustration at",
+      "quickMapLabel": "Quick map:",
+      "quickMapNote": "See the photo above for the exact location",
+      "rememberBadge": "Remember",
+      "tipsHeading": "Tips before you arrive",
+      "openHoursNote": "Plan to arrive within this window to make sure you can check in.",
+      "toast": {
+        "qrSavedOffline": "QR scanned successfully. Please scan again next time if the status wasn't saved.",
+        "qrMatchSuccess": "Connected successfully! Redirecting...",
+        "qrMismatch": "This QR code doesn't match this destination! Please scan the correct QR code at the station."
+      },
+      "cameraError": "Couldn't start the QR scanner camera. Please allow camera access in your browser.",
+      "closeAria": "Close",
+      "verifyBadge": "Verify at the station",
+      "scanTitlePrefix": "Scan the QR code at",
+      "scanInstruction": "Hold the station's QR code in the frame to automatically unlock the experience."
+    }
+  }
+}

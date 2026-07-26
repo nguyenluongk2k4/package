@@ -1,0 +1,122 @@
+{
+  "vi": {
+    "errors": {
+      "cameraUnsupported": "Trình duyệt này chưa hỗ trợ mở camera.",
+      "cameraFailed": "Không mở được camera. Hãy cấp quyền camera cho trình duyệt rồi thử lại.",
+      "arUnsupported": "Thiết bị hoặc trình duyệt chưa hỗ trợ mở AR thật. Camera vẫn chạy ở chế độ mô phỏng tracking.",
+      "arLaunchFailed": "Không mở được AR thật trên môi trường hiện tại. Camera vẫn chạy ở chế độ mô phỏng tracking.",
+      "noNarration": "Chưa có file thuyết minh cho địa danh này.",
+      "narrationPlayFailed": "Không thể phát file thuyết minh. Vui lòng thử lại.",
+      "uploadFailed": "Không thể đăng tải hình ảnh kỷ niệm. Vui lòng thử lại.",
+      "stampFailed": "Lỗi đóng dấu mộc. Vui lòng thử lại."
+    },
+    "toast": {
+      "stampSuccessPrefix": "Chúc mừng! Bạn đã hoàn thành check-in tại",
+      "stampSuccessSuffix": "và đóng dấu mộc thành công!"
+    },
+    "backAriaPrefix": "Quay lại",
+    "sessionLabel": "AR Live Session",
+    "helpAria": "Xem hướng dẫn",
+    "closeArAria": "Đóng AR",
+    "sheetAria": "Điều khiển AR",
+    "sheetHandleAria": "Kéo bảng điều khiển AR",
+    "sheetHint": "Lia camera xuống nền phẳng.",
+    "sheetTitleTracking": "Đã nhận diện mặt đất, chạm để đặt hướng dẫn viên ảo.",
+    "sheetTitleIdle": "Khi hệ thống nhận diện mặt đất, chạm để đặt hướng dẫn viên ảo.",
+    "arButton": {
+      "launching": "Đang mở AR thật...",
+      "relaunch": "Mở lại AR thật để track mặt đất",
+      "launch": "Mở AR thật để track mặt đất"
+    },
+    "narration": {
+      "stop": "Dừng thuyết minh",
+      "play": "Phát thuyết minh",
+      "muteAria": "Bật tắt âm thanh"
+    },
+    "stamp": {
+      "done": "Đã đóng dấu passport số",
+      "action": "Đóng dấu passport số"
+    },
+    "uploadModal": {
+      "title": "Đăng Tải Kỷ Niệm AR",
+      "description": "Chọn và đăng tải bức ảnh chụp cùng hướng dẫn viên ảo bạn vừa chụp bằng camera iPhone để ghi nhận dấu mộc!",
+      "photoAlt": "Ảnh chụp AR",
+      "noPhoto": "Chưa chọn ảnh kỷ niệm",
+      "changePhoto": "Thay đổi ảnh chọn",
+      "choosePhoto": "Chọn ảnh từ Thư viện",
+      "uploadingPrefix": "Đang tải lên máy chủ:",
+      "saving": "Đang lưu...",
+      "submit": "Đóng dấu mộc hành trình",
+      "cancel": "Hủy bỏ"
+    },
+    "success": {
+      "allDoneTitle": "Chúc mừng bạn đã hoàn thành hành trình!",
+      "stationDoneTitle": "Ghi Nhận Thành Công!",
+      "allDoneText": "Bạn đã check-in đủ 6 điểm đến và hoàn thành hành trình di sản Ninh Bình. Hộ Chiếu của bạn đã ghi nhận trọn vẹn các dấu mộc!",
+      "stationDonePrefix": "Chúc mừng bạn đã hoàn thành check-in tại",
+      "stationDoneSuffix": "và đóng dấu mộc hành trình thành công!",
+      "viewPassport": "Xem Hộ Chiếu của tôi",
+      "backToMap": "Về Bản đồ hành trình"
+    }
+  },
+  "en": {
+    "errors": {
+      "cameraUnsupported": "This browser doesn't support opening the camera yet.",
+      "cameraFailed": "Couldn't open the camera. Please grant camera access in your browser and try again.",
+      "arUnsupported": "This device or browser doesn't support live AR yet. The camera is still running in simulated tracking mode.",
+      "arLaunchFailed": "Couldn't launch live AR in this environment. The camera is still running in simulated tracking mode.",
+      "noNarration": "No narration file is available for this destination yet.",
+      "narrationPlayFailed": "Couldn't play the narration file. Please try again.",
+      "uploadFailed": "Couldn't upload your keepsake photo. Please try again.",
+      "stampFailed": "Error saving your stamp. Please try again."
+    },
+    "toast": {
+      "stampSuccessPrefix": "Congratulations! You've checked in at",
+      "stampSuccessSuffix": "and stamped your passport successfully!"
+    },
+    "backAriaPrefix": "Back to",
+    "sessionLabel": "AR Live Session",
+    "helpAria": "View instructions",
+    "closeArAria": "Close AR",
+    "sheetAria": "AR controls",
+    "sheetHandleAria": "Drag the AR control panel",
+    "sheetHint": "Point the camera at a flat surface.",
+    "sheetTitleTracking": "Surface detected — tap to place the virtual guide.",
+    "sheetTitleIdle": "Once the system detects a flat surface, tap to place the virtual guide.",
+    "arButton": {
+      "launching": "Launching live AR...",
+      "relaunch": "Relaunch live AR to track the ground",
+      "launch": "Launch live AR to track the ground"
+    },
+    "narration": {
+      "stop": "Stop narration",
+      "play": "Play narration",
+      "muteAria": "Toggle sound"
+    },
+    "stamp": {
+      "done": "Digital passport stamped",
+      "action": "Stamp digital passport"
+    },
+    "uploadModal": {
+      "title": "Upload Your AR Keepsake",
+      "description": "Choose and upload the photo you just took with the virtual guide using your iPhone camera to record your stamp!",
+      "photoAlt": "AR photo",
+      "noPhoto": "No keepsake photo selected",
+      "changePhoto": "Change selected photo",
+      "choosePhoto": "Choose photo from library",
+      "uploadingPrefix": "Uploading to server:",
+      "saving": "Saving...",
+      "submit": "Stamp the journey",
+      "cancel": "Cancel"
+    },
+    "success": {
+      "allDoneTitle": "Congratulations, you've completed the journey!",
+      "stationDoneTitle": "Successfully recorded!",
+      "allDoneText": "You've checked in at all 6 destinations and completed the Ninh Binh heritage journey. Your Passport has fully recorded every stamp!",
+      "stationDonePrefix": "Congratulations, you've completed check-in at",
+      "stationDoneSuffix": "and stamped your journey successfully!",
+      "viewPassport": "View my Passport",
+      "backToMap": "Back to journey map"
+    }
+  }
+}

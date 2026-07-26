@@ -8,11 +8,15 @@ import { Camera, ShieldAlert, CheckCircle2 } from "lucide-react";
 import SectionTitle from "./SectionTitle";
 import SiteFooter from "./SiteFooter";
 import SiteHeader from "./SiteHeader";
+import { translate, useI18n } from "./I18nProvider";
+import activateDict from "../../locales/activate.json";
 
 export default function ActivatePage() {
   const { user, db, loading, refreshProfile, profile } = useFirebaseAuth();
   const { showToast } = useToast();
   const router = useRouter();
+  const { locale } = useI18n();
+  const tac = (key) => translate(activateDict, locale, key);
 
   // Input state
   const [passportCode, setPassportCode] = useState("");
@@ -24,7 +28,7 @@ export default function ActivatePage() {
   // ── Authentication Protection ──
   useEffect(() => {
     if (!loading && !user) {
-      showToast("Vui lòng đăng nhập trước khi kích hoạt hộ chiếu di sản!", "error");
+      showToast(tac("toast.loginRequired"), "error");
       router.push("/dang-nhap");
     }
   }, [user, loading, router, showToast]);
@@ -76,7 +80,7 @@ export default function ActivatePage() {
             if (raw.includes("/checkin/") || (potentialSlug && validSlugs.includes(potentialSlug))) {
               const slug = potentialSlug || raw.split("/checkin/")[1]?.split("?")[0];
               if (slug && validSlugs.includes(slug)) {
-                showToast("Phát hiện mã QR check-in trạm! Đang di chuyển sang trang check-in...", "success");
+                showToast(tac("toast.checkinQrDetected"), "success");
                 if (html5QrCode && html5QrCode.isScanning) {
                   html5QrCode.stop().catch(() => {});
                 }
@@ -87,7 +91,7 @@ export default function ActivatePage() {
 
             const cleanCode = raw.toUpperCase();
             setPassportCode(cleanCode);
-            showToast(`Phát hiện mã QR: ${cleanCode}`, "info");
+            showToast(`${tac("toast.qrDetectedPrefix")} ${cleanCode}`, "info");
           },
           () => {
             // Ignore verbose scan errors
@@ -96,7 +100,7 @@ export default function ActivatePage() {
       } catch (err) {
         console.warn("Failed to initialize html5-qrcode:", err);
         if (isMounted) {
-          setCameraError("Không thể kích hoạt camera quét QR. Bạn vẫn có thể nhập mã thủ công ở bên phải.");
+          setCameraError(tac("cameraError"));
         }
       }
     }, 500);
@@ -113,12 +117,12 @@ export default function ActivatePage() {
   // ── Database Verification & Activation ──
   const performActivation = useCallback(async (code) => {
     if (!user) {
-      showToast("Vui lòng đăng nhập trước khi kích hoạt hộ chiếu di sản!", "error");
+      showToast(tac("toast.loginRequired"), "error");
       router.push("/dang-nhap");
       return;
     }
     if (!db) {
-      showToast("Lỗi kết nối cơ sở dữ liệu. Vui lòng thử lại sau.", "error");
+      showToast(tac("toast.dbError"), "error");
       return;
     }
 
@@ -132,17 +136,17 @@ export default function ActivatePage() {
       const codeSnap = await getDoc(codeRef);
 
       if (!codeSnap.exists()) {
-        showToast(`Mã "${cleanCode}" không tồn tại trên hệ thống! Vui lòng kiểm tra lại.`, "error");
+        showToast(`${tac("toast.codeNotFoundPrefix")} "${cleanCode}" ${tac("toast.codeNotFoundSuffix")}`, "error");
         return;
       }
 
       const codeData = codeSnap.data();
       if (codeData.status === "used") {
-        showToast("Mã kích hoạt này đã được sử dụng cho tài khoản khác!", "error");
+        showToast(tac("toast.codeUsed"), "error");
         return;
       }
       if (codeData.status === "inactive") {
-        showToast("Mã kích hoạt này đã bị vô hiệu hóa hoặc thu hồi!", "error");
+        showToast(tac("toast.codeInactive"), "error");
         return;
       }
 
@@ -174,21 +178,21 @@ export default function ActivatePage() {
       const stampSound = new Audio("https://assets.mixkit.co/active_storage/sfx/2012/2012-84.wav");
       stampSound.play().catch(() => {});
 
-      showToast("Kích hoạt Hộ chiếu thành công! Đã mở khóa Hành trình di sản.", "success");
-      
+      showToast(tac("toast.activationSuccess"), "success");
+
       setTimeout(() => {
         router.push("/hanh-trinh");
       }, 1000);
     } catch (error) {
-      showToast(error.message || "Đã xảy ra lỗi khi kích hoạt. Vui lòng thử lại.", "error");
+      showToast(error.message || tac("toast.activationError"), "error");
     }
-  }, [user, db, refreshProfile, showToast, router]);
+  }, [user, db, refreshProfile, showToast, router, tac]);
 
   const handleManualActivate = async (e) => {
     e.preventDefault();
     if (isActivated) return;
     if (!passportCode.trim()) {
-      showToast("Vui lòng nhập hoặc quét mã passport!", "error");
+      showToast(tac("toast.emptyCode"), "error");
       return;
     }
     setIsSubmitting(true);
@@ -213,9 +217,9 @@ export default function ActivatePage() {
       <SiteHeader />
       <main className="page-shell">
         <SectionTitle
-          eyebrow="Kích hoạt"
-          title="Kích Hoạt Hộ Chiếu Di Sản"
-          description="Đưa mã QR trên Hộ chiếu của bạn vào trước camera để tự động điền, hoặc nhập thông tin thủ công bên dưới."
+          eyebrow={tac("banner.eyebrow")}
+          title={tac("banner.title")}
+          description={tac("banner.description")}
         />
 
         <div className="activation-layout content-section">
@@ -223,15 +227,15 @@ export default function ActivatePage() {
           <div className="activation-scanner-panel">
             <h3 style={{ margin: "0 0 10px", color: "#104c27", fontFamily: "var(--font-header, 'Baloo 2', sans-serif)", fontSize: "20px", fontWeight: "700" }}>
               <Camera size={22} style={{ marginRight: "8px", verticalAlign: "middle", color: "#104c27" }} />
-              Quét mã QR tự động
+              {tac("scanner.heading")}
             </h3>
             {isActivated ? (
               <p className="scanner-instruction" style={{ fontSize: "14px", color: "#38a169", fontWeight: "bold", margin: "0 0 20px 0" }}>
-                Tài khoản của bạn đã được kích hoạt Hộ chiếu di sản thành công. Camera quét đã tự động tắt để tiết kiệm pin.
+                {tac("scanner.instructionActivated")}
               </p>
             ) : (
               <p className="scanner-instruction" style={{ fontSize: "14px", color: "#666", margin: "0 0 20px 0" }}>
-                Đưa mã QR trước camera của thiết bị để quét tự động liên tục.
+                {tac("scanner.instructionIdle")}
               </p>
             )}
 
@@ -248,9 +252,9 @@ export default function ActivatePage() {
             {isActivated && (
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "260px", background: "rgba(16, 76, 39, 0.05)", borderRadius: "12px", padding: "20px", border: "1px solid rgba(16, 76, 39, 0.15)" }}>
                 <CheckCircle2 size={48} style={{ color: "#38a169", marginBottom: "16px" }} />
-                <strong style={{ color: "#104c27", fontSize: "16px" }}>Hộ chiếu đã sẵn sàng!</strong>
+                <strong style={{ color: "#104c27", fontSize: "16px" }}>{tac("scanner.readyTitle")}</strong>
                 <p style={{ fontSize: "13px", color: "#555", margin: "8px 0 0 0", textAlign: "center" }}>
-                  Hãy vào mục hành trình để bắt đầu đóng dấu mộc di sản Ninh Bình.
+                  {tac("scanner.readyText")}
                 </p>
               </div>
             )}
@@ -259,18 +263,18 @@ export default function ActivatePage() {
           {/* Right Column: Manual Input / Confirmation Form */}
           <div className="activation-manual-panel">
             <h3 style={{ margin: "0 0 10px", color: "#104c27", fontFamily: "var(--font-header, 'Baloo 2', sans-serif)", fontSize: "20px", fontWeight: "700" }}>
-              Thông tin kích hoạt
+              {tac("manual.heading")}
             </h3>
             <p className="scanner-instruction" style={{ fontSize: "14px", color: "#666", margin: "0" }}>
-              Mã QR sau khi quét được sẽ tự động điền vào ô dưới. Nhấn kích hoạt để xác nhận kích hoạt tài khoản.
+              {tac("manual.instruction")}
             </p>
-            
+
             <form className="activation-form" onSubmit={handleManualActivate} style={{ marginTop: "24px" }}>
               <label>
-                Mã kích hoạt hộ chiếu
+                {tac("manual.codeLabel")}
                 <input
                   type="text"
-                  placeholder="Ví dụ: SC#7A9X"
+                  placeholder={tac("manual.codePlaceholder")}
                   value={passportCode}
                   onChange={(e) => setPassportCode(e.target.value)}
                   required
@@ -290,7 +294,7 @@ export default function ActivatePage() {
                   cursor: isActivated ? "not-allowed" : "pointer"
                 }}
               >
-                {isSubmitting ? "Đang kích hoạt..." : isActivated ? "Tài khoản đã kích hoạt" : "Kích hoạt (Xác nhận OK)"}
+                {isSubmitting ? tac("manual.submitting") : isActivated ? tac("manual.activated") : tac("manual.submit")}
               </button>
             </form>
           </div>

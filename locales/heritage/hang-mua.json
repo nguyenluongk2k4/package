@@ -1,0 +1,80 @@
+{
+  "vi": {
+    "name": "Hang Múa",
+    "navName": "HANG MÚA",
+    "eyebrow": "Sắc Cố Đô - Ninh Bình",
+    "title": "Đỉnh cao di sản",
+    "subtitle": "Chạm tới vẻ đẹp của Ninh Bình từ trên cao.",
+    "featureCaption": "Tương truyền vua Trần từng đến đây nghỉ ngơi và thưởng thức điệu múa của cung nữ.",
+    "sectionLabel": "Huyền thoại cổ kính",
+    "introTitle": "Truyền thuyết điệu múa",
+    "introParagraphs": [
+      "Ẩn mình dưới chân núi Ngọa Long, Hang Múa là một trong những điểm đến được yêu thích nhất tại Ninh Bình.",
+      "Tương truyền thời nhà Trần, các vị vua thường đến đây nghỉ ngơi và thưởng thức điệu múa của cung nữ, từ đó hình thành tên gọi Hang Múa.",
+      "Không chỉ nổi tiếng với khung cảnh ngoạn mục nhìn từ trên cao, nơi đây còn mang trong mình những câu chuyện lịch sử gắn liền với vùng đất cố đô ngàn năm văn hiến.",
+      "Dù trải qua nhiều biến động của thời gian, vùng đất này vẫn giữ được vẻ đẹp nguyên sơ với những dãy núi đá vôi hùng vĩ bao quanh cánh đồng Tam Cốc rộng lớn."
+    ],
+    "storyTitle": "Chinh phục 486 bậc đá",
+    "storyParagraphs": [
+      "Hành trình lên đỉnh Ngọa Long có chút thử thách, nhưng phần thưởng là toàn cảnh dòng sông Ngô Đồng, cánh đồng Tam Cốc và các dãy núi đá vôi trùng điệp.",
+      "Để lên tới đỉnh núi Ngọa Long, du khách sẽ chinh phục gần 500 bậc đá được xây dựng theo kiến trúc mô phỏng Vạn Lý Trường Thành.",
+      "Từ trên cao, toàn bộ dòng sông Ngô Đồng mềm mại, những cánh đồng lúa trải dài cùng các dãy núi đá vôi hiện lên như một bức tranh thủy mặc sống động.",
+      "Đặc biệt, vào mùa lúa chín từ tháng 5 đến tháng 6, Hang Múa trở thành một trong những địa điểm ngắm cảnh đẹp nhất Việt Nam.",
+      "Không chỉ là một địa điểm check-in nổi tiếng, Hang Múa còn mang đến cho du khách cảm giác chinh phục, hòa mình với thiên nhiên và tận hưởng vẻ đẹp thanh bình của vùng đất cố đô."
+    ],
+    "highlights": [
+      { "number": "01", "title": "Vạn Lý Trường Thành thu nhỏ", "description": "Bậc đá uốn lượn theo sườn núi tạo nên hành trình chinh phục giàu cảm xúc." },
+      { "number": "02", "title": "Hơi thở của đá núi", "description": "Mỗi bậc chân là một nhịp chạm vào thời gian." },
+      { "number": "03", "title": "Phần thưởng của người bền bỉ", "description": "Tầm nhìn toàn cảnh mở ra như một bức tranh thủy mặc." }
+    ],
+    "stats": [
+      { "value": "486", "label": "bậc đá Ngọa Long" },
+      { "value": "~25ph", "label": "thời gian leo núi" },
+      { "value": "800m", "label": "độ cao so với mực nước biển" }
+    ],
+    "galleryEyebrow": "Góc nhìn từ mây ngàn",
+    "galleryTitle": "Đỉnh cao di sản",
+    "galleryCaptions": ["Đường lên Ngọa Long", "Hang Múa trong truyền thuyết", "Tầm nhìn xuống Tam Cốc", "Bậc đá uốn lượn", "Núi non trùng điệp"],
+    "closingTitle": "Cảm giác của sự chinh phục",
+    "closingText": "Khi đứng trên đỉnh Ngọa Long, mọi mệt mỏi nhường chỗ cho niềm tự hào và sự bình yên của vùng đất cố đô."
+  },
+  "en": {
+    "name": "Hang Mua",
+    "navName": "HANG MUA",
+    "eyebrow": "Sac Co Do - Ninh Binh",
+    "title": "The Pinnacle of Heritage",
+    "subtitle": "Reach the beauty of Ninh Binh from above.",
+    "featureCaption": "Legend says Tran-dynasty kings once came here to rest and watch court dancers perform.",
+    "sectionLabel": "An ancient legend",
+    "introTitle": "The legend of the dance",
+    "introParagraphs": [
+      "Tucked at the foot of Ngoa Long Mountain, Hang Mua is one of Ninh Binh's most beloved destinations.",
+      "Legend holds that during the Tran dynasty, kings often came here to rest and watch court dancers perform, giving rise to the name \"Hang Mua\" (Dancing Cave).",
+      "Renowned not only for its spectacular bird's-eye views, this site also carries historical stories tied to a thousand-year-old ancient capital.",
+      "Despite the passage of time, the land has kept its untouched beauty, with majestic limestone mountains encircling the vast Tam Coc rice fields."
+    ],
+    "storyTitle": "Conquering 486 Stone Steps",
+    "storyParagraphs": [
+      "The climb to the summit of Ngoa Long is a bit of a challenge, but the reward is a sweeping view of the Ngo Dong River, the Tam Coc fields, and endless limestone ranges.",
+      "To reach the top of Ngoa Long Mountain, visitors climb nearly 500 stone steps built in a style inspired by the Great Wall of China.",
+      "From the summit, the graceful Ngo Dong River, sprawling rice fields, and limestone mountain ranges unfold like a living ink-wash painting.",
+      "Especially during the rice-ripening season from May to June, Hang Mua becomes one of the most beautiful viewpoints in Vietnam.",
+      "More than just a famous check-in spot, Hang Mua offers visitors a genuine sense of conquest, immersion in nature, and the tranquil beauty of the ancient capital."
+    ],
+    "highlights": [
+      { "number": "01", "title": "A miniature Great Wall", "description": "Stone steps winding along the mountainside create an emotional journey of conquest." },
+      { "number": "02", "title": "The breath of the mountain stone", "description": "Every step is a touch of time itself." },
+      { "number": "03", "title": "A reward for perseverance", "description": "A sweeping view unfolds like a living ink-wash painting." }
+    ],
+    "stats": [
+      { "value": "486", "label": "Ngoa Long stone steps" },
+      { "value": "~25min", "label": "climbing time" },
+      { "value": "800m", "label": "elevation above sea level" }
+    ],
+    "galleryEyebrow": "A view from the clouds",
+    "galleryTitle": "The pinnacle of heritage",
+    "galleryCaptions": ["The path up Ngoa Long", "Hang Mua of legend", "Looking down on Tam Coc", "Winding stone steps", "Endless mountain ranges"],
+    "closingTitle": "The feeling of conquest",
+    "closingText": "Standing atop Ngoa Long, every trace of fatigue gives way to pride and the quiet peace of the ancient capital."
+  }
+}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useI18n } from "./I18nProvider";
 
 /**
  * Helper to extract YouTube video ID from standard, embed, or short URLs.
@@ -21,6 +22,7 @@ export default function HeroMediaSwitcher({
   primaryCTA,
   secondaryCTA,
 }) {
+  const { t } = useI18n();
   const youtubeId = getYoutubeId(heroVideo);
   const isDirectVideo = heroVideo && !youtubeId;
   const [mediaState, setMediaState] = useState(heroVideo ? "video" : "image"); // "image" | "video"
@@ -55,7 +57,7 @@ export default function HeroMediaSwitcher({
         <div className={`hero-media-layer hero-image-layer ${mediaState === "image" || videoFailed ? "active" : ""}`}>
           <img
             src={heroImage}
-            alt={title || "Sắc Cố Đô"}
+            alt={title || t("common.heroMedia.defaultAlt")}
             decoding="async"
             fetchPriority="high"
           />
@@ -82,7 +84,7 @@ export default function HeroMediaSwitcher({
                 <div className="hero-iframe-container">
                   <iframe
                     src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&playsinline=1&loop=1&playlist=${youtubeId}&controls=0&disablekb=1&fs=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&enablejsapi=1`}
-                    title={title || "Sắc Cố Đô Video"}
+                    title={title || t("common.heroMedia.defaultVideoTitle")}
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
                     allowFullScreen
                     className="hero-video-iframe"
@@ -110,7 +112,7 @@ export default function HeroMediaSwitcher({
               href={primaryCTA?.href || "#tram-trai-nghiem"}
               onClick={handlePrimaryClick}
             >
-              {primaryCTA?.label || "Khám phá ngay"}
+              {primaryCTA?.label || t("common.heroMedia.defaultPrimaryCta")}
             </a>
             <button
               className="btn ghost hero-video-trigger"
@@ -120,8 +122,8 @@ export default function HeroMediaSwitcher({
             >
               <span className="play-icon" aria-hidden="true">▶</span>
               {mediaState === "video"
-                ? secondaryCTA?.imageLabel || "Xem ảnh giới thiệu"
-                : secondaryCTA?.label || "Xem video giới thiệu"}
+                ? secondaryCTA?.imageLabel || t("common.heroMedia.defaultImageCta")
+                : secondaryCTA?.label || t("common.heroMedia.defaultVideoCta")}
             </button>
           </div>
         </div>

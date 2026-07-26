@@ -1,12 +1,37 @@
 "use client";
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import en from "../../locales/en.json";
-import vi from "../../locales/vi.json";
+import headerDict from "../../locales/header.json";
+import footerDict from "../../locales/footer.json";
+import commonDict from "../../locales/common.json";
 
-const dictionaries = { vi, en };
 const defaultLocale = "vi";
 const storageKey = "sac-co-do-locale";
+
+// Tier 1: shared chrome (header/footer/common) merged into one flat dictionary
+// per locale, so existing call sites like t("header.nav.home") keep working.
+const dictionaries = {
+  vi: { ...headerDict.vi, ...footerDict.vi, ...commonDict.vi },
+  en: { ...headerDict.en, ...footerDict.en, ...commonDict.en },
+};
+
+// Tier 2: per-page dictionaries (e.g. locales/home.json) are imported directly
+// by the page/component and read through translate(dict, locale, key), which
+// supports dot-path lookup into nested JSON instead of a flat key.
+export function translate(dict, locale, key) {
+  const fromLocale = getPath(dict?.[locale], key);
+  if (fromLocale !== undefined) return fromLocale;
+
+  const fromDefault = getPath(dict?.[defaultLocale], key);
+  if (fromDefault !== undefined) return fromDefault;
+
+  return key;
+}
+
+function getPath(source, path) {
+  if (!source) return undefined;
+  return path.split(".").reduce((value, part) => (value == null ? undefined : value[part]), source);
+}
 
 const I18nContext = createContext(null);
 

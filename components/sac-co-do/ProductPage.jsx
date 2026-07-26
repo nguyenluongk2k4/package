@@ -8,6 +8,9 @@ import { useFirebaseAuth } from "./FirebaseAuthProvider";
 import SiteFooter from "./SiteFooter";
 import SiteHeader from "./SiteHeader";
 import ProductContactActions from "./ProductContactActions";
+import { translate, useI18n } from "./I18nProvider";
+import productsDict from "../../locales/products.json";
+import { localizeProduct } from "./productLocalization";
 import { Eye } from "lucide-react";
 
 function productHref(product) {
@@ -18,32 +21,34 @@ function formatVnd(value) {
   return `${new Intl.NumberFormat("vi-VN").format(Number(value || 0))}đ`;
 }
 
-function getProductOptions(product) {
+function getProductOptions(product, locale) {
   if (!product) return [];
   if (Array.isArray(product.variants) && product.variants.length > 0) {
     return product.variants;
   }
 
+  const label = (vi, en) => (locale === "en" ? en : vi);
+
   switch (product.id) {
     case "passport":
-      return [{ label: "Cuốn Passport", price: 150000, priceFormatted: "150.000đ" }];
+      return [{ label: label("Cuốn Passport", "Passport booklet"), price: 150000, priceFormatted: "150.000đ" }];
     case "com-chay-dang-tui":
-      return [{ label: "Túi 216g", price: 59000, priceFormatted: "59.000đ" }];
+      return [{ label: label("Túi 216g", "216g pouch"), price: 59000, priceFormatted: "59.000đ" }];
     case "com-chay-ruoc-dam-vi":
-      return [{ label: "Túi 300g", price: 65000, priceFormatted: "65.000đ" }];
+      return [{ label: label("Túi 300g", "300g pouch"), price: 65000, priceFormatted: "65.000đ" }];
     case "com-chay-vuong-lut":
-      return [{ label: "Túi 200g", price: 54000, priceFormatted: "54.000đ" }];
+      return [{ label: label("Túi 200g", "200g pouch"), price: 54000, priceFormatted: "54.000đ" }];
     case "thit-chung-mam-tep-thanh-nguyen":
       return [
-        { label: "Hũ 275g", price: 175000, priceFormatted: "175.000đ" },
-        { label: "Hũ 90g", price: 65000, priceFormatted: "65.000đ", compareAtPrice: 69000 },
+        { label: label("Hũ 275g", "275g jar"), price: 175000, priceFormatted: "175.000đ" },
+        { label: label("Hũ 90g", "90g jar"), price: 65000, priceFormatted: "65.000đ", compareAtPrice: 69000 },
       ];
     case "ruoc-ca-ro-tong-truong":
-      return [{ label: "Hộp 100g", price: 239000, priceFormatted: "239.000đ" }];
+      return [{ label: label("Hộp 100g", "100g box"), price: 239000, priceFormatted: "239.000đ" }];
     default:
       return [
         {
-          label: product.weight ? `Túi ${product.weight}` : "Tiêu chuẩn",
+          label: product.weight ? `${label("Túi", "Pack")} ${product.weight}` : label("Tiêu chuẩn", "Standard"),
           price: Number(product.price || 0),
           priceFormatted: product.priceFormatted,
           image: product.image,
@@ -55,6 +60,8 @@ function getProductOptions(product) {
 export default function ProductPage() {
   const { db } = useFirebaseAuth();
   const router = useRouter();
+  const { locale } = useI18n();
+  const tp = (key) => translate(productsDict, locale, key);
 
   const [activeTab, setActiveTab] = useState("all");
   const [products, setProducts] = useState([]);
@@ -94,14 +101,15 @@ export default function ProductPage() {
 
   useEffect(() => {
     const initial = {};
-    products.forEach((product) => {
-      const options = getProductOptions(product);
+    products.forEach((rawProduct) => {
+      const product = localizeProduct(rawProduct, locale);
+      const options = getProductOptions(product, locale);
       if (options.length > 0) {
         initial[product.id] = options[0];
       }
     });
     setSelectedOptions(initial);
-  }, [products]);
+  }, [products, locale]);
 
   const getFilteredProducts = useCallback(() => {
     if (activeTab === "all") return products;
@@ -115,7 +123,8 @@ export default function ProductPage() {
   }, [activeTab, products]);
 
   const filteredProducts = getFilteredProducts();
-  const marqueeItems = products.flatMap((product) => {
+  const marqueeItems = products.flatMap((rawProduct) => {
+    const product = localizeProduct(rawProduct, locale);
     const images = product.detailImages?.length
       ? product.detailImages
       : product.images?.length
@@ -139,28 +148,29 @@ export default function ProductPage() {
       <main className="product-list-page" style={{ position: "relative", minHeight: "100vh" }}>
         <section className="souvenir-products" aria-labelledby="souvenir-products-title">
           <div className="souvenir-products-heading">
-            <p className="souvenir-products-kicker">Sản phẩm</p>
-            <h1 id="souvenir-products-title">Sắc Cố Đô</h1>
-            <p>Khám phá bộ sưu tập quà tặng văn hóa độc quyền và ẩm thực nổi tiếng mang trọn tinh hoa vùng đất Cố Đô Ninh Bình.</p>
+            <p className="souvenir-products-kicker">{tp("kicker")}</p>
+            <h1 id="souvenir-products-title">{tp("title")}</h1>
+            <p>{tp("description")}</p>
           </div>
 
           <div className="heritage-category-tabs-container">
             <div className="heritage-category-tabs">
               <button className={`category-tab-btn ${activeTab === "all" ? "active" : ""}`} onClick={() => setActiveTab("all")}>
-                Tất cả sản phẩm
+                {tp("tabs.all")}
               </button>
               <button className={`category-tab-btn ${activeTab === "tourism" ? "active" : ""}`} onClick={() => setActiveTab("tourism")}>
-                Hành lý du lịch
+                {tp("tabs.tourism")}
               </button>
               <button className={`category-tab-btn ${activeTab === "specialty" ? "active" : ""}`} onClick={() => setActiveTab("specialty")}>
-                Đặc sản Ninh Bình
+                {tp("tabs.specialty")}
               </button>
             </div>
           </div>
 
           <div className="souvenir-products-grid" data-count={filteredProducts.length} style={{ marginTop: "40px" }}>
-            {filteredProducts.map((product) => {
-              const optionsList = getProductOptions(product);
+            {filteredProducts.map((rawProduct) => {
+              const product = localizeProduct(rawProduct, locale);
+              const optionsList = getProductOptions(product, locale);
               const currentOption = selectedOptions[product.id] || optionsList[0];
               const displayedImage =
                 hoveredCard === product.id && product.images && product.images[1] ? product.images[1] : currentOption?.image || product.image;
@@ -192,10 +202,10 @@ export default function ProductPage() {
                           event.stopPropagation();
                           router.push(productHref(product));
                         }}
-                        aria-label="Xem chi tiết"
+                        aria-label={tp("quickViewAria")}
                       >
                         <Eye size={16} />
-                        <span>Chi tiết</span>
+                        <span>{tp("quickViewLabel")}</span>
                       </button>
                       <ProductContactActions
                         product={product}

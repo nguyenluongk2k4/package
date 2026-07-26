@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useI18n } from "./I18nProvider";
 
 export default function ScrollToTop() {
+  const { t } = useI18n();
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -18,7 +20,7 @@ export default function ScrollToTop() {
     <button
       className={`scroll-to-top-btn${visible ? " is-visible" : ""}`}
       onClick={scrollUp}
-      aria-label="Lên đầu trang"
+      aria-label={t("common.scrollToTopAria")}
       type="button"
     >
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">

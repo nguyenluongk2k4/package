@@ -1,0 +1,94 @@
+{
+  "vi": {
+    "lazyPlaceholder": "Đang tải nội dung di sản...",
+    "hero": {
+      "eyebrow": "Về chúng tôi",
+      "title": "SẮC CỐ ĐÔ – Lưu giữ hành trình, chạm đến di sản",
+      "subtitle": "Khi chuyến đi không chỉ dừng lại ở những bức ảnh",
+      "paragraph": "Sắc Cố Đô được hình thành từ câu hỏi đơn giản ấy để kiến tạo nên những hành trình sâu sắc tại cố đô. Ninh Bình là vùng đất nơi thiên nhiên, lịch sử và văn hóa giao hòa để tạo nên những dấu ấn rất riêng. Từ Quần thể Danh thắng Tràng An, Cố đô Hoa Lư, Tam Cốc – Bích Động đến những làng nghề truyền thống và đặc sản địa phương, mỗi địa danh đều mang trong mình những câu chuyện đáng để khám phá và ghi nhớ.",
+      "viewJourney": "Xem hành trình",
+      "viewPassport": "Xem hộ chiếu",
+      "mediaAlt": "Sắc Cố Đô - Hành trình di sản Ninh Bình",
+      "mediaCaption": "Passport văn hóa cho hành trình di sản."
+    },
+    "mission": {
+      "eyebrow": "Mục tiêu & Sứ mệnh",
+      "title": "Hành Trình Kết Nối Di Sản & Du Khách",
+      "mediaAlt": "Hành trình di sản Ninh Bình",
+      "paragraph1": "Tuy nhiên, giữa nhịp sống hiện đại, nhiều chuyến đi thường chỉ dừng lại ở việc tham quan và check-in. Chúng tôi tin rằng du lịch không chỉ là nhìn ngắm, mà còn là hành trình trải nghiệm, kết nối và lưu giữ những giá trị văn hóa của mỗi vùng đất.",
+      "paragraph2": "Vì vậy, SẮC CỐ ĐÔ ra đời với mong muốn xây dựng một hệ sinh thái trải nghiệm di sản sáng tạo, giúp du khách khám phá Ninh Bình theo cách mới mẻ và có chiều sâu hơn. Thông qua Hộ chiếu Di sản Pop-up, hệ thống sưu tầm dấu mộc tại các điểm đến, những câu chuyện lịch sử được kể lại theo cách gần gũi cùng mạng lưới sản phẩm đặc trưng địa phương được tuyển chọn, chúng tôi hy vọng mỗi chuyến đi sẽ trở thành một hành trình đáng nhớ.",
+      "paragraph3": "Không chỉ dừng lại ở việc quảng bá du lịch, SẮC CỐ ĐÔ mong muốn góp phần kết nối du khách với văn hóa bản địa, lan tỏa giá trị của các làng nghề, đặc sản và cộng đồng địa phương, từ đó tạo ra những giá trị bền vững cho điểm đến.",
+      "quote": "Chúng tôi tin rằng mỗi con dấu được sưu tầm, mỗi trang hộ chiếu được lấp đầy và mỗi câu chuyện được lưu giữ đều là những ký ức đẹp của hành trình khám phá."
+    },
+    "visionMission": {
+      "ariaLabel": "Tầm nhìn và Sứ mệnh",
+      "visionTitle": "Tầm Nhìn",
+      "visionText": "Trở thành hệ sinh thái trải nghiệm di sản và sản phẩm địa phương hàng đầu Việt Nam, góp phần lan tỏa vẻ đẹp văn hóa và lịch sử của từng vùng đất đến với cộng đồng trong nước và quốc tế.",
+      "missionTitle": "Sứ Mệnh",
+      "missionPoints": [
+        "Mang đến những trải nghiệm du lịch sáng tạo, tương tác và giàu cảm xúc.",
+        "Kết nối du khách với văn hóa, lịch sử và con người địa phương.",
+        "Hỗ trợ quảng bá các sản phẩm đặc trưng, làng nghề và cộng đồng bản địa.",
+        "Góp phần phát triển du lịch bền vững và kinh tế sáng tạo tại Việt Nam."
+      ]
+    },
+    "values": {
+      "ariaLabel": "Giá trị cốt lõi",
+      "eyebrow": "Nền tảng",
+      "title": "Giá Trị Cốt Lõi",
+      "items": [
+        { "title": "Di sản", "description": "Trân trọng những giá trị văn hóa, lịch sử và nếp sống bản địa. Mỗi câu chuyện được kể lại để di sản luôn gần gũi với những hành trình hôm nay." },
+        { "title": "Kết nối", "description": "Gắn kết du khách với điểm đến, con người và cộng đồng địa phương. Từ một dấu mộc nhỏ, hành trình mở ra những cuộc gặp gỡ đầy ý nghĩa." },
+        { "title": "Sáng tạo", "description": "Làm mới cách khám phá di sản bằng pop-up, check-in và những trải nghiệm tương tác. Truyền thống vì thế trở nên sinh động, dễ chạm và đáng nhớ hơn." },
+        { "title": "Bền vững", "description": "Hướng tới sự phát triển hài hòa giữa kinh tế, văn hóa và cộng đồng. Mỗi lựa chọn đều góp phần gìn giữ bản sắc và lan tỏa giá trị địa phương lâu dài." },
+        { "title": "Lưu giữ", "description": "Biến mỗi chuyến đi thành những kỷ niệm có thể mang theo. Cuốn hộ chiếu, con dấu và bức ảnh sẽ nhắc bạn về một Ninh Bình rất riêng." }
+      ]
+    }
+  },
+  "en": {
+    "lazyPlaceholder": "Loading heritage content...",
+    "hero": {
+      "eyebrow": "About us",
+      "title": "SAC CO DO – Preserving journeys, touching heritage",
+      "subtitle": "Can a trip leave more behind than just photographs?",
+      "paragraph": "Sac Co Do was born from that simple question, built to craft deeper journeys through the ancient capital. Ninh Binh is a land where nature, history, and culture converge into marks all its own. From the Trang An Landscape Complex, the ancient Hoa Lu capital, and Tam Coc - Bich Dong to traditional craft villages and local specialties, every destination carries a story worth discovering and remembering.",
+      "viewJourney": "View the journey",
+      "viewPassport": "View the passport",
+      "mediaAlt": "Sac Co Do - A heritage journey through Ninh Binh",
+      "mediaCaption": "A cultural passport for the heritage journey."
+    },
+    "mission": {
+      "eyebrow": "Goal & Mission",
+      "title": "A Journey Connecting Heritage & Travelers",
+      "mediaAlt": "Ninh Binh heritage journey",
+      "paragraph1": "Yet amid the pace of modern life, many trips stop at sightseeing and check-ins. We believe travel is more than looking — it's an experience of connecting with and preserving the cultural values of each land.",
+      "paragraph2": "That is why SAC CO DO was created: to build a creative heritage experience ecosystem that helps travelers discover Ninh Binh in a fresh, deeper way. Through the Pop-up Heritage Passport, a stamp-collecting system at each destination, history retold in an approachable way, and a curated network of local specialty products, we hope every trip becomes a journey worth remembering.",
+      "paragraph3": "Beyond promoting tourism, SAC CO DO aims to connect travelers with local culture, spread the value of craft villages, specialties, and local communities, and create lasting value for each destination.",
+      "quote": "We believe every stamp collected, every passport page filled, and every story preserved becomes a beautiful memory of the journey of discovery."
+    },
+    "visionMission": {
+      "ariaLabel": "Vision and Mission",
+      "visionTitle": "Vision",
+      "visionText": "To become Vietnam's leading heritage experience and local product ecosystem, helping spread the cultural and historical beauty of each region to communities at home and abroad.",
+      "missionTitle": "Mission",
+      "missionPoints": [
+        "Deliver creative, interactive, and emotionally rich travel experiences.",
+        "Connect travelers with local culture, history, and people.",
+        "Help promote signature products, craft villages, and local communities.",
+        "Contribute to sustainable tourism and the creative economy in Vietnam."
+      ]
+    },
+    "values": {
+      "ariaLabel": "Core values",
+      "eyebrow": "Foundation",
+      "title": "Core Values",
+      "items": [
+        { "title": "Heritage", "description": "Cherishing cultural, historical, and local lifestyle values. Every story is retold so heritage stays close to today's journeys." },
+        { "title": "Connection", "description": "Linking travelers with destinations, people, and local communities. From a single small stamp, the journey opens meaningful encounters." },
+        { "title": "Creativity", "description": "Reimagining heritage discovery through pop-ups, check-ins, and interactive experiences — making tradition livelier, more tangible, and more memorable." },
+        { "title": "Sustainability", "description": "Pursuing harmonious growth across economy, culture, and community. Every choice helps preserve identity and spread local value for the long term." },
+        { "title": "Keepsakes", "description": "Turning every trip into memories you can carry with you. The passport, the stamps, and the photos will remind you of a Ninh Binh all your own." }
+      ]
+    }
+  }
+}

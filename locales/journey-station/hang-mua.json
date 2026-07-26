@@ -1,0 +1,34 @@
+{
+  "vi": {
+    "qrLocation": "Chân núi Múa — cột gỗ đầu lối leo núi",
+    "qrDescription": "Mã QR đặt tại cột gỗ đầu lối leo núi, phía bên trái ngay sau cổng soát vé.",
+    "qrDetails": [
+      "QR trên cột gỗ tròn cao khoảng 1.3m",
+      "Có logo Sắc Cố Đô trên đỉnh cột",
+      "Có thể quét cả trước khi leo và sau khi xuống"
+    ],
+    "hints": [
+      "Vào cổng Hang Múa, qua khu vực soát vé",
+      "Trước mặt là bậc đá lên núi",
+      "Cột gỗ bên trái lối đi, ngay đầu bậc thang đầu tiên",
+      "QR quay mặt về phía lối vào"
+    ],
+    "tips": "QR có thể quét cả trước và sau khi leo. Nên đi sớm hoặc chiều muộn tránh nắng."
+  },
+  "en": {
+    "qrLocation": "Foot of Hang Mua mountain — wooden post at the start of the climbing path",
+    "qrDescription": "The QR code is placed on a wooden post at the start of the climbing path, on the left right after the ticket gate.",
+    "qrDetails": [
+      "QR is on a round wooden post about 1.3m tall",
+      "The Sac Co Do logo sits at the top of the post",
+      "Can be scanned both before climbing and after coming down"
+    ],
+    "hints": [
+      "Enter the Hang Mua gate, past the ticket area",
+      "Ahead of you are the stone steps up the mountain",
+      "The wooden post is on the left, right at the first step",
+      "The QR faces the entrance path"
+    ],
+    "tips": "The QR can be scanned both before and after the climb. Best visited early morning or late afternoon to avoid the sun."
+  }
+}

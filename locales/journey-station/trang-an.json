@@ -1,0 +1,34 @@
+{
+  "vi": {
+    "qrLocation": "Bến thuyền Tràng An — cột mốc bên trái lối lên thuyền",
+    "qrDescription": "Mã QR được đặt tại cột mốc gần khu vực soát vé / lên thuyền, bên trái lối vào bến.",
+    "qrDetails": [
+      "QR nằm trên bảng gỗ nhỏ gần cột mốc đá đầu bến",
+      "Cao khoảng 1.2m so với mặt đất, dễ quét",
+      "Có logo Sắc Cố Đô bên cạnh"
+    ],
+    "hints": [
+      "Vào khu vực bến thuyền Tràng An (cổng chính)",
+      "Đi thẳng tới khu vực xếp hàng chờ lên thuyền",
+      "Nhìn về phía cột mốc bên trái, cạnh bảng nội quy",
+      "QR code được dán trên bảng gỗ nhỏ"
+    ],
+    "tips": "Nên đi buổi sáng để tránh đông. Mang giày chống trượt, mặc áo phao đầy đủ."
+  },
+  "en": {
+    "qrLocation": "Trang An boat dock — landmark post to the left of the boarding path",
+    "qrDescription": "The QR code is placed at the landmark post near the ticket-check / boarding area, to the left of the dock entrance.",
+    "qrDetails": [
+      "QR is on a small wooden board near the stone landmark at the dock entrance",
+      "About 1.2m off the ground, easy to scan",
+      "The Sac Co Do logo is right next to it"
+    ],
+    "hints": [
+      "Enter the Trang An boat dock (main gate)",
+      "Walk straight to the boarding queue area",
+      "Look toward the landmark post on the left, next to the rules board",
+      "The QR code is stuck on a small wooden board"
+    ],
+    "tips": "Best visited in the morning to avoid crowds. Wear non-slip shoes and a properly fitted life vest."
+  }
+}

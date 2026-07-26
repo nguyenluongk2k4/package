@@ -1,0 +1,64 @@
+{
+  "vi": {
+    "name": "Tràng An",
+    "navName": "TRÀNG AN",
+    "eyebrow": "Di sản văn hóa và thiên nhiên thế giới",
+    "title": "Tràng An - Hành trình giữa miền di sản ngàn năm",
+    "subtitle": "Nơi hội tụ vẻ đẹp của thiên nhiên, lịch sử và văn hóa Việt Nam.",
+    "featureCaption": "UNESCO vinh danh năm 2014 là di sản hỗn hợp đầu tiên tại Đông Nam Á.",
+    "sectionLabel": "Kỳ quan thiên nhiên",
+    "introTitle": "Vịnh Hạ Long trên cạn",
+    "introParagraphs": [
+      "Được UNESCO công nhận là Di sản Văn hóa và Thiên nhiên Thế giới vào năm 2014, Tràng An là niềm tự hào của Ninh Bình và là di sản hỗn hợp đầu tiên của Việt Nam.",
+      "Hàng triệu năm trước, nơi đây từng là vùng biển cổ rộng lớn. Sự biến đổi địa chất đã tạo nên quần thể núi đá vôi kỳ vĩ cùng hệ thống hang động xuyên thủy độc đáo.",
+      "Những dãy núi xanh trùng điệp soi bóng xuống dòng nước trong vắt tạo nên khung cảnh được nhiều du khách gọi là Vịnh Hạ Long trên cạn."
+    ],
+    "storyTitle": "Dòng nước giữ ký ức cố đô",
+    "storyParagraphs": [
+      "Tràng An không chỉ đẹp bởi thiên nhiên. Vùng đất này còn gắn liền với lịch sử hình thành và phát triển của kinh đô Hoa Lư xưa.",
+      "Trong thời kỳ nhà Đinh và nhà Tiền Lê, núi đá vôi hiểm trở cùng hệ thống sông ngòi tự nhiên đã trở thành bức tường thành bảo vệ kinh đô đầu tiên của nước Đại Cồ Việt.",
+      "Hành trình ngồi thuyền len lỏi qua Hang Sáng, Hang Tối, Hang Nấu Rượu hay Hang Địa Linh khiến du khách như bước vào một thế giới nơi con người và thiên nhiên hòa quyện."
+    ],
+    "highlights": [
+      { "number": "01", "title": "Di sản kép", "description": "Thiên nhiên, lịch sử và khảo cổ cùng hội tụ trong một quần thể hiếm có." },
+      { "number": "02", "title": "Hang xuyên thủy", "description": "Những dòng nước xanh nối các thung lũng đá vôi thành một hành trình liên hoàn." },
+      { "number": "03", "title": "Khởi đầu hành trình", "description": "Mỗi con thuyền và mỗi câu chuyện đều mở ra một dấu ấn của Sắc Cố Đô." }
+    ],
+    "galleryEyebrow": "Góc nhìn di sản",
+    "galleryTitle": "Hành trình xuyên lòng núi",
+    "galleryCaptions": ["Hang Sáng", "Kiến trúc cổ kính", "Sắc sen trên miền nước", "Dòng nước xanh giữa núi", "Bến thuyền Tràng An", "Núi đá vôi trùng điệp"],
+    "closingTitle": "Tìm lại vẻ bình yên trong trầm tích xanh",
+    "closingText": "Tràng An chào đón bạn bằng sự tĩnh lặng của núi và nhịp mái chèo khua nước nhẹ nhàng."
+  },
+  "en": {
+    "name": "Trang An",
+    "navName": "TRANG AN",
+    "eyebrow": "UNESCO World Heritage Site",
+    "title": "Trang An - A Journey Through a Thousand-Year Heritage",
+    "subtitle": "Where the beauty of Vietnam's nature, history, and culture converge.",
+    "featureCaption": "Honored by UNESCO in 2014 as Southeast Asia's first mixed heritage site.",
+    "sectionLabel": "Natural wonder",
+    "introTitle": "Ha Long Bay on Land",
+    "introParagraphs": [
+      "Recognized by UNESCO as a World Cultural and Natural Heritage Site in 2014, Trang An is the pride of Ninh Binh and Vietnam's first mixed heritage site.",
+      "Millions of years ago, this area was once a vast ancient sea. Geological transformation shaped a magnificent complex of limestone mountains and a unique system of water-filled caves.",
+      "Endless green mountain ranges are mirrored in crystal-clear water, creating a scene many visitors call \"Ha Long Bay on land.\""
+    ],
+    "storyTitle": "Waters That Hold the Memory of an Ancient Capital",
+    "storyParagraphs": [
+      "Trang An's beauty is not only natural. This land is deeply tied to the founding and growth of the ancient Hoa Lu capital.",
+      "During the Dinh and Early Le dynasties, the rugged limestone mountains and natural river system formed a protective wall around the first capital of Dai Co Viet.",
+      "A boat ride winding through Sang Cave, Toi Cave, Nau Ruou Cave, and Dia Linh Cave feels like stepping into a world where people and nature blend into one."
+    ],
+    "highlights": [
+      { "number": "01", "title": "A dual heritage", "description": "Nature, history, and archaeology converge in one rare complex." },
+      { "number": "02", "title": "Water-filled caves", "description": "Emerald streams link limestone valleys into one continuous journey." },
+      { "number": "03", "title": "Where the journey begins", "description": "Every boat and every story unlocks a mark of Sac Co Do." }
+    ],
+    "galleryEyebrow": "Heritage perspectives",
+    "galleryTitle": "A journey through the heart of the mountains",
+    "galleryCaptions": ["Sang Cave", "Timeless architecture", "Lotus hues on the water", "Emerald water amid the mountains", "Trang An boat dock", "Endless limestone peaks"],
+    "closingTitle": "Find peace in the green sediment of time",
+    "closingText": "Trang An welcomes you with the stillness of its mountains and the gentle rhythm of oars on the water."
+  }
+}

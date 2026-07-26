@@ -1,0 +1,90 @@
+{
+  "vi": {
+    "eyebrow": "Photobooth",
+    "title": "Khung ảnh lưu niệm của bạn",
+    "description": "Sau khi chụp ảnh check-in AR tại các danh thắng, những bức ảnh lưu niệm độc quyền của bạn sẽ được lưu giữ tại đây.",
+    "checkinCaptionPrefix": "Kỷ niệm check-in tại",
+    "defaultCaption": "Ảnh kỷ niệm",
+    "sampleCaption": "Ảnh mẫu Ninh Bình",
+    "arGuide": {
+      "closeAria": "Đóng",
+      "stepIndicatorPrefix": "Bước",
+      "narratorName": "Nibi Hướng Dẫn Viên",
+      "dontShowAgain": "Không hiển thị lại hướng dẫn này",
+      "back": "Quay lại",
+      "next": "Tiếp theo",
+      "start": "Bắt đầu ngay ✨",
+      "steps": [
+        {
+          "title": "Bước 1: Quét bề mặt đất",
+          "dialogue": "Xin chào bạn hữu! Hãy cùng tôi khám phá di sản nhé. Đầu tiên, bạn hãy lia camera điện thoại chậm rãi để quét sạch bề mặt sàn nhà hoặc mặt đất xung quanh.",
+          "badge": "Bước 1"
+        },
+        {
+          "title": "Bước 2: Chọn vị trí đặt Nibi",
+          "dialogue": "Tuyệt vời! Khi thấy vòng tròn vàng xuất hiện, bạn hãy chạm nhẹ tay lên vị trí đó để đặt tôi đứng vững trong không gian nhé.",
+          "badge": "Bước 2"
+        },
+        {
+          "title": "Bước 3: Chụp và lưu ảnh cùng Nibi",
+          "dialogue": "Cười lên nào! Bạn hãy căn chỉnh góc máy thật đẹp, xoay/phóng to thu nhỏ tôi cho hợp lý, rồi nhấn nút chụp ảnh để lưu giữ kỷ niệm vào thiết bị.",
+          "badge": "Bước 3"
+        },
+        {
+          "title": "Bước 4: Đóng dấu mộc hộ chiếu",
+          "dialogue": "Sắp hoàn thành rồi! Bây giờ bạn hãy tải bức ảnh vừa chụp lên website để hệ thống xác nhận và đóng con dấu mộc số lưu niệm vào cuốn hộ chiếu di sản nha.",
+          "badge": "Bước 4"
+        },
+        {
+          "title": "Bước 5: Chia sẻ hành trình di sản",
+          "dialogue": "Tuyệt vời ông mặt trời! Hãy chia sẻ khoảnh khắc đáng nhớ cùng Sắc Cố Đô để lưu giữ những kỷ niệm đẹp và tiếp tục hành trình di sản của bạn.",
+          "badge": "Bước 5"
+        }
+      ]
+    }
+  },
+  "en": {
+    "eyebrow": "Photobooth",
+    "title": "Your keepsake photo frame",
+    "description": "After taking AR check-in photos at each destination, your exclusive keepsake photos are kept here.",
+    "checkinCaptionPrefix": "Check-in memory at",
+    "defaultCaption": "Keepsake photo",
+    "sampleCaption": "Sample Ninh Binh photo",
+    "arGuide": {
+      "closeAria": "Close",
+      "stepIndicatorPrefix": "Step",
+      "narratorName": "Nibi the Guide",
+      "dontShowAgain": "Don't show this guide again",
+      "back": "Back",
+      "next": "Next",
+      "start": "Get started ✨",
+      "steps": [
+        {
+          "title": "Step 1: Scan the ground",
+          "dialogue": "Hello friend! Let's explore the heritage together. First, slowly move your phone's camera to scan the floor or ground around you.",
+          "badge": "Step 1"
+        },
+        {
+          "title": "Step 2: Choose where to place Nibi",
+          "dialogue": "Great! When the yellow circle appears, gently tap that spot to place me steadily in the space.",
+          "badge": "Step 2"
+        },
+        {
+          "title": "Step 3: Take and save a photo with Nibi",
+          "dialogue": "Smile! Frame your shot nicely, rotate/resize me as you like, then press the shutter button to save the memory to your device.",
+          "badge": "Step 3"
+        },
+        {
+          "title": "Step 4: Stamp your passport",
+          "dialogue": "Almost done! Now upload the photo you just took to the website so the system can confirm it and stamp your heritage passport.",
+          "badge": "Step 4"
+        },
+        {
+          "title": "Step 5: Share your heritage journey",
+          "dialogue": "Fantastic! Share this memorable moment with Sac Co Do to keep the memories alive and continue your heritage journey.",
+          "badge": "Step 5"
+        }
+      ]
+    }
+  }
+}

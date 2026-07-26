@@ -1,18 +1,23 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { stations, steps } from "../../data/sac-co-do";
+import { stations } from "../../data/sac-co-do";
 import { getPublicStations } from "../../lib/firebase/catalog";
 import JourneyMapSection from "./JourneyMapSection";
 import SiteFooter from "./SiteFooter";
 import SiteHeader from "./SiteHeader";
 import StationCard from "./StationCard";
 import { useFirebaseAuth } from "./FirebaseAuthProvider";
+import { translate, useI18n } from "./I18nProvider";
+import journeyDict from "../../locales/journey.json";
 import { Lock } from "lucide-react";
 import Lottie from "lottie-react";
 
 export default function JourneyPage() {
   const { user, db, profile, loading } = useFirebaseAuth();
+  const { locale } = useI18n();
+  const tj = (key) => translate(journeyDict, locale, key);
+  const steps = journeyDict[locale]?.steps || journeyDict.vi.steps;
   const [journeyStations, setJourneyStations] = useState(stations);
   const [nibiData, setNibiData] = useState(null);
   const [visitedIds, setVisitedIds] = useState([]);
@@ -100,9 +105,9 @@ export default function JourneyPage() {
         <section className="page-title-banner">
           <img src="/assets/anh-new/cover photo.jpg" alt="" aria-hidden="true" />
           <div>
-            <p className="eyebrow">Hành trình</p>
-            <h1>Bản đồ 6 trạm văn hóa Ninh Bình</h1>
-            <p>Mỗi trạm được thiết kế để người dùng có lý do dừng lại, quét QR và ghi dấu vào passport.</p>
+            <p className="eyebrow">{tj("banner.eyebrow")}</p>
+            <h1>{tj("banner.title")}</h1>
+            <p>{tj("banner.description")}</p>
           </div>
         </section>
 
@@ -126,8 +131,7 @@ export default function JourneyPage() {
                 </div>
                 <div className="nibi-guide-text">
                   <p>
-                    <strong>Nibi:</strong> &ldquo;Hãy theo sát lộ trình 3 bước dưới đây để kết nối trọn vẹn di sản
-                    Ninh Bình và mở khóa các phần quà hấp dẫn!&rdquo;
+                    <strong>{tj("nibi.label")}</strong> &ldquo;{tj("nibi.text")}&rdquo;
                   </p>
                 </div>
               </div>
@@ -154,18 +158,17 @@ export default function JourneyPage() {
                 <div className="lock-icon-container">
                   <Lock />
                 </div>
-                <h2>Mở Khóa Hành Trình Của Bạn</h2>
+                <h2>{tj("lock.title")}</h2>
                 <p>
-                  Bản đồ di sản và thông tin chi tiết các trạm văn hóa Ninh Bình đang được bảo vệ.
-                  Vui lòng kích hoạt Hộ chiếu di sản để bắt đầu ghi dấu bước chân và nhận các ưu đãi đặc quyền!
+                  {tj("lock.text")}
                 </p>
                 <div className="journey-lock-actions">
                   <a href="/kich-hoat" className="btn primary">
-                    Kích hoạt Hộ chiếu ngay
+                    {tj("lock.activateCta")}
                   </a>
                   {!user && (
                     <a href="/dang-nhap" className="btn secondary">
-                      Đăng nhập tài khoản
+                      {tj("lock.loginCta")}
                     </a>
                   )}
                 </div>
@@ -191,8 +194,7 @@ export default function JourneyPage() {
               </div>
               <div className="nibi-guide-text">
                 <p>
-                  <strong>Nibi:</strong> &ldquo;Hãy theo sát lộ trình 3 bước dưới đây để kết nối trọn vẹn di sản
-                  Ninh Bình và mở khóa các phần quà hấp dẫn!&rdquo;
+                  <strong>{tj("nibi.label")}</strong> &ldquo;{tj("nibi.text")}&rdquo;
                 </p>
               </div>
             </div>

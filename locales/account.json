@@ -1,0 +1,204 @@
+{
+  "vi": {
+    "banner": { "eyebrow": "Tài khoản", "title": "Của tôi", "description": "Quản lý thông tin cá nhân, theo dõi hành trình và certificate di sản của bạn." },
+    "profile": {
+      "ariaLabel": "Thông tin cá nhân",
+      "heading": "Thông tin cá nhân",
+      "guestPromptPrefix": "Bạn đang truy cập ở chế độ",
+      "guestLabel": "Khách tham quan",
+      "guestPromptSuffix": ". Đăng nhập để đồng bộ tiến trình và certificate.",
+      "loginNow": "Đăng nhập ngay",
+      "fullNameLabel": "Họ và tên",
+      "fullNamePlaceholder": "Nhập họ và tên...",
+      "emailLabel": "Email",
+      "notLoggedIn": "Chưa đăng nhập",
+      "phoneLabel": "Số điện thoại",
+      "phonePlaceholder": "Nhập số điện thoại...",
+      "saving": "Đang lưu...",
+      "save": "Lưu thay đổi",
+      "logout": "Đăng xuất tài khoản",
+      "toast": {
+        "nameRequired": "Vui lòng nhập họ và tên.",
+        "updateSuccess": "Cập nhật thông tin thành công.",
+        "updateError": "Không thể cập nhật thông tin. Vui lòng thử lại.",
+        "logoutSuccess": "Bạn đã đăng xuất thành công."
+      }
+    },
+    "certs": {
+      "ariaLabel": "Certificate di sản",
+      "headingPrefix": "Certificate đạt được",
+      "achieved": "Đã đạt",
+      "notAchieved": "Chưa đạt",
+      "claim": "Nhận certificate",
+      "progressPrefix": "Tiến trình:",
+      "progressSuffix": "chặng",
+      "items": {
+        "beginner": { "title": "Kẻ lữ hành tò mò", "description": "Đã ghé thăm 2 địa điểm di sản" },
+        "photographer": { "title": "Nhiếp ảnh gia Cố đô", "description": "Check-in tại 4 địa điểm" },
+        "champion": { "title": "Nhà chinh phục Cố đô", "description": "Đóng đủ 6 dấu mốc di sản" }
+      }
+    },
+    "orders": {
+      "heading": "Đơn hàng của tôi",
+      "description": "Theo dõi trạng thái xử lý, thanh toán và giao hàng ngay trong tài khoản.",
+      "loadingTitle": "Đang tải đơn hàng...",
+      "loadingDesc": "Hệ thống đang lấy lịch sử đơn hàng từ Firebase.",
+      "loginTitle": "Đăng nhập để xem đơn hàng",
+      "loginDesc": "Lịch sử đơn hàng được gắn theo tài khoản Firebase của bạn.",
+      "loginCta": "Đăng nhập ngay",
+      "emptyTitle": "Chưa có đơn hàng nào",
+      "emptyDesc": "Sau khi đặt hàng từ giỏ hàng, đơn sẽ hiện tại đây để bạn và admin cùng theo dõi.",
+      "emptyCta": "Khám phá sản phẩm",
+      "selectTitle": "Chọn một đơn hàng",
+      "selectDesc": "Chi tiết xử lý, timeline và danh sách sản phẩm sẽ hiện ở đây khi bạn chọn một đơn hàng.",
+      "trackLabel": "Theo dõi đơn hàng",
+      "paymentMethodLabel": "Phương thức thanh toán:",
+      "lastUpdatedLabel": "Cập nhật gần nhất",
+      "recipientLabel": "Người nhận",
+      "noContact": "Chưa có thông tin liên hệ",
+      "noValue": "Chưa có",
+      "totalLabel": "Tổng thanh toán",
+      "subtotalLabel": "Tạm tính",
+      "shippingLabel": "Ship",
+      "productsHeading": "Sản phẩm",
+      "quantityLabel": "Số lượng:",
+      "defaultProductName": "Sản phẩm",
+      "timelineHeading": "Timeline",
+      "noTimelineTitle": "Chưa có mốc timeline",
+      "noTimelineDesc": "Hệ thống sẽ hiện các mốc tạo đơn, thanh toán, giao hàng và hoàn thành tại đây.",
+      "orderStatus": {
+        "pending": "Chờ xử lý",
+        "paid": "Đã thanh toán",
+        "shipping": "Đang giao",
+        "completed": "Hoàn thành",
+        "cancelled": "Đã hủy",
+        "failed": "Thất bại"
+      },
+      "paymentStatus": {
+        "pending": "Chờ thanh toán",
+        "paid": "Đã thanh toán",
+        "failed": "Thất bại",
+        "refunded": "Đã hoàn tiền"
+      },
+      "timelineMessages": {
+        "default": "Cập nhật đơn hàng",
+        "paymentConfirmed": "Xác nhận thanh toán thành công",
+        "paymentFailed": "Thanh toán không thành công",
+        "paymentStatusUpdate": "Cập nhật trạng thái thanh toán",
+        "checkoutInit": "Khởi tạo phiên thanh toán",
+        "pendingPaymentOrder": "Người dùng tạo đơn chờ thanh toán"
+      }
+    },
+    "modal": {
+      "closeAria": "Đóng",
+      "title": "Chứng nhận di sản",
+      "hint": "Họ tên in trên chứng chỉ:",
+      "namePlaceholder": "Nhập họ tên nhận chứng chỉ...",
+      "downloading": "Đang tạo...",
+      "download": "Tải xuống certificate (PNG)",
+      "defaultName": "Lữ khách di sản",
+      "defaultNameFallback": "Lữ khách hiếu kỳ"
+    }
+  },
+  "en": {
+    "banner": { "eyebrow": "Account", "title": "My account", "description": "Manage your personal details and track your heritage journey and certificates." },
+    "profile": {
+      "ariaLabel": "Personal information",
+      "heading": "Personal information",
+      "guestPromptPrefix": "You're browsing as a",
+      "guestLabel": "Guest visitor",
+      "guestPromptSuffix": ". Log in to sync your progress and certificates.",
+      "loginNow": "Log in now",
+      "fullNameLabel": "Full name",
+      "fullNamePlaceholder": "Enter your full name...",
+      "emailLabel": "Email",
+      "notLoggedIn": "Not logged in",
+      "phoneLabel": "Phone number",
+      "phonePlaceholder": "Enter your phone number...",
+      "saving": "Saving...",
+      "save": "Save changes",
+      "logout": "Log out",
+      "toast": {
+        "nameRequired": "Please enter your full name.",
+        "updateSuccess": "Profile updated successfully.",
+        "updateError": "Couldn't update your profile. Please try again.",
+        "logoutSuccess": "You've been logged out successfully."
+      }
+    },
+    "certs": {
+      "ariaLabel": "Heritage certificates",
+      "headingPrefix": "Certificates earned",
+      "achieved": "Earned",
+      "notAchieved": "Not yet",
+      "claim": "Claim certificate",
+      "progressPrefix": "Progress:",
+      "progressSuffix": "stops",
+      "items": {
+        "beginner": { "title": "Curious Wanderer", "description": "Visited 2 heritage sites" },
+        "photographer": { "title": "Ancient Capital Photographer", "description": "Checked in at 4 sites" },
+        "champion": { "title": "Ancient Capital Conqueror", "description": "Collected all 6 heritage stamps" }
+      }
+    },
+    "orders": {
+      "heading": "My orders",
+      "description": "Track processing, payment, and shipping status right from your account.",
+      "loadingTitle": "Loading orders...",
+      "loadingDesc": "Fetching your order history from Firebase.",
+      "loginTitle": "Log in to view orders",
+      "loginDesc": "Your order history is linked to your Firebase account.",
+      "loginCta": "Log in now",
+      "emptyTitle": "No orders yet",
+      "emptyDesc": "After you place an order, it will appear here for you and admins to track.",
+      "emptyCta": "Browse products",
+      "selectTitle": "Select an order",
+      "selectDesc": "Processing details, timeline, and product list will appear here once you select an order.",
+      "trackLabel": "Track order",
+      "paymentMethodLabel": "Payment method:",
+      "lastUpdatedLabel": "Last updated",
+      "recipientLabel": "Recipient",
+      "noContact": "No contact information",
+      "noValue": "None yet",
+      "totalLabel": "Total",
+      "subtotalLabel": "Subtotal",
+      "shippingLabel": "Shipping",
+      "productsHeading": "Products",
+      "quantityLabel": "Qty:",
+      "defaultProductName": "Product",
+      "timelineHeading": "Timeline",
+      "noTimelineTitle": "No timeline entries yet",
+      "noTimelineDesc": "Order creation, payment, shipping, and completion milestones will appear here.",
+      "orderStatus": {
+        "pending": "Pending",
+        "paid": "Paid",
+        "shipping": "Shipping",
+        "completed": "Completed",
+        "cancelled": "Cancelled",
+        "failed": "Failed"
+      },
+      "paymentStatus": {
+        "pending": "Awaiting payment",
+        "paid": "Paid",
+        "failed": "Failed",
+        "refunded": "Refunded"
+      },
+      "timelineMessages": {
+        "default": "Order update",
+        "paymentConfirmed": "Payment confirmed successfully",
+        "paymentFailed": "Payment failed",
+        "paymentStatusUpdate": "Payment status updated",
+        "checkoutInit": "Checkout session started",
+        "pendingPaymentOrder": "Order created, awaiting payment"
+      }
+    },
+    "modal": {
+      "closeAria": "Close",
+      "title": "Heritage certificate",
+      "hint": "Name printed on the certificate:",
+      "namePlaceholder": "Enter the name for the certificate...",
+      "downloading": "Generating...",
+      "download": "Download certificate (PNG)",
+      "defaultName": "Heritage traveler",
+      "defaultNameFallback": "Curious traveler"
+    }
+  }
+}

@@ -1,0 +1,138 @@
+{
+  "vi": {
+    "stops": {
+      "trang-an": { "title": "Tràng An", "subtitle": "Quần thể danh thắng" },
+      "hoa-lu": { "title": "Hoa Lư", "subtitle": "Cố đô ngàn năm" },
+      "tam-coc": { "title": "Tam Cốc", "subtitle": "Vịnh Hạ Long trên cạn" },
+      "bai-dinh": { "title": "Bái Đính", "subtitle": "Tâm linh hội tụ" },
+      "hang-mua": { "title": "Hang Múa", "subtitle": "Đỉnh cao tầm mắt" },
+      "pho-co-hoa-lu": { "title": "Phố Cổ Hoa Lư", "subtitle": "Sắc sặc sỡ đèn đêm" }
+    },
+    "stampCard": {
+      "memoryAltPrefix": "Kỷ niệm",
+      "memoryCaptionPrefix": "Kỷ niệm",
+      "photographedLabel": "Đã chụp",
+      "stampAltPrefix": "Dấu mộc",
+      "exploreOnMap": "Khám phá trên Bản đồ hành trình"
+    },
+    "viewer": {
+      "zoomOut": "Thu nhỏ",
+      "zoomIn": "Phóng to",
+      "reset": "Đặt lại",
+      "close": "Đóng",
+      "photoAltPrefix": "Ảnh kỷ niệm tại",
+      "captionPrefix": "Kỷ niệm"
+    },
+    "certModal": {
+      "closeAria": "Đóng",
+      "title": "Chứng Nhận Di Sản",
+      "hint": "Họ tên in trên chứng chỉ:",
+      "namePlaceholder": "Nhập họ tên nhận chứng nhận...",
+      "downloading": "Đang tạo...",
+      "download": "Tải xuống Chứng nhận (PNG)",
+      "defaultName": "Lữ khách hiếu kỳ"
+    },
+    "banner": {
+      "eyebrow": "Hộ chiếu hành trình",
+      "title": "Hộ Chiếu Di Sản",
+      "description": "Nơi lưu giữ dấu ấn của những bước chân khám phá vùng đất Cố đô nghìn năm văn hiến. Mỗi điểm dừng chân là một câu chuyện, mỗi con dấu là một kỷ niệm vô giá.",
+      "progressAriaPrefix": "Tiến trình khám phá",
+      "progressLabel": "Tiến trình khám phá"
+    },
+    "progressCard": {
+      "ariaLabel": "Tiến độ hộ chiếu",
+      "label": "Tiến độ",
+      "stopsSuffix": "trạm",
+      "summaryPrefix": "Bạn đã hoàn thành",
+      "summarySuffix": "hành trình di sản Ninh Bình"
+    },
+    "stampGridAria": "Các dấu mộc hành trình",
+    "achievements": {
+      "heading": "Thành tựu của bạn",
+      "claim": "Chứng nhận",
+      "locked": "Chưa đạt",
+      "items": {
+        "beginner": { "title": "Kẻ lữ hành tò mò", "description": "Đã ghé thăm 2 địa điểm di sản" },
+        "photographer": { "title": "Nhiếp ảnh gia Cố đô", "description": "Check-in tại 4 địa điểm" },
+        "champion": { "title": "Nhà chinh phục Cố đô", "description": "Đóng đủ 6 dấu mộc di sản" }
+      }
+    },
+    "defaultUserName": "Lữ khách di sản",
+    "story": {
+      "quote": "“Mỗi con đường ta đi, mỗi ngọn núi ta qua đều để lại một dấu ấn trong lòng...”",
+      "paragraph": "Hành trình của bạn tại Ninh Bình mới chỉ bắt đầu. Tiếp tục khám phá để lấp đầy những trang hộ chiếu di sản và nhận những phần quà bất ngờ từ Ban quản lý khu du lịch.",
+      "continueJourney": "Tiếp tục hành trình",
+      "shareResult": "Chia sẻ kết quả",
+      "memoryImageAlt": "Kỷ niệm hành trình Tràng An"
+    },
+    "mobileActionsAria": "Hành động hộ chiếu"
+  },
+  "en": {
+    "stops": {
+      "trang-an": { "title": "Trang An", "subtitle": "Landscape complex" },
+      "hoa-lu": { "title": "Hoa Lu", "subtitle": "Thousand-year ancient capital" },
+      "tam-coc": { "title": "Tam Coc", "subtitle": "Ha Long Bay on land" },
+      "bai-dinh": { "title": "Bai Dinh", "subtitle": "A spiritual gathering place" },
+      "hang-mua": { "title": "Hang Mua", "subtitle": "The finest viewpoint" },
+      "pho-co-hoa-lu": { "title": "Hoa Lu Old Quarter", "subtitle": "Vibrant with evening lanterns" }
+    },
+    "stampCard": {
+      "memoryAltPrefix": "Memory at",
+      "memoryCaptionPrefix": "Memory at",
+      "photographedLabel": "Captured",
+      "stampAltPrefix": "Stamp",
+      "exploreOnMap": "Discover on the journey map"
+    },
+    "viewer": {
+      "zoomOut": "Zoom out",
+      "zoomIn": "Zoom in",
+      "reset": "Reset",
+      "close": "Close",
+      "photoAltPrefix": "Keepsake photo at",
+      "captionPrefix": "Memory at"
+    },
+    "certModal": {
+      "closeAria": "Close",
+      "title": "Heritage Certificate",
+      "hint": "Name printed on the certificate:",
+      "namePlaceholder": "Enter the name for the certificate...",
+      "downloading": "Generating...",
+      "download": "Download certificate (PNG)",
+      "defaultName": "Curious traveler"
+    },
+    "banner": {
+      "eyebrow": "Journey passport",
+      "title": "Heritage Passport",
+      "description": "A keepsake of every step taken discovering the thousand-year ancient capital. Every stop is a story, every stamp a priceless memory.",
+      "progressAriaPrefix": "Discovery progress",
+      "progressLabel": "Discovery progress"
+    },
+    "progressCard": {
+      "ariaLabel": "Passport progress",
+      "label": "Progress",
+      "stopsSuffix": "stops",
+      "summaryPrefix": "You've completed",
+      "summarySuffix": "of the Ninh Binh heritage journey"
+    },
+    "stampGridAria": "Journey stamps",
+    "achievements": {
+      "heading": "Your achievements",
+      "claim": "Certificate",
+      "locked": "Not yet",
+      "items": {
+        "beginner": { "title": "Curious Wanderer", "description": "Visited 2 heritage sites" },
+        "photographer": { "title": "Ancient Capital Photographer", "description": "Checked in at 4 sites" },
+        "champion": { "title": "Ancient Capital Conqueror", "description": "Collected all 6 heritage stamps" }
+      }
+    },
+    "defaultUserName": "Heritage traveler",
+    "story": {
+      "quote": "\"Every road we take, every mountain we cross leaves its mark on our heart...\"",
+      "paragraph": "Your journey through Ninh Binh has only just begun. Keep exploring to fill every page of your heritage passport and unlock surprise gifts from the tourism management board.",
+      "continueJourney": "Continue the journey",
+      "shareResult": "Share your results",
+      "memoryImageAlt": "Trang An journey memory"
+    },
+    "mobileActionsAria": "Passport actions"
+  }
+}

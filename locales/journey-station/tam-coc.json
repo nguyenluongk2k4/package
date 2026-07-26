@@ -1,0 +1,34 @@
+{
+  "vi": {
+    "qrLocation": "Bến Văn Lâm — khu vực chờ thuyền, gần cây cổ thụ",
+    "qrDescription": "Mã QR đặt trên thân cây cổ thụ gần bến thuyền Văn Lâm, phía bên phải lối xuống thuyền.",
+    "qrDetails": [
+      "QR được đặt trong khung gỗ nhỏ đóng trên thân cây",
+      "Cao khoảng 1.5m, dễ quét",
+      "Có mái che nhỏ bằng lá"
+    ],
+    "hints": [
+      "Vào bến thuyền Văn Lâm (điểm xuất phát Tam Cốc)",
+      "Đi qua khu vực mua vé",
+      "Trước khi xuống bến, nhìn bên phải",
+      "Cây cổ thụ lớn có tán rộng — QR trên thân cây"
+    ],
+    "tips": "Quét QR trước khi lên thuyền. Mùa lúa chín (tháng 5-6, 9-10) cảnh đẹp nhất."
+  },
+  "en": {
+    "qrLocation": "Van Lam dock — boat-waiting area, near the old tree",
+    "qrDescription": "The QR code is placed on the trunk of an old tree near Van Lam boat dock, on the right side of the path down to the boats.",
+    "qrDetails": [
+      "QR is set in a small wooden frame nailed to the tree trunk",
+      "About 1.5m high, easy to scan",
+      "Has a small leaf-thatched cover"
+    ],
+    "hints": [
+      "Enter Van Lam boat dock (the Tam Coc starting point)",
+      "Walk past the ticket area",
+      "Before heading down to the dock, look to the right",
+      "A large old tree with a wide canopy — the QR is on its trunk"
+    ],
+    "tips": "Scan the QR before boarding the boat. Ripening rice season (May-June, September-October) offers the best scenery."
+  }
+}

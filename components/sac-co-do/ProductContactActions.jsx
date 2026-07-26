@@ -2,6 +2,8 @@
 
 import { MessageCircle, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { translate, useI18n } from "./I18nProvider";
+import productDetailDict from "../../locales/product-detail.json";
 
 const FACEBOOK_PAGE_URL = "https://www.facebook.com/saccodo.official";
 
@@ -12,15 +14,17 @@ function isMobileDevice() {
     (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 }
 
-function buildContext(product, option, quantity = 1) {
-  const parts = [product?.name, option?.label, quantity > 1 ? `Số lượng ${quantity}` : "Số lượng 1"].filter(Boolean);
+function buildContext(product, option, quantity = 1, quantityPrefix = "Số lượng") {
+  const parts = [product?.name, option?.label, `${quantityPrefix} ${quantity > 1 ? quantity : 1}`].filter(Boolean);
   return parts.join(" · ");
 }
 
 export default function ProductContactActions({ product, option = null, quantity = 1, facebookUrl = "", zaloUrl = "", compact = false }) {
   const [open, setOpen] = useState(false);
   const [useMessenger, setUseMessenger] = useState(false);
-  const context = buildContext(product, option, quantity);
+  const { locale } = useI18n();
+  const td = (key) => translate(productDetailDict, locale, key);
+  const context = buildContext(product, option, quantity, td("contact.quantityPrefix"));
   const resolvedFacebookUrl = facebookUrl ? (useMessenger ? facebookUrl : FACEBOOK_PAGE_URL) : "";
   const availableLinks = [resolvedFacebookUrl, zaloUrl].filter(Boolean);
 
@@ -29,22 +33,22 @@ export default function ProductContactActions({ product, option = null, quantity
   }, []);
 
   if (!availableLinks.length) {
-    return <small className="product-contact-note">Kênh liên hệ đang được cập nhật.</small>;
+    return <small className="product-contact-note">{td("contact.unavailable")}</small>;
   }
 
   if (!compact) {
     return (
-      <div className="product-contact-actions is-direct" aria-label="Kênh liên hệ">
+      <div className="product-contact-actions is-direct" aria-label={td("contact.channelsAria")}>
         {resolvedFacebookUrl ? (
-          <a href={resolvedFacebookUrl} target="_blank" rel="noreferrer" className="product-contact-button facebook" aria-label={`Nhắn Facebook về ${context}`}>
+          <a href={resolvedFacebookUrl} target="_blank" rel="noreferrer" className="product-contact-button facebook" aria-label={`${td("contact.facebookAriaPrefix")} ${context}`}>
             <img src="/assets/icons/ic-facebook.webp" alt="" aria-hidden="true" />
-            <span>Liên hệ qua Facebook</span>
+            <span>{td("contact.facebookMessage")}</span>
           </a>
         ) : null}
         {zaloUrl ? (
-          <a href={zaloUrl} target="_blank" rel="noreferrer" className="product-contact-button zalo" aria-label={`Nhắn Zalo về ${context}`}>
+          <a href={zaloUrl} target="_blank" rel="noreferrer" className="product-contact-button zalo" aria-label={`${td("contact.zaloAriaPrefix")} ${context}`}>
             <img src="/assets/icons/ic-zalo.webp" alt="" aria-hidden="true" />
-            <span>Liên hệ qua Zalo</span>
+            <span>{td("contact.zaloMessage")}</span>
           </a>
         ) : null}
       </div>
@@ -61,24 +65,24 @@ export default function ProductContactActions({ product, option = null, quantity
           event.stopPropagation();
           setOpen((value) => !value);
         }}
-        aria-label={open ? "Đóng lựa chọn liên hệ" : `Liên hệ đặt hàng ${context}`}
+        aria-label={open ? td("contact.toggleClose") : `${td("contact.toggleOpenPrefix")} ${context}`}
         aria-expanded={open}
-        title="Liên hệ đặt hàng"
+        title={td("contact.toggleTitle")}
       >
         {open ? <X size={18} aria-hidden="true" /> : <MessageCircle size={18} aria-hidden="true" />}
-        {!compact ? <span>Liên hệ</span> : null}
+        {!compact ? <span>{td("contact.toggleLabel")}</span> : null}
       </button>
-      <div className="product-contact-links" aria-label="Kênh liên hệ">
+      <div className="product-contact-links" aria-label={td("contact.channelsAria")}>
         {resolvedFacebookUrl ? (
-          <a href={resolvedFacebookUrl} target="_blank" rel="noreferrer" className="product-contact-button facebook" onClick={(event) => event.stopPropagation()} aria-label={`Nhắn Facebook về ${context}`} title="Facebook">
+          <a href={resolvedFacebookUrl} target="_blank" rel="noreferrer" className="product-contact-button facebook" onClick={(event) => event.stopPropagation()} aria-label={`${td("contact.facebookAriaPrefix")} ${context}`} title="Facebook">
             <img src="/assets/icons/ic-facebook.webp" alt="" aria-hidden="true" />
-            <span>Liên hệ qua Facebook</span>
+            <span>{td("contact.facebookMessage")}</span>
           </a>
         ) : null}
         {zaloUrl ? (
-          <a href={zaloUrl} target="_blank" rel="noreferrer" className="product-contact-button zalo" onClick={(event) => event.stopPropagation()} aria-label={`Nhắn Zalo về ${context}`} title="Zalo">
+          <a href={zaloUrl} target="_blank" rel="noreferrer" className="product-contact-button zalo" onClick={(event) => event.stopPropagation()} aria-label={`${td("contact.zaloAriaPrefix")} ${context}`} title="Zalo">
             <img src="/assets/icons/ic-zalo.webp" alt="" aria-hidden="true" />
-            <span>Liên hệ qua Zalo</span>
+            <span>{td("contact.zaloMessage")}</span>
           </a>
         ) : null}
       </div>

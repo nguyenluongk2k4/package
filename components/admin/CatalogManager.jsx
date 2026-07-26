@@ -188,6 +188,13 @@ function RepeatableVariantList({ label, values = [], onChange }) {
               style={{ flex: 2 }}
             />
             <input
+              type="text"
+              placeholder="Nhãn tiếng Anh (ví dụ: 275g jar)"
+              value={item.label_en || ""}
+              onChange={(e) => updateItem(index, "label_en", e.target.value)}
+              style={{ flex: 2 }}
+            />
+            <input
               type="number"
               placeholder="Giá (ví dụ: 175000)"
               value={item.price || ""}
@@ -277,8 +284,15 @@ function ProductFields({ selected, setField, setNested, uploadFile, uploadInline
               <TextField label="Slug" value={selected.slug} onChange={(value) => setField("slug", value)} />
             </div>
             <div className="admin-form-row">
+              <TextField label="Tên sản phẩm (English)" value={selected.name_en || ""} onChange={(value) => setField("name_en", value)} />
+            </div>
+            <div className="admin-form-row">
               <TextField label="Tên ngắn (shortName)" value={selected.shortName} onChange={(value) => setField("shortName", value)} />
               <TextField label="Danh mục (category)" value={selected.category} onChange={(value) => setField("category", value)} />
+            </div>
+            <div className="admin-form-row">
+              <TextField label="Tên ngắn (English)" value={selected.shortName_en || ""} onChange={(value) => setField("shortName_en", value)} />
+              <TextField label="Danh mục (English)" value={selected.category_en || ""} onChange={(value) => setField("category_en", value)} />
             </div>
             <div className="admin-form-row">
               <TextField label="Giá tiền (price)" value={selected.price} type="number" onChange={(value) => setField("price", value)} />
@@ -289,7 +303,13 @@ function ProductFields({ selected, setField, setNested, uploadFile, uploadInline
               <TextField label="Nhãn ưu đãi (saleLabel)" value={selected.saleLabel || ""} onChange={(value) => setField("saleLabel", value)} />
             </div>
             <div className="admin-form-row">
+              <TextField label="Nhãn ưu đãi (English)" value={selected.saleLabel_en || ""} onChange={(value) => setField("saleLabel_en", value)} />
+            </div>
+            <div className="admin-form-row">
               <TextField label="Badge nổi bật" value={selected.badge} onChange={(value) => setField("badge", value)} />
+              <TextField label="Badge nổi bật (English)" value={selected.badge_en || ""} onChange={(value) => setField("badge_en", value)} />
+            </div>
+            <div className="admin-form-row">
               <StatusFields selected={selected} setField={setField} />
             </div>
           </div>
@@ -315,16 +335,27 @@ function ProductFields({ selected, setField, setNested, uploadFile, uploadInline
         {activeTab === "details" && (
           <div className="admin-form-section">
             <TextArea label="Mô tả ngắn" value={selected.description} onChange={(value) => setField("description", value)} />
+            <TextArea label="Mô tả ngắn (English)" value={selected.description_en || ""} onChange={(value) => setField("description_en", value)} />
             <TextField label="Tiêu đề câu chuyện (storyTitle)" value={selected.storyTitle || ""} onChange={(value) => setField("storyTitle", value)} />
+            <TextField label="Tiêu đề câu chuyện (English)" value={selected.storyTitle_en || ""} onChange={(value) => setField("storyTitle_en", value)} />
             <TextArea label="Câu chuyện di sản (story)" value={selected.story || ""} onChange={(value) => setField("story", value)} />
+            <TextArea label="Câu chuyện di sản (English)" value={selected.story_en || ""} onChange={(value) => setField("story_en", value)} />
             <TextArea label="Thành phần (ingredients)" value={selected.ingredients || ""} onChange={(value) => setField("ingredients", value)} />
+            <TextArea label="Thành phần (English)" value={selected.ingredients_en || ""} onChange={(value) => setField("ingredients_en", value)} />
             <TextArea label="Hướng dẫn sử dụng (usage)" value={selected.usage || ""} onChange={(value) => setField("usage", value)} />
+            <TextArea label="Hướng dẫn sử dụng (English)" value={selected.usage_en || ""} onChange={(value) => setField("usage_en", value)} />
             <div className="admin-form-row">
               <TextField label="Hạn sử dụng (shelfLife)" value={selected.shelfLife || ""} onChange={(value) => setField("shelfLife", value)} />
               <TextField label="Cách bảo quản (storage)" value={selected.storage || ""} onChange={(value) => setField("storage", value)} />
             </div>
+            <div className="admin-form-row">
+              <TextField label="Hạn sử dụng (English)" value={selected.shelfLife_en || ""} onChange={(value) => setField("shelfLife_en", value)} />
+              <TextField label="Cách bảo quản (English)" value={selected.storage_en || ""} onChange={(value) => setField("storage_en", value)} />
+            </div>
             <TextArea label="Lưu ý (note)" value={selected.note || ""} onChange={(value) => setField("note", value)} />
+            <TextArea label="Lưu ý (English)" value={selected.note_en || ""} onChange={(value) => setField("note_en", value)} />
             <TextArea label="Ghi chú ưu đãi (saleNote)" value={selected.saleNote || ""} onChange={(value) => setField("saleNote", value)} />
+            <TextArea label="Ghi chú ưu đãi (English)" value={selected.saleNote_en || ""} onChange={(value) => setField("saleNote_en", value)} />
           </div>
         )}
 

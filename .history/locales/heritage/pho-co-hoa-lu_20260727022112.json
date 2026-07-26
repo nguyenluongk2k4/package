@@ -1,0 +1,72 @@
+{
+  "vi": {
+    "name": "Phố Cổ Hoa Lư",
+    "navName": "PHỐ CỔ",
+    "eyebrow": "Nơi quá khứ và hiện tại giao hòa",
+    "title": "Phố Cổ Hoa Lư",
+    "subtitle": "Không gian văn hóa bên hồ Kỳ Lân, rực sáng khi màn đêm buông xuống.",
+    "featureCaption": "Mái cong, đèn lồng và nhịp phố tạo nên một không gian vừa cổ kính vừa sống động.",
+    "sectionLabel": "Di sản kiến trúc",
+    "introTitle": "Giao thoa văn hóa giữa lòng di sản",
+    "introParagraphs": [
+      "Khi màn đêm buông xuống, Phố Cổ Hoa Lư khoác lên mình vẻ đẹp lung linh và đầy sức sống.",
+      "Những mái ngói cong, đèn lồng rực rỡ và các công trình lấy cảm hứng kiến trúc Đại Việt tạo nên không gian gần gũi và hoài niệm.",
+      "Nằm bên hồ Kỳ Lân, đây là một trong những điểm đến mới nổi của Ninh Bình, được xây dựng với cảm hứng từ kiến trúc truyền thống Đại Việt, tái hiện không gian văn hóa đặc trưng của vùng đất cố đô.",
+      "Không giống những khu phố cổ lâu đời hình thành qua hàng trăm năm lịch sử, Phố Cổ Hoa Lư là sự giao thoa giữa nét đẹp truyền thống và hơi thở hiện đại."
+    ],
+    "storyTitle": "Hương vị Cố Đô",
+    "storyParagraphs": [
+      "Dạo bước trên những con phố nhỏ, du khách có thể thưởng thức cơm cháy, thịt dê núi, miến lươn hoặc khám phá các gian hàng lưu niệm địa phương.",
+      "Không khí nhộn nhịp của các quán cà phê, khu chợ đêm và các hoạt động biểu diễn nghệ thuật truyền thống đã biến nơi đây trở thành điểm đến hấp dẫn dành cho cả người dân địa phương lẫn du khách.",
+      "Vào những dịp cuối tuần hay lễ hội, Phố Cổ Hoa Lư thường xuyên tổ chức các chương trình biểu diễn văn hóa, múa lân, hát chèo và nhiều hoạt động nghệ thuật dân gian đặc sắc.",
+      "Những âm thanh quen thuộc của văn hóa truyền thống hòa quyện cùng ánh đèn lung linh bên hồ Kỳ Lân đã tạo nên một bầu không khí rất riêng mà khó nơi nào có được.",
+      "Đối với nhiều du khách, Phố Cổ Hoa Lư không chỉ đơn thuần là một điểm vui chơi về đêm mà còn là nơi lưu giữ những khoảnh khắc đáng nhớ trong hành trình khám phá Ninh Bình.",
+      "Khép lại hành trình tại Phố Cổ Hoa Lư, mỗi du khách không chỉ mang về những bức ảnh đẹp mà còn mang theo những câu chuyện, những ký ức và những dấu ấn đặc biệt của vùng đất cố đô."
+    ],
+    "highlights": [
+      { "number": "01", "title": "Cơm cháy Thiên Hương", "description": "Món quà giòn thơm, gói gọn hương vị Ninh Bình." },
+      { "number": "02", "title": "Thịt dê núi Hoa Lư", "description": "Hương vị đặc trưng của vùng núi đá, thường xuất hiện trong trải nghiệm ẩm thực địa phương." },
+      { "number": "03", "title": "Quà tặng thủ công", "description": "Những món lưu niệm nhỏ giúp du khách mang về ký ức của chuyến đi." }
+    ],
+    "galleryEyebrow": "Khoảnh khắc Phố Cổ",
+    "galleryTitle": "Ánh đèn bên hồ Kỳ Lân",
+    "galleryCaptions": ["Phố cổ về đêm", "Không gian mái ngói", "Đèn lồng bên hồ", "Nhịp phố bên nước", "Ánh đèn vàng", "Cầu soi bóng"],
+    "closingTitle": "Lưu giữ hành trình - Chạm đến di sản",
+    "closingText": "Hãy để Phố Cổ Hoa Lư giữ lại trong tim bạn bằng những khoảnh khắc nhiệm màu của hành trình."
+  },
+  "en": {
+    "name": "Hoa Lu Old Quarter",
+    "navName": "OLD QUARTER",
+    "eyebrow": "Where past and present meet",
+    "title": "Hoa Lu Old Quarter",
+    "subtitle": "A cultural space by Ky Lan Lake, glowing to life after nightfall.",
+    "featureCaption": "Curved roofs, lanterns, and the rhythm of the streets create a space at once timeless and vibrant.",
+    "sectionLabel": "Architectural heritage",
+    "introTitle": "Where culture meets heritage",
+    "introParagraphs": [
+      "As night falls, the Hoa Lu Old Quarter takes on a glowing, vibrant beauty.",
+      "Curved tiled roofs, glowing lanterns, and buildings inspired by Dai Viet architecture create a warm, nostalgic atmosphere.",
+      "Set beside Ky Lan Lake, this is one of Ninh Binh's newest destinations, built with inspiration from traditional Dai Viet architecture to recreate the distinctive cultural space of the ancient capital.",
+      "Unlike old quarters shaped over hundreds of years of history, Hoa Lu Old Quarter is a blend of traditional beauty and a modern spirit."
+    ],
+    "storyTitle": "The Flavor of the Ancient Capital",
+    "storyParagraphs": [
+      "Strolling the small streets, visitors can savor crispy rice (com chay), mountain goat meat, eel glass noodles, or browse local souvenir stalls.",
+      "The lively buzz of cafes, night markets, and traditional art performances has made this a favorite destination for both locals and travelers alike.",
+      "On weekends and during festivals, Hoa Lu Old Quarter regularly hosts cultural performances, lion dances, cheo (traditional opera) singing, and other distinctive folk art activities.",
+      "The familiar sounds of traditional culture blending with the shimmering lights along Ky Lan Lake create an atmosphere found nowhere else.",
+      "For many visitors, Hoa Lu Old Quarter is more than just a place for a night out — it's where they hold onto unforgettable moments from their Ninh Binh journey.",
+      "As their journey through Hoa Lu Old Quarter comes to a close, visitors carry home not only beautiful photos but also stories, memories, and a distinct mark of the ancient capital."
+    ],
+    "highlights": [
+      { "number": "01", "title": "Thien Huong crispy rice", "description": "A crisp, fragrant treat that captures the flavor of Ninh Binh." },
+      { "number": "02", "title": "Hoa Lu mountain goat meat", "description": "A distinctive flavor of the limestone highlands, a staple of the local food experience." },
+      { "number": "03", "title": "Handcrafted souvenirs", "description": "Small keepsakes that help travelers carry home the memory of their trip." }
+    ],
+    "galleryEyebrow": "Old Quarter moments",
+    "galleryTitle": "Lights along Ky Lan Lake",
+    "galleryCaptions": ["Old Quarter at night", "Amid the tiled roofs", "Lanterns by the lake", "The rhythm of the streets by the water", "Golden lights", "Bridge reflections"],
+    "closingTitle": "Keep the journey — touch the heritage",
+    "closingText": "Let Hoa Lu Old Quarter hold a place in your heart with the magical moments of your journey."
+  }
+}

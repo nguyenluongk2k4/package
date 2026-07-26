@@ -1,0 +1,26 @@
+{
+  "vi": {
+    "navAria": "Danh sách địa danh",
+    "exploreJourney": "Khám phá hành trình",
+    "viewGallery": "Xem thư viện ảnh",
+    "scrollDownAria": "Cuộn xuống nội dung",
+    "viewHeritage": "Nhìn ngắm di sản",
+    "storyAriaPrefix": "Câu chuyện",
+    "startJourney": "Bắt đầu hành trình",
+    "myPassport": "Hộ Chiếu của tôi",
+    "foodSectionKicker": "Ẩm thực & quà lưu niệm",
+    "exploreMenu": "Khám phá thực đơn"
+  },
+  "en": {
+    "navAria": "Destination list",
+    "exploreJourney": "Explore the journey",
+    "viewGallery": "View photo gallery",
+    "scrollDownAria": "Scroll down for more",
+    "viewHeritage": "Explore the heritage",
+    "storyAriaPrefix": "The story of",
+    "startJourney": "Start the journey",
+    "myPassport": "My Passport",
+    "foodSectionKicker": "Food & souvenirs",
+    "exploreMenu": "Explore the menu"
+  }
+}

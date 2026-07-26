@@ -4,6 +4,9 @@ import { useEffect, useMemo, useState } from "react";
 import { getProductBySlugOrId } from "../../lib/firebase/catalog";
 import { loadCommerceSettings } from "../../lib/firebase/appSettings";
 import ProductContactActions from "./ProductContactActions";
+import { translate, useI18n } from "./I18nProvider";
+import productDetailDict from "../../locales/product-detail.json";
+import { localizeProduct } from "./productLocalization";
 
 const fallbackImages = [
   { src: "/assets/anh-new/frame-1.png", label: "Khung nhận diện Sắc Cố Đô" },
@@ -13,15 +16,15 @@ const fallbackImages = [
 ];
 
 const PRODUCT_OPTIONS = {
-  passport: [{ label: "Cuốn Passport", price: 150000, priceFormatted: "150.000đ" }],
-  "com-chay-dang-tui": [{ label: "Túi 216g", price: 59000, priceFormatted: "59.000đ" }],
-  "com-chay-ruoc-dam-vi": [{ label: "Túi 300g", price: 65000, priceFormatted: "65.000đ" }],
-  "com-chay-vuong-lut": [{ label: "Túi 200g", price: 54000, priceFormatted: "54.000đ" }],
+  passport: [{ label: "Cuốn Passport", label_en: "Passport booklet", price: 150000, priceFormatted: "150.000đ" }],
+  "com-chay-dang-tui": [{ label: "Túi 216g", label_en: "216g pouch", price: 59000, priceFormatted: "59.000đ" }],
+  "com-chay-ruoc-dam-vi": [{ label: "Túi 300g", label_en: "300g pouch", price: 65000, priceFormatted: "65.000đ" }],
+  "com-chay-vuong-lut": [{ label: "Túi 200g", label_en: "200g pouch", price: 54000, priceFormatted: "54.000đ" }],
   "thit-chung-mam-tep-thanh-nguyen": [
-    { label: "Hũ 275g", price: 175000, priceFormatted: "175.000đ" },
-    { label: "Hũ 90g", price: 65000, priceFormatted: "65.000đ", compareAtPrice: 69000 },
+    { label: "Hũ 275g", label_en: "275g jar", price: 175000, priceFormatted: "175.000đ" },
+    { label: "Hũ 90g", label_en: "90g jar", price: 65000, priceFormatted: "65.000đ", compareAtPrice: 69000 },
   ],
-  "ruoc-ca-ro-tong-truong": [{ label: "Hộp 100g", price: 239000, priceFormatted: "239.000đ" }],
+  "ruoc-ca-ro-tong-truong": [{ label: "Hộp 100g", label_en: "100g box", price: 239000, priceFormatted: "239.000đ" }],
 };
 
 function formatVnd(value) {
@@ -44,29 +47,29 @@ function getPricePresentation(product, option) {
   };
 }
 
-function toProductOption(product) {
+function toProductOption(product, td) {
   if (!product) return null;
 
   return {
     ...product,
     id: product.id,
     shortName: product.shortName || product.name,
-    subtitle: product.category || product.badge || product.weight || "Sản phẩm di sản",
+    subtitle: product.category || product.badge || product.weight || td("defaultSubtitle"),
     price: Number(product.price || 0),
     priceFormatted: product.priceFormatted || formatVnd(product.price),
   };
 }
 
-function getImages(product) {
+function getImages(product, td) {
   const images = product?.detailImages?.length ? product.detailImages : product?.images;
   return (images?.length ? images : [product?.image].filter(Boolean)).map((image, index) => {
     if (typeof image === "string") {
-      return { src: image, label: `${product?.name || "Sản phẩm"} ${index + 1}` };
+      return { src: image, label: `${product?.name || td("defaultName")} ${index + 1}` };
     }
 
     return {
       src: image?.src || image?.url || product?.image || fallbackImages[0].src,
-      label: image?.label || image?.alt || `${product?.name || "Sản phẩm"} ${index + 1}`,
+      label: image?.label || image?.alt || `${product?.name || td("defaultName")} ${index + 1}`,
     };
   });
 }
@@ -76,6 +79,8 @@ function isFallbackProductImage(src) {
 }
 
 export default function ProductConfigurator({ productId }) {
+  const { locale } = useI18n();
+  const td = (key) => translate(productDetailDict, locale, key);
   const [product, setProduct] = useState(null);
   const [loadingProduct, setLoadingProduct] = useState(true);
   const [activeImage, setActiveImage] = useState(fallbackImages[0]);
@@ -114,14 +119,15 @@ export default function ProductConfigurator({ productId }) {
     };
   }, []);
 
-  const selected = useMemo(() => toProductOption(product), [product]);
+  const selected = useMemo(() => localizeProduct(toProductOption(product, td), locale), [product, locale]);
 
   const optionsList = useMemo(() => {
     if (selected && Array.isArray(selected.variants) && selected.variants.length > 0) {
       return selected.variants;
     }
-    return selected ? PRODUCT_OPTIONS[selected.id] || [] : [];
-  }, [selected]);
+    const fallback = selected ? PRODUCT_OPTIONS[selected.id] || [] : [];
+    return fallback.map((option) => (locale === "en" && option.label_en ? { ...option, label: option.label_en } : option));
+  }, [selected, locale]);
 
   useEffect(() => {
     if (optionsList.length > 0) {
@@ -132,11 +138,11 @@ export default function ProductConfigurator({ productId }) {
   }, [optionsList]);
 
   useEffect(() => {
-    setActiveImage(getImages(selected)[0] || fallbackImages[0]);
+    setActiveImage(getImages(selected, td)[0] || fallbackImages[0]);
   }, [selected]);
 
   const detailImages = useMemo(() => {
-    const images = getImages(selected);
+    const images = getImages(selected, td);
     return images.length ? images : fallbackImages;
   }, [selected]);
 
@@ -150,28 +156,28 @@ export default function ProductConfigurator({ productId }) {
   const specificationFacts = useMemo(
     () =>
       [
-        { label: "Khối lượng tịnh", value: selectedOption ? selectedOption.label : selected?.weight },
-        { label: "Thành phần", value: selected?.ingredients },
+        { label: td("netWeightLabel"), value: selectedOption ? selectedOption.label : selected?.weight },
+        { label: td("ingredientsLabel"), value: selected?.ingredients },
       ].filter((item) => item.value),
-    [selected, selectedOption]
+    [selected, selectedOption, locale]
   );
 
   const usageFacts = useMemo(
     () =>
       [
-        { label: "Hướng dẫn sử dụng", value: selected?.usage },
-        { label: "Hạn sử dụng", value: selected?.shelfLife },
-        { label: "Bảo quản", value: selected?.storage },
-        { label: "Lưu ý", value: selected?.note },
+        { label: td("usageLabel"), value: selected?.usage },
+        { label: td("shelfLifeLabel"), value: selected?.shelfLife },
+        { label: td("storageLabel"), value: selected?.storage },
+        { label: td("noteLabel"), value: selected?.note },
       ].filter((item) => item.value),
-    [selected, selectedOption]
+    [selected, selectedOption, locale]
   );
 
   if (loadingProduct) {
     return (
-      <section className="product-detail" aria-label="Đang tải sản phẩm">
+      <section className="product-detail" aria-label={td("loadingAria")}>
         <div className="product-buy-panel">
-          <h1>Đang tải sản phẩm...</h1>
+          <h1>{td("loadingTitle")}</h1>
         </div>
       </section>
     );
@@ -179,24 +185,24 @@ export default function ProductConfigurator({ productId }) {
 
   if (!selected) {
     return (
-      <section className="product-detail" aria-label="Không tìm thấy sản phẩm">
+      <section className="product-detail" aria-label={td("notFoundAria")}>
         <div className="product-buy-panel">
-          <h1>Không tìm thấy sản phẩm</h1>
-          <p>Sản phẩm này hiện không còn hiển thị công khai hoặc đường dẫn không hợp lệ.</p>
+          <h1>{td("notFoundTitle")}</h1>
+          <p>{td("notFoundDesc")}</p>
         </div>
       </section>
     );
   }
 
   return (
-    <section className="product-detail" aria-label="Chi tiết sản phẩm Sắc Cố Đô">
+    <section className="product-detail" aria-label={td("detailAria")}>
       <div className="product-detail-top">
         <div className="product-gallery-panel">
         <div className={`product-main-image ${activeImageModeClass}`}>
           <img src={activeImage.src} alt={activeImage.label} loading="eager" decoding="async" />
         </div>
 
-        <div className="product-thumbs" aria-label="Ảnh sản phẩm">
+        <div className="product-thumbs" aria-label={td("thumbsAria")}>
           {detailImages.map((image) => (
             <button
               className={`${image.src === activeImage.src ? "active" : ""} ${isFallbackProductImage(image.src) ? "is-contain" : "is-cover"}`.trim()}
@@ -212,28 +218,28 @@ export default function ProductConfigurator({ productId }) {
         </div>
 
         <div className="product-buy-panel">
-        <span className="product-kicker">{selected.category || "Sản phẩm du lịch"}</span>
-        <h1>{selected.name || "Sản phẩm Sắc Cố Đô"}</h1>
+        <span className="product-kicker">{selected.category || td("defaultCategory")}</span>
+        <h1>{selected.name || td("defaultName")}</h1>
         <div className="rating-row">
-          <span aria-label="5 sao">★★★★★</span>
-          <small>(48 đánh giá của người đi phượt)</small>
+          <span aria-label={td("ratingAria")}>★★★★★</span>
+          <small>{td("reviewCount")}</small>
         </div>
 
         <div className={`product-price-panel ${pricePresentation.hasDiscount ? "has-discount" : ""}`}>
           {pricePresentation.hasDiscount ? (
             <div className="product-sale-banner">
-              <span>{pricePresentation.saleLabel || "Ưu đãi hành trình"}</span>
-              <strong>Giảm {pricePresentation.discountPercent}%</strong>
+              <span>{pricePresentation.saleLabel || td("defaultSaleLabel")}</span>
+              <strong>{td("discountPrefix")} {pricePresentation.discountPercent}%</strong>
             </div>
           ) : null}
           <div className="product-price-row">
             <div>
-              <span className="product-price-label">{pricePresentation.hasDiscount ? "Giá ưu đãi" : "Giá sản phẩm"}</span>
+              <span className="product-price-label">{pricePresentation.hasDiscount ? td("salePriceLabel") : td("regularPriceLabel")}</span>
               <strong>{formatVnd(pricePresentation.price)}</strong>
             </div>
             {pricePresentation.hasDiscount ? (
               <div className="product-compare-price">
-                <span>Giá niêm yết</span>
+                <span>{td("listPriceLabel")}</span>
                 <del>{formatVnd(pricePresentation.compareAtPrice)}</del>
               </div>
             ) : null}
@@ -245,7 +251,7 @@ export default function ProductConfigurator({ productId }) {
 
         {specificationFacts.length ? (
           <section className="product-specification-block" aria-labelledby="product-specification-heading">
-            <span id="product-specification-heading" className="product-specification-heading">Thông tin sản phẩm</span>
+            <span id="product-specification-heading" className="product-specification-heading">{td("specHeading")}</span>
             <dl className="product-specification-line">
               {specificationFacts.map((item) => (
                 <div key={item.label}>
@@ -259,7 +265,7 @@ export default function ProductConfigurator({ productId }) {
 
         {optionsList.length > 1 ? (
           <div style={{ marginTop: "16px", marginBottom: "16px" }}>
-            <span style={{ fontSize: "13px", color: "#5d6768", fontWeight: "bold", display: "block", marginBottom: "8px" }}>Chọn định lượng:</span>
+            <span style={{ fontSize: "13px", color: "#5d6768", fontWeight: "bold", display: "block", marginBottom: "8px" }}>{td("chooseVariantLabel")}</span>
             <div className="product-option-pills">
               {optionsList.map((option) => (
                 <button
@@ -281,7 +287,7 @@ export default function ProductConfigurator({ productId }) {
           </div>
         ) : null}
 
-        <p>{selected.description || "Sản phẩm di sản Ninh Bình được tuyển chọn cho hành trình Sắc Cố Đô."}</p>
+        <p>{selected.description || td("defaultDescription")}</p>
 
         <ProductContactActions
           product={selected}
@@ -296,8 +302,8 @@ export default function ProductConfigurator({ productId }) {
       {usageFacts.length ? (
         <section className="product-information-section" aria-labelledby="product-information-heading">
           <div className="product-information-heading">
-            <span className="product-section-kicker">Hướng dẫn</span>
-            <h2 id="product-information-heading">Cách dùng & bảo quản</h2>
+            <span className="product-section-kicker">{td("usageKicker")}</span>
+            <h2 id="product-information-heading">{td("usageHeading")}</h2>
           </div>
           <dl className="product-facts-list">
             {usageFacts.map((item) => (
@@ -313,8 +319,8 @@ export default function ProductConfigurator({ productId }) {
       {selected.story ? (
         <section className="product-story-section" aria-labelledby="product-story-heading">
           <div className="product-information-heading">
-            <span className="product-section-kicker">Câu chuyện</span>
-            <h2 id="product-story-heading">{selected.storyTitle || "Câu chuyện sản phẩm"}</h2>
+            <span className="product-section-kicker">{td("storyKicker")}</span>
+            <h2 id="product-story-heading">{selected.storyTitle || td("defaultStoryTitle")}</h2>
           </div>
           <p>{selected.story}</p>
         </section>

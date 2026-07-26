@@ -1,10 +1,12 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useI18n } from "./I18nProvider";
 
 const ToastContext = createContext(null);
 
 export function ToastProvider({ children }) {
+  const { t } = useI18n();
   const [toast, setToast] = useState(null);
   const timeoutRef = useRef(null);
   const removeTimeoutRef = useRef(null);
@@ -60,7 +62,7 @@ export function ToastProvider({ children }) {
           <div className={`app-toast app-toast-${toast.type} ${toast.exiting ? "is-exiting" : ""}`} role="status">
             <span className="app-toast-dot" aria-hidden="true" />
             <p>{toast.message}</p>
-            <button type="button" onClick={() => dismissToast(toast.id)} aria-label="Đóng thông báo">
+            <button type="button" onClick={() => dismissToast(toast.id)} aria-label={t("common.closeToastAria")}>
               ×
             </button>
           </div>

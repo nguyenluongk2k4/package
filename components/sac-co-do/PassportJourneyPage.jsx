@@ -6,53 +6,37 @@ import SiteFooter from "./SiteFooter";
 import SiteHeader from "./SiteHeader";
 import { useFirebaseAuth } from "./FirebaseAuthProvider";
 import { collection, getDocs } from "firebase/firestore";
+import { translate, useI18n } from "./I18nProvider";
+import passportDict from "../../locales/passport.json";
 
 const assetBase = "/assets/ho-chieu-hanh-trinh";
 
-const passportStops = [
-  {
-    id: "trang-an",
-    title: "Tràng An",
-    subtitle: "Quần thể danh thắng",
-    icon: `${assetBase}/mobile-icon/ic-trang-an.svg`,
-  },
-  {
-    id: "hoa-lu",
-    title: "Hoa Lư",
-    subtitle: "Cố đô ngàn năm",
-    icon: `${assetBase}/mobile-icon/ic-hoa-lu.svg`,
-  },
-  {
-    id: "tam-coc",
-    title: "Tam Cốc",
-    subtitle: "Vịnh Hạ Long trên cạn",
-    icon: `${assetBase}/mobile-icon/ic-tam-coc.svg`,
-  },
-  {
-    id: "bai-dinh",
-    title: "Bái Đính",
-    subtitle: "Tâm linh hội tụ",
-    icon: `${assetBase}/mobile-icon/ic-bai-dinh.svg`,
-  },
-  {
-    id: "hang-mua",
-    title: "Hang Múa",
-    subtitle: "Đỉnh cao tầm mắt",
-    icon: `${assetBase}/mobile-icon/ic-hang-mua.svg`,
-  },
-  {
-    id: "pho-co-hoa-lu",
-    title: "Phố Cổ Hoa Lư",
-    subtitle: "Sắc sặc sỡ đèn đêm",
-    icon: `${assetBase}/mobile-icon/ic-pho-co-hoa-lu.svg`,
-  },
-];
+const passportStopIcons = {
+  "trang-an": `${assetBase}/mobile-icon/ic-trang-an.svg`,
+  "hoa-lu": `${assetBase}/mobile-icon/ic-hoa-lu.svg`,
+  "tam-coc": `${assetBase}/mobile-icon/ic-tam-coc.svg`,
+  "bai-dinh": `${assetBase}/mobile-icon/ic-bai-dinh.svg`,
+  "hang-mua": `${assetBase}/mobile-icon/ic-hang-mua.svg`,
+  "pho-co-hoa-lu": `${assetBase}/mobile-icon/ic-pho-co-hoa-lu.svg`,
+};
+
+function getPassportStops(locale) {
+  const stopsText = passportDict[locale]?.stops || passportDict.vi.stops;
+  return Object.keys(passportStopIcons).map((id) => ({
+    id,
+    title: stopsText[id].title,
+    subtitle: stopsText[id].subtitle,
+    icon: passportStopIcons[id],
+  }));
+}
 
 // Passive stop card representing a stamp in the album
 function PassportStampCard({ stop, progress, index, onPhotoClick, onLockedClick }) {
+  const { locale } = useI18n();
+  const tp = (key) => translate(passportDict, locale, key);
   const isCompleted = !!progress?.checkedIn;
   const hasPhoto = !!progress?.photoUrl;
-  
+
   const defaultStampImage = stop.icon || `${assetBase}/desktop-icon/ic-lock.svg`;
 
   return (
@@ -82,13 +66,13 @@ function PassportStampCard({ stop, progress, index, onPhotoClick, onLockedClick 
             onClick={() => onPhotoClick(progress.photoUrl, stop.title)}
           >
             <div className="passport-polaroid-img-wrapper">
-              <img className="passport-polaroid-img" src={progress.photoUrl} alt={`Kỷ niệm ${stop.title}`} loading="lazy" decoding="async" />
+              <img className="passport-polaroid-img" src={progress.photoUrl} alt={`${tp("stampCard.memoryAltPrefix")} ${stop.title}`} loading="lazy" decoding="async" />
             </div>
-            <span className="passport-polaroid-caption">Kỷ niệm {stop.title}</span>
-            <span className="passport-polaroid-date">Đã chụp</span>
+            <span className="passport-polaroid-caption">{tp("stampCard.memoryCaptionPrefix")} {stop.title}</span>
+            <span className="passport-polaroid-date">{tp("stampCard.photographedLabel")}</span>
           </div>
         ) : isCompleted ? (
-          <img className="passport-stamp-image" src={defaultStampImage} alt={`Dấu mộc ${stop.title}`} loading="lazy" decoding="async" />
+          <img className="passport-stamp-image" src={defaultStampImage} alt={`${tp("stampCard.stampAltPrefix")} ${stop.title}`} loading="lazy" decoding="async" />
         ) : (
           <>
             <img className="passport-locked-icon" src={stop.icon} alt="" loading="lazy" decoding="async" />
@@ -114,7 +98,7 @@ function PassportStampCard({ stop, progress, index, onPhotoClick, onLockedClick 
               cursor: "pointer"
             }}
           >
-            Khám phá trên Bản đồ hành trình
+            {tp("stampCard.exploreOnMap")}
           </div>
         </div>
       )}
@@ -124,6 +108,8 @@ function PassportStampCard({ stop, progress, index, onPhotoClick, onLockedClick 
 
 // Zoomable Photo Lightbox Viewer Modal
 function PhotoViewerModal({ photoUrl, stationName, onClose }) {
+  const { locale } = useI18n();
+  const tp = (key) => translate(passportDict, locale, key);
   const [zoom, setZoom] = useState(1);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
@@ -189,11 +175,11 @@ function PhotoViewerModal({ photoUrl, stationName, onClose }) {
       onTouchEnd={handleMouseUp}
     >
       <div className="photo-viewer-controls" onClick={(e) => e.stopPropagation()}>
-        <button type="button" onClick={handleZoomOut} disabled={zoom <= 1} title="Thu nhỏ">-</button>
+        <button type="button" onClick={handleZoomOut} disabled={zoom <= 1} title={tp("viewer.zoomOut")}>-</button>
         <span className="zoom-indicator">{Math.round(zoom * 100)}%</span>
-        <button type="button" onClick={handleZoomIn} disabled={zoom >= 3.5} title="Phóng to">+</button>
-        <button type="button" className="reset-btn" onClick={handleReset} title="Đặt lại">Reset</button>
-        <button type="button" className="close-btn" onClick={onClose} title="Đóng">×</button>
+        <button type="button" onClick={handleZoomIn} disabled={zoom >= 3.5} title={tp("viewer.zoomIn")}>+</button>
+        <button type="button" className="reset-btn" onClick={handleReset} title={tp("viewer.reset")}>Reset</button>
+        <button type="button" className="close-btn" onClick={onClose} title={tp("viewer.close")}>×</button>
       </div>
 
       <div className="photo-viewer-container" onClick={(e) => e.stopPropagation()}>
@@ -203,9 +189,9 @@ function PhotoViewerModal({ photoUrl, stationName, onClose }) {
           onTouchStart={handleTouchStart}
           style={{ cursor: zoom > 1 ? (isDragging ? "grabbing" : "grab") : "default" }}
         >
-          <img 
-            src={photoUrl} 
-            alt={`Ảnh kỷ niệm tại ${stationName}`}
+          <img
+            src={photoUrl}
+            alt={`${tp("viewer.photoAltPrefix")} ${stationName}`}
             style={{
               transform: `translate(${position.x}px, ${position.y}px) scale(${zoom})`,
               transition: isDragging ? "none" : "transform 0.15s ease-out"
@@ -213,7 +199,7 @@ function PhotoViewerModal({ photoUrl, stationName, onClose }) {
             draggable={false}
           />
         </div>
-        <p className="photo-viewer-caption">Kỷ niệm {stationName}</p>
+        <p className="photo-viewer-caption">{tp("viewer.captionPrefix")} {stationName}</p>
       </div>
     </div>
   );
@@ -221,7 +207,9 @@ function PhotoViewerModal({ photoUrl, stationName, onClose }) {
 
 // Certificate Modal Component
 function CertificatePreviewModal({ certificate, onClose, initialName }) {
-  const [customName, setCustomName] = useState(initialName || "Lữ khách hiếu kỳ");
+  const { locale } = useI18n();
+  const tp = (key) => translate(passportDict, locale, key);
+  const [customName, setCustomName] = useState(initialName || tp("certModal.defaultName"));
   const [isDownloading, setIsDownloading] = useState(false);
 
   const handleDownload = () => {
@@ -304,30 +292,30 @@ function CertificatePreviewModal({ certificate, onClose, initialName }) {
   return (
     <div className="cert-modal-backdrop" onClick={onClose}>
       <div className="cert-modal-content" onClick={(e) => e.stopPropagation()}>
-        <button type="button" className="cert-modal-close" onClick={onClose} aria-label="Đóng">×</button>
-        
+        <button type="button" className="cert-modal-close" onClick={onClose} aria-label={tp("certModal.closeAria")}>×</button>
+
         <div className="cert-modal-left">
-          <h3>Chứng Nhận Di Sản</h3>
-          <p className="cert-modal-hint font-baloo">Họ tên in trên chứng chỉ:</p>
-          
+          <h3>{tp("certModal.title")}</h3>
+          <p className="cert-modal-hint font-baloo">{tp("certModal.hint")}</p>
+
           <div className="cert-input-group">
-            <input 
-              type="text" 
-              value={customName} 
-              onChange={(e) => setCustomName(e.target.value)} 
-              placeholder="Nhập họ tên nhận chứng nhận..." 
+            <input
+              type="text"
+              value={customName}
+              onChange={(e) => setCustomName(e.target.value)}
+              placeholder={tp("certModal.namePlaceholder")}
               maxLength={40}
             />
           </div>
 
           <div className="cert-modal-actions">
-            <button 
-              type="button" 
-              className="cert-download-btn" 
+            <button
+              type="button"
+              className="cert-download-btn"
               onClick={handleDownload}
               disabled={isDownloading}
             >
-              {isDownloading ? "Đang tạo..." : "Tải xuống Chứng nhận (PNG)"}
+              {isDownloading ? tp("certModal.downloading") : tp("certModal.download")}
             </button>
           </div>
         </div>
@@ -347,6 +335,9 @@ function CertificatePreviewModal({ certificate, onClose, initialName }) {
 
 export default function PassportJourneyPage() {
   const { user, db, profile } = useFirebaseAuth();
+  const { locale } = useI18n();
+  const tp = (key) => translate(passportDict, locale, key);
+  const passportStops = getPassportStops(locale);
   const [visitedStops, setVisitedStops] = useState({});
   const [loadingStops, setLoadingStops] = useState(true);
   const [selectedCertificate, setSelectedCertificate] = useState(null);
@@ -408,27 +399,28 @@ export default function PassportJourneyPage() {
   const progressPercent = totalStops > 0 ? Math.round((completedStops / totalStops) * 100) : 0;
 
   // Achievement milestones with respective Canva SVGs
+  const achievementText = passportDict[locale]?.achievements?.items || passportDict.vi.achievements.items;
   const achievements = [
     {
       id: "beginner",
-      title: "Kẻ lữ hành tò mò",
-      description: "Đã ghé thăm 2 địa điểm di sản",
+      title: achievementText.beginner.title,
+      description: achievementText.beginner.description,
       active: completedStops >= 2,
       icon: `${assetBase}/desktop-icon/ic-cert-1.svg`,
       svgUrl: "/certificate/begin.svg",
     },
     {
       id: "photographer",
-      title: "Nhiếp ảnh gia Cố đô",
-      description: "Check-in tại 4 địa điểm",
+      title: achievementText.photographer.title,
+      description: achievementText.photographer.description,
       active: completedStops >= 4,
       icon: `${assetBase}/desktop-icon/ic-cert-2.svg`,
       svgUrl: "/certificate/HERITAGE-PHOTOGRAPHER.svg",
     },
     {
       id: "champion",
-      title: "Nhà chinh phục Cố đô",
-      description: "Đóng đủ 6 dấu mộc di sản",
+      title: achievementText.champion.title,
+      description: achievementText.champion.description,
       active: completedStops >= 6,
       icon: `${assetBase}/desktop-icon/ic-cert-3.svg`,
       svgUrl: "/certificate/HERITAGE-CHAMPION.svg",
@@ -436,7 +428,7 @@ export default function PassportJourneyPage() {
   ];
 
   // Resolve user display name
-  const userName = profile?.fullName || user?.displayName || user?.email?.split("@")[0] || "Lữ khách di sản";
+  const userName = profile?.fullName || user?.displayName || user?.email?.split("@")[0] || tp("defaultUserName");
 
   return (
     <>
@@ -445,29 +437,28 @@ export default function PassportJourneyPage() {
         <section className="page-title-banner passport-title-banner">
           <img src="/assets/anh-new/cover photo.jpg" alt="" aria-hidden="true" />
           <div>
-            <p className="passport-eyebrow">Hộ chiếu hành trình</p>
-            <h1>Hộ Chiếu Di Sản</h1>
+            <p className="passport-eyebrow">{tp("banner.eyebrow")}</p>
+            <h1>{tp("banner.title")}</h1>
             <p>
-              Nơi lưu giữ dấu ấn của những bước chân khám phá vùng đất Cố đô nghìn năm văn hiến.
-              Mỗi điểm dừng chân là một câu chuyện, mỗi con dấu là một kỷ niệm vô giá.
+              {tp("banner.description")}
             </p>
           </div>
-          <div className="passport-progress-ring" aria-label={`Tiến trình khám phá ${progressPercent}%`}>
+          <div className="passport-progress-ring" aria-label={`${tp("banner.progressAriaPrefix")} ${progressPercent}%`}>
             <span>{progressPercent}%</span>
-            <small>Tiến trình khám phá</small>
+            <small>{tp("banner.progressLabel")}</small>
           </div>
         </section>
 
-        <section className="passport-progress-card" aria-label="Tiến độ hộ chiếu">
+        <section className="passport-progress-card" aria-label={tp("progressCard.ariaLabel")}>
           <div>
-            <span>Tiến độ</span>
-            <strong>{completedStops}/{totalStops} trạm</strong>
+            <span>{tp("progressCard.label")}</span>
+            <strong>{completedStops}/{totalStops} {tp("progressCard.stopsSuffix")}</strong>
           </div>
           <strong>{progressPercent}%</strong>
           <div className="passport-progress-bar" aria-hidden="true">
             <span style={{ width: `${progressPercent}%` }} />
           </div>
-          <p>“Bạn đã hoàn thành {progressPercent}% hành trình di sản Ninh Bình”</p>
+          <p>“{tp("progressCard.summaryPrefix")} {progressPercent}% {tp("progressCard.summarySuffix")}”</p>
           <img src={`${assetBase}/desktop-icon/image-decor1.svg`} alt="" aria-hidden="true" />
         </section>
 
@@ -476,7 +467,7 @@ export default function PassportJourneyPage() {
             <div className="spinner" />
           </div>
         ) : (
-          <section className="passport-stamp-grid" aria-label="Các dấu mộc hành trình">
+          <section className="passport-stamp-grid" aria-label={tp("stampGridAria")}>
             {passportStops.map((stop, index) => (
               <PassportStampCard 
                 key={stop.id} 
@@ -496,7 +487,7 @@ export default function PassportJourneyPage() {
           <article className="passport-achievement-panel">
             <h2>
               <img src={`${assetBase}/desktop-icon/ic-thanh-tuu.svg`} alt="" aria-hidden="true" />
-              Thành tựu của bạn
+              {tp("achievements.heading")}
             </h2>
             <div className="passport-achievement-list">
               {achievements.map((item) => (
@@ -525,10 +516,10 @@ export default function PassportJourneyPage() {
                         marginLeft: "10px"
                       }}
                     >
-                      Chứng nhận
+                      {tp("achievements.claim")}
                     </button>
                   ) : (
-                    <span style={{ fontSize: "11px", color: "#a0aec0", fontStyle: "italic", marginLeft: "10px" }}>Chưa đạt</span>
+                    <span style={{ fontSize: "11px", color: "#a0aec0", fontStyle: "italic", marginLeft: "10px" }}>{tp("achievements.locked")}</span>
                   )}
                 </div>
               ))}
@@ -536,30 +527,29 @@ export default function PassportJourneyPage() {
           </article>
 
           <aside className="passport-story-panel">
-            <blockquote>“Mỗi con đường ta đi, mỗi ngọn núi ta qua đều để lại một dấu ấn trong lòng...”</blockquote>
+            <blockquote>{tp("story.quote")}</blockquote>
             <p>
-              Hành trình của bạn tại Ninh Bình mới chỉ bắt đầu. Tiếp tục khám phá để lấp đầy những
-              trang hộ chiếu di sản và nhận những phần quà bất ngờ từ Ban quản lý khu du lịch.
+              {tp("story.paragraph")}
             </p>
             <div className="passport-actions">
               <a className="passport-primary-action" href="/hanh-trinh">
                 <img src={`${assetBase}/desktop-icon/ic-tiep-tuc-hanh-trinh.svg`} alt="" aria-hidden="true" />
-                Tiếp tục hành trình
+                {tp("story.continueJourney")}
               </a>
               <button className="passport-secondary-action" type="button">
                 <img src={`${assetBase}/desktop-icon/ic-chia-se-ket-qua.svg`} alt="" aria-hidden="true" />
-                Chia sẻ kết quả
+                {tp("story.shareResult")}
               </button>
             </div>
             <div className="passport-memory-image">
-              <img src="/assets/dia-danh/trang-an/TA1.jpg" alt="Kỷ niệm hành trình Tràng An" loading="lazy" decoding="async" />
+              <img src="/assets/dia-danh/trang-an/TA1.jpg" alt={tp("story.memoryImageAlt")} loading="lazy" decoding="async" />
             </div>
           </aside>
         </section>
 
-        <div className="passport-mobile-actions" aria-label="Hành động hộ chiếu">
+        <div className="passport-mobile-actions" aria-label={tp("mobileActionsAria")}>
           <a className="passport-primary-action" href="/hanh-trinh">
-            Tiếp tục hành trình
+            {tp("story.continueJourney")}
           </a>
         </div>
       </main>

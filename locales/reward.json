@@ -1,0 +1,18 @@
+{
+  "vi": {
+    "eyebrow": "Phần thưởng",
+    "title": "Certificate và quà số sau khi hoàn thành",
+    "description": "Hoàn thành 6 trạm để nhận certificate cá nhân và bộ ảnh lưu niệm.",
+    "cardBrand": "Sắc Cố Đô",
+    "cardTitle": "Certificate of Journey",
+    "cardDescription": "Trao cho người đã hoàn thành đủ 6 dấu mộc Ninh Bình."
+  },
+  "en": {
+    "eyebrow": "Rewards",
+    "title": "Certificates and digital rewards upon completion",
+    "description": "Complete all 6 stations to receive a personal certificate and keepsake photo set.",
+    "cardBrand": "Sac Co Do",
+    "cardTitle": "Certificate of Journey",
+    "cardDescription": "Awarded to travelers who complete all 6 Ninh Binh stamps."
+  }
+}

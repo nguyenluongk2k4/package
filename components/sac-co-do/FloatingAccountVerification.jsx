@@ -5,9 +5,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useFirebaseAuth } from "./FirebaseAuthProvider";
+import { useI18n } from "./I18nProvider";
 
 export default function FloatingAccountVerification() {
   const pathname = usePathname();
+  const { t } = useI18n();
   const { user, profile, loading } = useFirebaseAuth();
   const [visible, setVisible] = useState(false);
 
@@ -29,7 +31,7 @@ export default function FloatingAccountVerification() {
     <Link
       href="/kich-hoat"
       className={`fab-verify ${isActivated ? `is-activated${visible ? " is-visible" : ""}` : ""}`}
-      aria-label={isActivated ? "Tài khoản đã kích hoạt" : "Xác thực tài khoản"}
+      aria-label={isActivated ? t("common.accountFab.activated") : t("common.accountFab.verifyAria")}
       style={{ 
         display: "inline-flex", 
         textDecoration: "none",
@@ -39,7 +41,7 @@ export default function FloatingAccountVerification() {
       }}
     >
       <ShieldCheck size={22} strokeWidth={2.2} />
-      <span>{isActivated ? "Tài khoản đã kích hoạt" : "Xác nhận ngay"}</span>
+      <span>{isActivated ? t("common.accountFab.activated") : t("common.accountFab.verifyNow")}</span>
     </Link>
   );
 }

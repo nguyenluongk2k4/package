@@ -1,0 +1,222 @@
+{
+  "vi": {
+    "hero": {
+      "eyebrow": "DI SẢN NGHÌN NĂM",
+      "title": "SẮC CỐ ĐÔ",
+      "description": "Khám phá Ninh Bình bằng một hành trình văn hóa, di sản và làng nghề đầy cảm hứng.",
+      "primaryCta": "Khám phá ngay",
+      "secondaryCta": "Xem video giới thiệu",
+      "imageCta": "Xem ảnh giới thiệu"
+    },
+    "timeline": {
+      "eyebrow": "Cách hoạt động",
+      "title": "Một hành trình đủ nhẹ để chơi, đủ sâu để nhớ",
+      "description": "Sắc Cố Đô không chỉ bán một cuốn sổ. Nó tạo ra một vòng trải nghiệm từ vật phẩm giấy tới check-in số.",
+      "nibiLabel": "Nibi:",
+      "nibiAdvice": "Hãy theo sát lộ trình 3 bước dưới đây để kết nối trọn vẹn di sản Ninh Bình và mở khóa các phần quà hấp dẫn!",
+      "step1": {
+        "badge": "Bước 01",
+        "title": "Sở hữu Passport",
+        "description": "Nhận cuốn hộ chiếu pop-up di sản thủ công cao cấp kèm mã ID kích hoạt tài khoản số cá nhân của bạn."
+      },
+      "step2": {
+        "badge": "Bước 02",
+        "title": "Hành trình check-in",
+        "description": "Khám phá 6 điểm dừng chân di tích lịch sử, quét mã QR tại các trạm trải nghiệm để tự động ghi dấu mộc số."
+      },
+      "step3": {
+        "badge": "Bước 03",
+        "title": "Đóng Dấu & Mở AR",
+        "description": "Đóng dấu mộc đỏ trực tiếp vào sổ tay, trải nghiệm chụp ảnh cùng Mascot Nibi AR và nhận phần quà lưu niệm."
+      }
+    },
+    "locations": {
+      "eyebrow": "6 điểm dừng chân",
+      "title": "Khám phá 6 điểm văn hóa Ninh Bình",
+      "description": "Mỗi điểm đến là một câu chuyện lịch sử, một dấu mộc và một trải nghiệm check-in thực tế ảo riêng biệt.",
+      "learnMore": "Tìm hiểu thêm",
+      "detail": "Khám phá chi tiết →"
+    },
+    "products": {
+      "eyebrow": "Vật phẩm di sản",
+      "title": "Những món quà đồng hành cùng hành trình",
+      "description": "Xem và sở hữu các cuốn sổ tay pop-up di sản cùng những món quà đặc sản lưu niệm đậm đà bản sắc Cố Đô.",
+      "fallbackBadge": "Sản phẩm",
+      "detail": "Xem chi tiết"
+    },
+    "passport": {
+      "eyebrow": "Sản phẩm",
+      "titlePrefix": "Chọn phiên bản",
+      "titleHighlight": "Passport",
+      "ribbon": "Phù hợp chuyến đi",
+      "lead": "Từ bản cá nhân đến combo đồng hành và hộp quà tặng.",
+      "option1": {
+        "badge": "Dễ bắt đầu",
+        "title": "Sổ đơn tiêu chuẩn",
+        "description": "Một cuốn passport pop-up cho khách đi cá nhân hoặc mua thử trải nghiệm."
+      },
+      "option2": {
+        "badge": "Tiết kiệm 30k",
+        "title": "Combo đồng hành",
+        "description": "Hai cuốn passport cho cặp đôi, nhóm bạn hoặc gia đình nhỏ đi cùng nhau."
+      },
+      "option3": {
+        "badge": "Quà tặng",
+        "title": "Hộp quà Sắc Cố Đô",
+        "description": "Phiên bản đóng hộp để tặng khách du lịch, đối tác hoặc người thân."
+      },
+      "benefit1": "Chất liệu cao cấp",
+      "benefit2": "Thiết kế độc quyền",
+      "benefit3": "Ý nghĩa lưu giữ hành trình",
+      "visualAria": "Bộ sản phẩm passport Ninh Bình",
+      "visualAlt": "Các phiên bản Ninh Bình Passport"
+    },
+    "ticker": {
+      "aria": "Ảnh cảm hứng lặp liên tục",
+      "alt": "Sắc Cố Đô"
+    },
+    "featuredProduct": {
+      "eyebrow": "Sản phẩm",
+      "titleLine1": "Quà mang về",
+      "titleLine2": "từ Cố Đô",
+      "countSuffix": "lựa chọn nổi bật",
+      "ctaDetail": "Xem chi tiết",
+      "arrowPrev": "Sản phẩm trước",
+      "arrowNext": "Sản phẩm tiếp theo",
+      "dotsAria": "Chọn sản phẩm",
+      "viewPrefix": "Xem"
+    },
+    "story": {
+      "badge": "ĐÔ THỊ DI SẢN MỚI",
+      "title": "Tuyệt Tác Di Sản Ninh Bình: Một Điểm Đến, Triệu Trải Nghiệm Đi Qua Ba Vùng Đất Cố Đô",
+      "paragraph1": "Ninh Bình mới sau khi hợp nhất toàn diện từ ba tỉnh Hà Nam, Nam Định và Ninh Bình đã vươn mình trở thành một \"siêu đô thị di sản\" sở hữu quy mô và tầm vóc vượt trội tại cửa ngõ phía Nam đồng bằng sông Hồng. Với diện tích mở rộng lên gần 3.943 km² cùng quy mô dân số hơn 4,4 triệu người, tỉnh Ninh Bình mới không chỉ giải quyết được bài toán không gian phát triển mà còn tối ưu hóa được thế mạnh của ba vùng đất: từ chiều sâu văn hóa - giáo dục của đất học Thành Nam, sự năng động công nghiệp của Hà Nam, cho đến thương hiệu du lịch toàn cầu của cố đô Hoa Lư.",
+      "paragraph2": "Tỉnh sở hữu vị trí chiến lược kết nối hoàn hảo với thủ đô Hà Nội và các vùng kinh tế trọng điểm qua mạng lưới cao tốc đồng bộ, đồng thời mở toang cánh cửa hướng ra đại dương nhờ Khu kinh tế Ninh Cơ và hệ thống cảng biển phát triển. Sự cộng hưởng từ chuỗi du lịch tâm linh – sinh thái tầm cỡ quốc tế như Tràng An, Tam Chúc, kết hợp cùng các khu công nghiệp công nghệ cao và logistics ven biển đang tạo nên bệ phóng vững chắc cho Ninh Bình. Vận hành theo mô hình chính quyền địa phương hai cấp tinh gọn và hiện đại, Ninh Bình mới đang tăng tốc mạnh mẽ trên hành trình trở thành thành phố trực thuộc Trung ương – một đô thị di sản xanh, thông minh, giàu bản sắc và là cực tăng trưởng mới đầy năng động của cả nước.",
+      "imageAlt1": "Cố Đô Hoa Lư cổ kính",
+      "imageAlt2": "Tuyệt Tác Di Sản Ninh Bình"
+    },
+    "gallery": {
+      "eyebrow": "KHOẢNH KHẮC DI SẢN",
+      "title": "Góc Nhìn Sắc Cố Đô",
+      "description": "Nhấn chọn từng địa danh bên dưới để chiêm ngưỡng những thước phim, hình ảnh tuyệt đẹp được lưu lại suốt hành trình khám phá di sản Ninh Bình.",
+      "viewSuffix": "Góc nhìn"
+    },
+    "about": {
+      "eyebrow": "VỀ CHÚNG TÔI",
+      "question": "Khi chuyến đi không chỉ dừng lại ở những bức ảnh",
+      "paragraph": "Sắc Cố Đô được tạo ra để giúp bạn khám phá Ninh Bình theo một cách sâu hơn và đáng nhớ hơn. Không chỉ check-in rồi rời đi, bạn có thể ghi lại từng điểm đến, thu thập dấu mộc, mở khóa câu chuyện di sản và lưu giữ hành trình của mình qua Hộ chiếu Pop-up.Từ Tràng An, Cố đô Hoa Lư, Tam Cốc – Bích Động đến Hang Múa, Chùa Bái Đính và Phố cổ Hoa Lư, mỗi điểm đến sẽ trở thành một dấu mốc riêng trong hành trình chạm đến di sản Ninh Bình.",
+      "nature": { "title": "Thiên Nhiên Kỳ Vĩ", "desc": "Tràng An, Tam Cốc, Hang Múa - non nước hữu tình giao hòa đất trời." },
+      "history": { "title": "Lịch Sử Hào Hùng", "desc": "Cố đô Hoa Lư cổ kính, nơi khắc ghi dấu ấn nghìn năm của các triều đại lịch sử." },
+      "culture": { "title": "Văn Hóa Bản Địa", "desc": "Làng nghề truyền thống lâu đời và tinh hoa đặc sản ẩm thực độc đáo." }
+    }
+  },
+  "en": {
+    "hero": {
+      "eyebrow": "THOUSAND-YEAR HERITAGE",
+      "title": "SAC CO DO",
+      "description": "Explore Ninh Binh through an inspiring journey of culture, heritage, and traditional craft.",
+      "primaryCta": "Explore now",
+      "secondaryCta": "Watch intro video",
+      "imageCta": "View intro image"
+    },
+    "timeline": {
+      "eyebrow": "How it works",
+      "title": "A journey light enough to play, deep enough to remember",
+      "description": "Sac Co Do is more than a passport booklet. It connects paper craft, digital check-ins, and place-based discovery.",
+      "nibiLabel": "Nibi recommends:",
+      "nibiAdvice": "Follow the 3-step route below to connect with Ninh Binh heritage and unlock memorable rewards.",
+      "step1": {
+        "badge": "Step 01",
+        "title": "Own your Passport",
+        "description": "Receive a premium handcrafted pop-up heritage passport with a personal ID code for your digital account."
+      },
+      "step2": {
+        "badge": "Step 02",
+        "title": "Check in along the route",
+        "description": "Explore 6 heritage stops and scan QR codes at experience stations to record your digital stamps automatically."
+      },
+      "step3": {
+        "badge": "Step 03",
+        "title": "Stamp & unlock AR",
+        "description": "Stamp your booklet, take photos with the Nibi AR mascot, and collect a keepsake reward."
+      }
+    },
+    "locations": {
+      "eyebrow": "6 journey stops",
+      "title": "Explore 6 cultural destinations in Ninh Binh",
+      "description": "Each destination carries a historical story, a passport stamp, and its own immersive check-in experience.",
+      "learnMore": "Learn more",
+      "detail": "Explore details →"
+    },
+    "products": {
+      "eyebrow": "Heritage keepsakes",
+      "title": "Gifts that travel with the journey",
+      "description": "Discover pop-up heritage notebooks and local souvenir gifts shaped by the identity of the ancient capital.",
+      "fallbackBadge": "Product",
+      "detail": "View details"
+    },
+    "passport": {
+      "eyebrow": "Products",
+      "titlePrefix": "Choose your",
+      "titleHighlight": "Passport",
+      "ribbon": "Made for your trip",
+      "lead": "From a personal edition to companion combos and gift boxes.",
+      "option1": {
+        "badge": "Easy start",
+        "title": "Standard single passport",
+        "description": "One pop-up passport for solo travelers or first-time experience buyers."
+      },
+      "option2": {
+        "badge": "Save 30k",
+        "title": "Companion combo",
+        "description": "Two passports for couples, friend groups, or small families traveling together."
+      },
+      "option3": {
+        "badge": "Gift edition",
+        "title": "Sac Co Do gift box",
+        "description": "A boxed edition for tourists, partners, or loved ones."
+      },
+      "benefit1": "Premium materials",
+      "benefit2": "Exclusive design",
+      "benefit3": "A meaningful journey keepsake",
+      "visualAria": "Ninh Binh passport product set",
+      "visualAlt": "Ninh Binh Passport editions"
+    },
+    "ticker": {
+      "aria": "Looping inspiration gallery",
+      "alt": "Sac Co Do"
+    },
+    "featuredProduct": {
+      "eyebrow": "Products",
+      "titleLine1": "Gifts to take home",
+      "titleLine2": "from the ancient capital",
+      "countSuffix": "featured picks",
+      "ctaDetail": "View details",
+      "arrowPrev": "Previous product",
+      "arrowNext": "Next product",
+      "dotsAria": "Choose a product",
+      "viewPrefix": "View"
+    },
+    "story": {
+      "badge": "A NEW HERITAGE METROPOLIS",
+      "title": "Ninh Binh's Heritage Masterpiece: One Destination, a Million Experiences Across Three Ancient Lands",
+      "paragraph1": "Following the full merger of Ha Nam, Nam Dinh, and Ninh Binh provinces, the new Ninh Binh has risen into a \"heritage super-city\" with outstanding scale and stature at the southern gateway of the Red River Delta. Spanning nearly 3.943 km² with a population of over 4.4 million, the new Ninh Binh not only solves the challenge of development space but also optimizes the strengths of all three regions: the cultural and educational depth of the Thanh Nam scholarly land, the industrial dynamism of Ha Nam, and the globally recognized tourism brand of the ancient Hoa Lu capital.",
+      "paragraph2": "The province holds a strategic position, perfectly connected to Hanoi and key economic zones through a synchronized expressway network, while opening the door to the ocean via the Ninh Co Economic Zone and its growing seaport system. The synergy of world-class spiritual-ecological tourism destinations such as Trang An and Tam Chuc, combined with high-tech industrial parks and coastal logistics, is building a solid launchpad for Ninh Binh. Operating under a streamlined, modern two-tier local government model, the new Ninh Binh is accelerating rapidly on its journey to become a centrally-governed city — a green, smart, distinctive heritage metropolis and a dynamic new growth pole for the whole country.",
+      "imageAlt1": "The ancient Hoa Lu capital",
+      "imageAlt2": "Ninh Binh's Heritage Masterpiece"
+    },
+    "gallery": {
+      "eyebrow": "HERITAGE MOMENTS",
+      "title": "Sac Co Do Perspectives",
+      "description": "Tap each destination below to browse the footage and photos captured throughout the journey of exploring Ninh Binh's heritage.",
+      "viewSuffix": "View"
+    },
+    "about": {
+      "eyebrow": "ABOUT US",
+      "question": "Can a trip leave more behind than just photographs?",
+      "paragraph": "Sac Co Do was created to help you explore Ninh Binh in a deeper, more memorable way. Rather than simply checking in and moving on, you can record every stop, collect stamps, unlock heritage stories, and preserve your journey through the Pop-up Passport. From Trang An, Hoa Lu Ancient Capital, and Tam Coc - Bich Dong to Hang Mua, Bai Dinh Pagoda, and Hoa Lu Old Quarter, every destination becomes a milestone on your journey to Ninh Binh heritage.",
+      "nature": { "title": "Majestic Nature", "desc": "Trang An, Tam Coc, Hang Mua - where picturesque karst landscapes merge with the sky." },
+      "history": { "title": "Rich History", "desc": "Ancient Hoa Lu capital, preserving the golden age of historic dynasties." },
+      "culture": { "title": "Local Culture", "desc": "Time-honored traditional craft villages and unique culinary specialties." }
+    }
+  }
+}

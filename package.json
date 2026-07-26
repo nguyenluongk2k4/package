@@ -10,6 +10,7 @@
     "start": "next start",
     "firebase:seed": "node scripts/seed-firebase.mjs",
     "firebase:seed:products": "node scripts/seed-firebase.mjs products-only",
+    "firebase:seed:product-translations": "node scripts/seed-firebase.mjs product-translations-only",
     "firebase:seed:product-sales": "node scripts/seed-firebase.mjs product-sales-only",
     "firebase:seed:passport": "node scripts/seed-firebase.mjs passport-only",
     "firebase:seed-qr": "node scripts/seed-qr-codes.mjs",

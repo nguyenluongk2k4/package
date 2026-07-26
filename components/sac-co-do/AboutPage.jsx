@@ -4,38 +4,10 @@ import { useState, useEffect, useRef } from "react";
 import { Eye, Rocket } from "lucide-react";
 import SiteFooter from "./SiteFooter";
 import SiteHeader from "./SiteHeader";
+import { translate, useI18n } from "./I18nProvider";
+import aboutDict from "../../locales/about.json";
 
-const coreValues = [
-  {
-    title: "Di sản",
-    description: "Trân trọng những giá trị văn hóa, lịch sử và nếp sống bản địa. Mỗi câu chuyện được kể lại để di sản luôn gần gũi với những hành trình hôm nay.",
-  },
-  {
-    title: "Kết nối",
-    description: "Gắn kết du khách với điểm đến, con người và cộng đồng địa phương. Từ một dấu mộc nhỏ, hành trình mở ra những cuộc gặp gỡ đầy ý nghĩa.",
-  },
-  {
-    title: "Sáng tạo",
-    description: "Làm mới cách khám phá di sản bằng pop-up, check-in và những trải nghiệm tương tác. Truyền thống vì thế trở nên sinh động, dễ chạm và đáng nhớ hơn.",
-  },
-  {
-    title: "Bền vững",
-    description: "Hướng tới sự phát triển hài hòa giữa kinh tế, văn hóa và cộng đồng. Mỗi lựa chọn đều góp phần gìn giữ bản sắc và lan tỏa giá trị địa phương lâu dài.",
-  },
-  {
-    title: "Lưu giữ",
-    description: "Biến mỗi chuyến đi thành những kỷ niệm có thể mang theo. Cuốn hộ chiếu, con dấu và bức ảnh sẽ nhắc bạn về một Ninh Bình rất riêng.",
-  },
-];
-
-const missionPoints = [
-  "Mang đến những trải nghiệm du lịch sáng tạo, tương tác và giàu cảm xúc.",
-  "Kết nối du khách với văn hóa, lịch sử và con người địa phương.",
-  "Hỗ trợ quảng bá các sản phẩm đặc trưng, làng nghề và cộng đồng bản địa.",
-  "Góp phần phát triển du lịch bền vững và kinh tế sáng tạo tại Việt Nam.",
-];
-
-function LazySection({ children, className = "", ariaLabel = "", style = {} }) {
+function LazySection({ children, className = "", ariaLabel = "", style = {}, placeholder }) {
   const [isIntersecting, setIsIntersecting] = useState(false);
   const ref = useRef(null);
 
@@ -59,81 +31,86 @@ function LazySection({ children, className = "", ariaLabel = "", style = {} }) {
 
   return (
     <section ref={ref} className={className} aria-label={ariaLabel} style={{ ...style, minHeight: !isIntersecting ? "220px" : "auto" }}>
-      {isIntersecting ? children : <div className="lazy-section-placeholder">Đang tải nội dung di sản...</div>}
+      {isIntersecting ? children : <div className="lazy-section-placeholder">{placeholder}</div>}
     </section>
   );
 }
 
 export default function AboutPage() {
+  const { locale } = useI18n();
+  const ta = (key) => translate(aboutDict, locale, key);
+  const missionPoints = aboutDict[locale]?.visionMission?.missionPoints || aboutDict.vi.visionMission.missionPoints;
+  const coreValues = aboutDict[locale]?.values?.items || aboutDict.vi.values.items;
+
   return (
     <>
       <SiteHeader />
       <main className="about-page">
         <section className="about-hero">
           <div className="about-hero-copy">
-            <p className="eyebrow">Về chúng tôi</p>
+            <p className="eyebrow">{ta("hero.eyebrow")}</p>
             <h1 style={{ fontFamily: "var(--font-heading, 'Baloo 2'), sans-serif", fontSize: "clamp(32px, 4.5vw, 48px)", fontWeight: "800", color: "var(--ink)", lineHeight: "1.2", marginBottom: "20px" }}>
-              SẮC CỐ ĐÔ – Lưu giữ hành trình, chạm đến di sản
+              {ta("hero.title")}
             </h1>
-            
+
             <h3 style={{ fontSize: "19px", color: "var(--brand-2)", fontFamily: "var(--font-heading, 'Baloo 2'), sans-serif", fontWeight: "700", lineHeight: "1.4", marginTop: "20px", marginBottom: "16px" }}>
-              Khi chuyến đi không chỉ dừng lại ở những bức ảnh
+              {ta("hero.subtitle")}
             </h3>
-            
+
             <p style={{ color: "var(--ink)", fontSize: "15px", lineHeight: "1.7", margin: "0" }}>
-              Sắc Cố Đô được hình thành từ câu hỏi đơn giản ấy để kiến tạo nên những hành trình sâu sắc tại cố đô. Ninh Bình là vùng đất nơi thiên nhiên, lịch sử và văn hóa giao hòa để tạo nên những dấu ấn rất riêng. Từ Quần thể Danh thắng Tràng An, Cố đô Hoa Lư, Tam Cốc – Bích Động đến những làng nghề truyền thống và đặc sản địa phương, mỗi địa danh đều mang trong mình những câu chuyện đáng để khám phá và ghi nhớ.
+              {ta("hero.paragraph")}
             </p>
-            
+
             <div className="about-hero-actions">
-              <a className="btn primary" href="/hanh-trinh">Xem hành trình</a>
-              <a className="btn ghost" href="/ho-chieu">Xem hộ chiếu</a>
+              <a className="btn primary" href="/hanh-trinh">{ta("hero.viewJourney")}</a>
+              <a className="btn ghost" href="/ho-chieu">{ta("hero.viewPassport")}</a>
             </div>
           </div>
           <figure className="about-hero-media">
-            <img src="/assets/anh-new/cover photo.jpg" alt="Sắc Cố Đô - Hành trình di sản Ninh Bình" decoding="async" fetchPriority="high" />
-            <figcaption>Passport văn hóa cho hành trình di sản.</figcaption>
+            <img src="/assets/anh-new/cover photo.jpg" alt={ta("hero.mediaAlt")} decoding="async" fetchPriority="high" />
+            <figcaption>{ta("hero.mediaCaption")}</figcaption>
           </figure>
         </section>
 
-        <LazySection className="about-mission">
+        <LazySection className="about-mission" placeholder={ta("lazyPlaceholder")}>
           <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
             <div>
-              <p className="eyebrow">Mục tiêu & Sứ mệnh</p>
-              <h2 style={{ margin: 0 }}>Hành Trình Kết Nối Di Sản & Du Khách</h2>
+              <p className="eyebrow">{ta("mission.eyebrow")}</p>
+              <h2 style={{ margin: 0 }}>{ta("mission.title")}</h2>
             </div>
             <div className="about-mission-media" style={{ width: "100%", height: "280px", borderRadius: "16px", overflow: "hidden", border: "2px solid rgba(16, 76, 39, 0.25)" }}>
-              <img src="/assets/ninh-binh-heritage.png" alt="Hành trình di sản Ninh Bình" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              <img src="/assets/ninh-binh-heritage.png" alt={ta("mission.mediaAlt")} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             </div>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: "18px", color: "var(--ink)", fontSize: "15px", lineHeight: "1.75" }}>
             <p>
-              Tuy nhiên, giữa nhịp sống hiện đại, nhiều chuyến đi thường chỉ dừng lại ở việc tham quan và check-in. Chúng tôi tin rằng du lịch không chỉ là nhìn ngắm, mà còn là hành trình trải nghiệm, kết nối và lưu giữ những giá trị văn hóa của mỗi vùng đất.
+              {ta("mission.paragraph1")}
             </p>
             <p>
-              Vì vậy, SẮC CỐ ĐÔ ra đời với mong muốn xây dựng một hệ sinh thái trải nghiệm di sản sáng tạo, giúp du khách khám phá Ninh Bình theo cách mới mẻ và có chiều sâu hơn. Thông qua Hộ chiếu Di sản Pop-up, hệ thống sưu tầm dấu mộc tại các điểm đến, những câu chuyện lịch sử được kể lại theo cách gần gũi cùng mạng lưới sản phẩm đặc trưng địa phương được tuyển chọn, chúng tôi hy vọng mỗi chuyến đi sẽ trở thành một hành trình đáng nhớ.
+              {ta("mission.paragraph2")}
             </p>
             <p>
-              Không chỉ dừng lại ở việc quảng bá du lịch, SẮC CỐ ĐÔ mong muốn góp phần kết nối du khách với văn hóa bản địa, lan tỏa giá trị của các làng nghề, đặc sản và cộng đồng địa phương, từ đó tạo ra những giá trị bền vững cho điểm đến.
+              {ta("mission.paragraph3")}
             </p>
             <p style={{ fontStyle: "italic", fontWeight: "700", color: "var(--brand)", borderLeft: "4px solid var(--brand-2)", paddingLeft: "16px", marginTop: "12px", fontSize: "16px" }}>
-              "Chúng tôi tin rằng mỗi con dấu được sưu tầm, mỗi trang hộ chiếu được lấp đầy và mỗi câu chuyện được lưu giữ đều là những ký ức đẹp của hành trình khám phá."
+              "{ta("mission.quote")}"
             </p>
           </div>
         </LazySection>
 
-        <LazySection className="about-vision-mission" ariaLabel="Tầm nhìn và Sứ mệnh">
+        <LazySection className="about-vision-mission" ariaLabel={ta("visionMission.ariaLabel")} placeholder={ta("lazyPlaceholder")}>
           <div className="vision-card">
             <h2 style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-              <Eye size={26} style={{ color: "var(--brand)", flexShrink: 0 }} /> Tầm Nhìn
+              <Eye size={26} style={{ color: "var(--brand)", flexShrink: 0 }} /> {ta("visionMission.visionTitle")}
             </h2>
             <p>
-              Trở thành hệ sinh thái trải nghiệm di sản và sản phẩm địa phương hàng đầu Việt Nam, góp phần lan tỏa vẻ đẹp văn hóa và lịch sử của từng vùng đất đến với cộng đồng trong nước và quốc tế.
+              {ta("visionMission.visionText")}
             </p>
           </div>
 
           <div className="mission-card">
             <h2 style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-              <Rocket size={26} style={{ color: "var(--brand)", flexShrink: 0 }} /> Sứ Mệnh
+              <Rocket size={26} style={{ color: "var(--brand)", flexShrink: 0 }} /> {ta("visionMission.missionTitle")}
             </h2>
             <ul className="mission-list">
               {missionPoints.map((point, index) => (
@@ -143,11 +120,11 @@ export default function AboutPage() {
           </div>
         </LazySection>
 
-        <LazySection style={{ marginTop: "64px" }} ariaLabel="Giá trị cốt lõi">
+        <LazySection style={{ marginTop: "64px" }} ariaLabel={ta("values.ariaLabel")} placeholder={ta("lazyPlaceholder")}>
           <div style={{ textAlign: "center", marginBottom: "32px" }}>
-            <p className="eyebrow" style={{ display: "inline-block" }}>Nền tảng</p>
+            <p className="eyebrow" style={{ display: "inline-block" }}>{ta("values.eyebrow")}</p>
             <h2 style={{ fontFamily: "var(--font-heading, 'Baloo 2'), sans-serif", color: "var(--ink)", fontSize: "36px", fontWeight: "800", marginTop: "8px" }}>
-              Giá Trị Cốt Lõi
+              {ta("values.title")}
             </h2>
           </div>
           <div className="about-values-grid">

@@ -6,12 +6,16 @@ import SiteFooter from "./SiteFooter";
 import SiteHeader from "./SiteHeader";
 import { useFirebaseAuth } from "./FirebaseAuthProvider";
 import { useToast } from "./ToastProvider";
+import { translate, useI18n } from "./I18nProvider";
+import authDict from "../../locales/auth.json";
 
 export default function AuthPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user, loading, loginWithEmail, loginWithGoogle, registerWithEmail, logout, isConfigured, missingKeys } = useFirebaseAuth();
   const { showToast } = useToast();
+  const { locale, t } = useI18n();
+  const ta = (key) => translate(authDict, locale, key);
   const [mode, setMode] = useState("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -22,7 +26,7 @@ export default function AuthPage() {
 
   const redirectTo = searchParams.get("next") || "/cua-toi";
 
-  async function finishAuth(action, successMessage = "Đăng nhập thành công!") {
+  async function finishAuth(action, successMessage = ta("toast.loginSuccess")) {
     setSubmitting(true);
     setMessage("");
 
@@ -32,7 +36,7 @@ export default function AuthPage() {
       router.push(redirectTo);
     } catch (error) {
       setMessage(error.message);
-      showToast(error.message || "Không thể xử lý yêu cầu. Vui lòng thử lại.", "error");
+      showToast(error.message || ta("toast.genericError"), "error");
     } finally {
       setSubmitting(false);
     }
@@ -46,7 +50,7 @@ export default function AuthPage() {
       }
 
       return loginWithEmail(email, password);
-    }, mode === "register" ? "Tạo tài khoản thành công!" : "Đăng nhập thành công!");
+    }, mode === "register" ? ta("toast.registerSuccess") : ta("toast.loginSuccess"));
   }
 
   return (
@@ -54,13 +58,13 @@ export default function AuthPage() {
       <SiteHeader />
       <main className="customer-auth-page">
         <div className="customer-auth-logo">
-          <img src="/assets/anh-new/logo.png" alt="Sắc Cố Đô" />
-          <span>TÀI KHOẢN HÀNH TRÌNH</span>
+          <img src="/assets/anh-new/logo.png" alt={t("header.brand")} />
+          <span>{ta("brandLabel")}</span>
         </div>
         <section className="customer-auth-card">
-          <h1>{user ? "Tài khoản của bạn" : mode === "register" ? "Tạo tài khoản" : "Đăng nhập"}</h1>
+          <h1>{user ? ta("titleAccount") : mode === "register" ? ta("titleRegister") : ta("titleLogin")}</h1>
 
-          {!isConfigured ? <p className="auth-alert">Thiếu Firebase env: {missingKeys.join(", ")}</p> : null}
+          {!isConfigured ? <p className="auth-alert">{ta("missingFirebase")} {missingKeys.join(", ")}</p> : null}
 
           {user ? (
             <div className="customer-auth-profile">
@@ -69,23 +73,23 @@ export default function AuthPage() {
                 <strong>{user.displayName || user.email}</strong>
                 <p>{user.email}</p>
               </div>
-              <button type="button" onClick={logout}>Đăng xuất</button>
+              <button type="button" onClick={logout}>{ta("logout")}</button>
             </div>
           ) : (
             <>
-              <div className="auth-mode-tabs" role="tablist" aria-label="Chọn chế độ đăng nhập">
+              <div className="auth-mode-tabs" role="tablist" aria-label={ta("tabsAria")}>
                 <button className={mode === "login" ? "active" : ""} type="button" onClick={() => setMode("login")}>
-                  Đăng nhập
+                  {ta("tabLogin")}
                 </button>
                 <button className={mode === "register" ? "active" : ""} type="button" onClick={() => setMode("register")}>
-                  Đăng ký
+                  {ta("tabRegister")}
                 </button>
               </div>
 
               <form onSubmit={submit} suppressHydrationWarning>
                 {mode === "register" ? (
                   <div className="customer-auth-field">
-                    <label>Tên hiển thị</label>
+                    <label>{ta("displayNameLabel")}</label>
                     <div className="customer-input-with-icon">
                       <span className="customer-input-icon" aria-hidden="true">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
@@ -98,7 +102,7 @@ export default function AuthPage() {
                   </div>
                 ) : null}
                 <div className="customer-auth-field">
-                  <label>Email</label>
+                  <label>{ta("emailLabel")}</label>
                   <div className="customer-input-with-icon">
                     <span className="customer-input-icon" aria-hidden="true">
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
@@ -110,7 +114,7 @@ export default function AuthPage() {
                   </div>
                 </div>
                 <div className="customer-auth-field">
-                  <label>Mật khẩu</label>
+                  <label>{ta("passwordLabel")}</label>
                   <div className="customer-input-with-icon">
                     <span className="customer-input-icon" aria-hidden="true">
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
@@ -130,7 +134,7 @@ export default function AuthPage() {
                     <button
                       type="button"
                       className={`auth-password-toggle ${showPassword ? "is-visible" : ""}`}
-                      aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                      aria-label={showPassword ? ta("hidePassword") : ta("showPassword")}
                       aria-pressed={showPassword}
                       onClick={() => setShowPassword((value) => !value)}
                     >
@@ -152,19 +156,19 @@ export default function AuthPage() {
                 </div>
                 {message ? <p className="auth-alert">{message}</p> : null}
                 <button type="submit" disabled={submitting || loading || !isConfigured}>
-                  {submitting ? "Đang xử lý..." : mode === "register" ? "Tạo tài khoản" : "Đăng nhập"}
+                  {submitting ? ta("submitting") : mode === "register" ? ta("submitRegister") : ta("submitLogin")}
                 </button>
               </form>
 
-              <div className="auth-divider"><span>hoặc</span></div>
+              <div className="auth-divider"><span>{ta("orDivider")}</span></div>
               <button
                 className="google-auth-button"
                 type="button"
                 disabled={submitting || !isConfigured}
-                onClick={() => finishAuth(loginWithGoogle, "Đăng nhập Google thành công!")}
+                onClick={() => finishAuth(loginWithGoogle, ta("toast.googleSuccess"))}
               >
                 <img src="/logo-google.jpg" alt="" aria-hidden="true" />
-                Tiếp tục với Google
+                {ta("continueWithGoogle")}
               </button>
             </>
           )}

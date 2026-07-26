@@ -1,0 +1,68 @@
+{
+  "vi": {
+    "name": "Tam Cốc - Bích Động",
+    "navName": "TAM CỐC",
+    "eyebrow": "Vịnh Hạ Long trên cạn",
+    "title": "Tam Cốc - Bích Động",
+    "subtitle": "Bức tranh sơn thủy giữa lòng cố đô.",
+    "featureCaption": "Một nhịp chèo trên sông là một lát cắt của mùa, ánh sáng và ký ức.",
+    "sectionLabel": "Hành trình di sản",
+    "introTitle": "Xuôi dòng Ngô Đồng",
+    "introParagraphs": [
+      "Tam Cốc - Bích Động nổi bật với núi đá vôi kỳ vĩ, cánh đồng lúa trải dài và dòng sông Ngô Đồng uốn lượn mềm mại.",
+      "Hành trình thường bắt đầu bằng chuyến đò nhỏ xuôi dòng, lần lượt đi qua Hang Cả, Hang Hai và Hang Ba.",
+      "Khi con thuyền nhẹ nhàng lướt qua những cánh đồng lúa xanh mướt hoặc vàng óng vào mùa gặt, sự kết hợp giữa ánh sáng, mặt nước và những khối thạch nhũ hàng triệu năm tuổi tạo nên khung cảnh vừa kỳ bí vừa thơ mộng."
+    ],
+    "storyTitle": "Nam Thiên Đệ Nhị Động",
+    "storyParagraphs": [
+      "Cách Tam Cốc không xa là chùa Bích Động, ngôi chùa cổ hơn 300 năm tuổi được xây dựng dựa lưng vào núi đá.",
+      "Những bậc đá rêu phong, mái chùa cổ kính và tiếng chuông ngân giữa núi rừng tạo nên không gian thanh bình và đầy chất thiền.",
+      "Từ xa xưa, nơi đây đã được mệnh danh là Nam Thiên Đệ Nhị Động, tức động đẹp thứ hai của trời Nam.",
+      "Không chỉ là điểm đến dành cho những người yêu thiên nhiên, Tam Cốc - Bích Động còn là nơi lưu giữ những giá trị văn hóa lâu đời của vùng đất cố đô.",
+      "Mỗi mùa trong năm, nơi đây lại khoác lên mình một vẻ đẹp khác nhau, mang đến cho du khách những trải nghiệm khó quên trong hành trình khám phá Ninh Bình."
+    ],
+    "highlights": [
+      { "number": "01", "title": "Lúa vàng", "description": "Tháng 5 - tháng 6 là mùa đồng lúa chuyển vàng rực rỡ." },
+      { "number": "02", "title": "Mùa sen nở", "description": "Tháng 6 - tháng 7 là thời điểm mặt nước sáng lên bởi sắc sen." },
+      { "number": "03", "title": "Mùa sương giăng", "description": "Sáng sớm mang đến lớp sương mỏng giữa núi và sông." }
+    ],
+    "galleryEyebrow": "Sắc màu Tam Cốc",
+    "galleryTitle": "Mỗi góc nhìn là một bức tranh",
+    "galleryCaptions": ["Dòng sông giữa mùa lúa", "Thuyền xuôi Ngô Đồng", "Núi đá và đồng xanh", "Bích Động trầm mặc", "Hoa sen mùa hạ"],
+    "closingTitle": "Mỗi mùa một vẻ, mười phần vẹn mười",
+    "closingText": "Tam Cốc - Bích Động không chỉ là một danh thắng, đó là nơi bạn cảm nhận nhịp điệu thiên nhiên bằng từng mái chèo."
+  },
+  "en": {
+    "name": "Tam Coc - Bich Dong",
+    "navName": "TAM COC",
+    "eyebrow": "Ha Long Bay on land",
+    "title": "Tam Coc - Bich Dong",
+    "subtitle": "A landscape painting at the heart of the ancient capital.",
+    "featureCaption": "Every stroke of the oar captures a slice of season, light, and memory.",
+    "sectionLabel": "A heritage journey",
+    "introTitle": "Down the Ngo Dong River",
+    "introParagraphs": [
+      "Tam Coc - Bich Dong stands out for its magnificent limestone mountains, sweeping rice fields, and the gently winding Ngo Dong River.",
+      "The journey usually begins with a small boat drifting downstream, passing through Ca Cave, Hai Cave, and Ba Cave in turn.",
+      "As the boat glides past lush green or golden ripening rice fields, the interplay of light, water, and million-year-old stalactites creates a scene that is both mysterious and poetic."
+    ],
+    "storyTitle": "The Second Most Beautiful Cave Under Southern Skies",
+    "storyParagraphs": [
+      "Not far from Tam Coc lies Bich Dong Pagoda, an ancient temple over 300 years old, built against a limestone cliff.",
+      "Moss-covered stone steps, an ancient pagoda roof, and bells ringing through the mountains create a peaceful, meditative atmosphere.",
+      "Since ancient times, this site has been known as \"Nam Thien De Nhi Dong\" — the second most beautiful cave under southern skies.",
+      "More than just a destination for nature lovers, Tam Coc - Bich Dong also preserves the enduring cultural values of the ancient capital region.",
+      "Each season brings a different beauty, offering visitors unforgettable experiences on their journey through Ninh Binh."
+    ],
+    "highlights": [
+      { "number": "01", "title": "Golden rice", "description": "May to June is when the rice fields turn a brilliant gold." },
+      { "number": "02", "title": "Lotus season", "description": "June to July is when the water glows with the color of lotus blooms." },
+      { "number": "03", "title": "Misty mornings", "description": "Early mornings bring a thin veil of mist between the mountains and the river." }
+    ],
+    "galleryEyebrow": "The colors of Tam Coc",
+    "galleryTitle": "Every angle, a painting",
+    "galleryCaptions": ["The river in rice season", "Boating down the Ngo Dong", "Mountains and green fields", "Serene Bich Dong", "Summer lotus blooms"],
+    "closingTitle": "A different beauty each season, perfect in every way",
+    "closingText": "Tam Coc - Bich Dong is more than a landmark — it's where you feel nature's rhythm in every stroke of the oar."
+  }
+}

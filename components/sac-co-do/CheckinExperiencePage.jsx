@@ -9,6 +9,9 @@ import { useFirebaseAuth } from "./FirebaseAuthProvider";
 import { uploadToCloudinary } from "../../lib/cloudinary/client";
 import { useToast } from "./ToastProvider";
 import { ArOnboardingGuide } from "./UtilityPages";
+import { translate, useI18n } from "./I18nProvider";
+import checkinDict from "../../locales/checkin.json";
+import { localizeStation } from "./stationLocalization";
 
 const viewArBase = "/assets/view-ar";
 const fallbackArModelSrc = "/ar/sac-co-do-guide-v3.glb";
@@ -23,6 +26,15 @@ const stationNarrationAudio = {
   "tam-coc": "/assets/am-thanh/TM%20Tam%20Coc%20-%20Bich%20Dong.MP3",
   "pho-co-hoa-lu": "/assets/am-thanh/TM%20Ph%E1%BB%91%20c%E1%BB%95%20Hoa%20L%C6%B0.MP3",
   "hang-mua": "/assets/am-thanh/TM%20Hang%20M%C3%BAa.MP3",
+};
+
+const stationNarrationAudioEn = {
+  "trang-an": "/assets/am-thanh/eng/trang-an2.mp3",
+  "hoa-lu": "/assets/am-thanh/eng/co-do-hoa-lu2.mp3",
+  "bai-dinh": "/assets/am-thanh/eng/bai-dinh2.mp3",
+  "tam-coc": "/assets/am-thanh/eng/tam-coc-2.mp3",
+  "pho-co-hoa-lu": "/assets/am-thanh/eng/pho-co-hoa-lu2.mp3",
+  "hang-mua": "/assets/am-thanh/eng/hang-mua2.mp3",
 };
 
 function getStation(stationId) {
@@ -43,8 +55,12 @@ function isQuickLookDevice() {
 export default function CheckinExperiencePage({ stationId }) {
   const { user, db } = useFirebaseAuth();
   const { showToast } = useToast();
+  const { locale } = useI18n();
+  const tc = (key) => translate(checkinDict, locale, key);
   const fallbackStation = useMemo(() => getStation(stationId), [stationId]);
   const [station, setStation] = useState(fallbackStation);
+  // Display-only localized copy — keep `station` itself raw (Vietnamese) since its fields are written to Firestore/localStorage.
+  const displayStation = localizeStation(station, locale);
   const [arCharacter, setArCharacter] = useState({
     id: fallbackArCharacterId,
     glbUrl: fallbackArModelSrc,
@@ -132,7 +148,7 @@ export default function CheckinExperiencePage({ stationId }) {
   async function openCamera() {
     if (typeof navigator === "undefined" || !navigator.mediaDevices?.getUserMedia) {
       setHasCamera(false);
-      setArMessage("Trình duyệt này chưa hỗ trợ mở camera.");
+      setArMessage(tc("errors.cameraUnsupported"));
       return false;
     }
 
@@ -153,7 +169,7 @@ export default function CheckinExperiencePage({ stationId }) {
     } catch (error) {
       console.error("Camera access error:", error);
       setHasCamera(false);
-      setArMessage("Không mở được camera. Hãy cấp quyền camera cho trình duyệt rồi thử lại.");
+      setArMessage(tc("errors.cameraFailed"));
       return false;
     }
   }
@@ -204,6 +220,16 @@ export default function CheckinExperiencePage({ stationId }) {
       }
     };
   }, []);
+
+  // Stop narration if the user switches language mid-playback so the wrong-language audio doesn't keep playing.
+  useEffect(() => {
+    if (narrationAudioRef.current) {
+      narrationAudioRef.current.pause();
+      narrationAudioRef.current.currentTime = 0;
+      narrationAudioRef.current = null;
+    }
+    setIsNarrating(false);
+  }, [locale]);
 
   useEffect(() => {
     playedGreetingRef.current = false;
@@ -276,7 +302,7 @@ export default function CheckinExperiencePage({ stationId }) {
     const viewer = modelViewerRef.current;
     if (!viewer || typeof viewer.activateAR !== "function") {
       setArStatus("unsupported");
-      setArMessage("Thiết bị hoặc trình duyệt chưa hỗ trợ mở AR thật. Camera vẫn chạy ở chế độ mô phỏng tracking.");
+      setArMessage(tc("errors.arUnsupported"));
       return;
     }
 
@@ -287,7 +313,7 @@ export default function CheckinExperiencePage({ stationId }) {
     } catch (error) {
       console.error("Native AR launch error:", error);
       setArStatus("failed");
-      setArMessage("Không mở được AR thật trên môi trường hiện tại. Camera vẫn chạy ở chế độ mô phỏng tracking.");
+      setArMessage(tc("errors.arLaunchFailed"));
     }
   }
 
@@ -361,7 +387,7 @@ export default function CheckinExperiencePage({ stationId }) {
       setPreviewUrl(null);
       setHasCompletedAllStops(await checkAllStationsCompleted());
 
-      showToast(`Chúc mừng! Bạn đã hoàn thành check-in tại ${station.name} và đóng dấu mộc thành công!`, "success");
+      showToast(`${tc("toast.stampSuccessPrefix")} ${displayStation.name} ${tc("toast.stampSuccessSuffix")}`, "success");
 
       // Play Confetti Celebration and show success dialog
       if (typeof window !== "undefined") {
@@ -379,16 +405,17 @@ export default function CheckinExperiencePage({ stationId }) {
       setShowSuccessModal(true);
     } catch (err) {
       console.error("Cloudinary stamp upload failed:", err);
-      showToast("Không thể đăng tải hình ảnh kỷ niệm. Vui lòng thử lại.", "error");
+      showToast(tc("errors.uploadFailed"), "error");
     } finally {
       setIsUploading(false);
     }
   };
 
   function handleNarration() {
-    const narrationUrl = stationNarrationAudio[station.id || stationId];
+    const sid2 = station.id || stationId;
+    const narrationUrl = locale === "en" ? stationNarrationAudioEn[sid2] || stationNarrationAudio[sid2] : stationNarrationAudio[sid2];
     if (!narrationUrl) {
-      setArMessage("Chưa có file thuyết minh cho địa danh này.");
+      setArMessage(tc("errors.noNarration"));
       return;
     }
 
@@ -405,7 +432,7 @@ export default function CheckinExperiencePage({ stationId }) {
     audio.onended = () => setIsNarrating(false);
     audio.onerror = () => {
       setIsNarrating(false);
-      setArMessage("Không thể phát file thuyết minh. Vui lòng thử lại.");
+      setArMessage(tc("errors.narrationPlayFailed"));
     };
     narrationAudioRef.current = audio;
 
@@ -414,7 +441,7 @@ export default function CheckinExperiencePage({ stationId }) {
         setArMessage("");
         setIsNarrating(true);
       })
-      .catch(() => setArMessage("Không thể phát file thuyết minh. Vui lòng thử lại."));
+      .catch(() => setArMessage(tc("errors.narrationPlayFailed")));
   }
 
   function toggleNarrationMute() {
@@ -455,7 +482,7 @@ export default function CheckinExperiencePage({ stationId }) {
       });
       setHasCompletedAllStops(await checkAllStationsCompleted());
 
-      showToast(`Chúc mừng! Bạn đã hoàn thành check-in tại ${station.name} và đóng dấu mộc thành công!`, "success");
+      showToast(`${tc("toast.stampSuccessPrefix")} ${displayStation.name} ${tc("toast.stampSuccessSuffix")}`, "success");
 
       // Play confetti and show success dialog
       if (typeof window !== "undefined") {
@@ -469,7 +496,7 @@ export default function CheckinExperiencePage({ stationId }) {
       setShowSuccessModal(true);
     } catch (e) {
       console.error("AR live stamp saving failed:", e);
-      showToast("Lỗi đóng dấu mộc. Vui lòng thử lại.", "error");
+      showToast(tc("errors.stampFailed"), "error");
     }
   }
 
@@ -495,14 +522,14 @@ export default function CheckinExperiencePage({ stationId }) {
 
   const arButtonLabel =
     arStatus === "launching"
-      ? "Đang mở AR thật..."
+      ? tc("arButton.launching")
       : isTracking
-        ? "Mở lại AR thật để track mặt đất"
-        : "Mở AR thật để track mặt đất";
+        ? tc("arButton.relaunch")
+        : tc("arButton.launch");
 
   return (
     <main className="ar-live-page">
-      <img className="ar-live-background" src={station.image} alt={station.name} loading="eager" decoding="async" />
+      <img className="ar-live-background" src={station.image} alt={displayStation.name} loading="eager" decoding="async" />
       {hasMounted ? <video ref={videoRef} className="ar-live-camera" autoPlay playsInline muted aria-hidden="true" /> : null}
       <div className="ar-live-vignette" aria-hidden="true" />
 
@@ -525,28 +552,28 @@ export default function CheckinExperiencePage({ stationId }) {
 
       <header className="ar-live-header">
         <div>
-          <a className="ar-live-station" href={`/hanh-trinh/${station.id}`} aria-label={`Quay lại ${station.name}`}>
+          <a className="ar-live-station" href={`/hanh-trinh/${station.id}`} aria-label={`${tc("backAriaPrefix")} ${displayStation.name}`}>
             <img src="/assets/anh-new/AVT.jpg" alt="" aria-hidden="true" />
-            <span>{station.name}</span>
+            <span>{displayStation.name}</span>
           </a>
           <p className="ar-live-status">
             <span aria-hidden="true" />
-            AR Live Session
+            {tc("sessionLabel")}
           </p>
         </div>
         <div className="ar-live-header-right">
-          <button 
+          <button
             type="button"
             className="ar-live-help"
             onClick={() => {
               stopCamera();
               setShowArGuide(true);
             }}
-            aria-label="Xem hướng dẫn"
+            aria-label={tc("helpAria")}
           >
             ?
           </button>
-          <a className="ar-live-close" href={`/hanh-trinh/${station.id}`} aria-label="Đóng AR">
+          <a className="ar-live-close" href={`/hanh-trinh/${station.id}`} aria-label={tc("closeArAria")}>
             <img src={`${viewArBase}/mobile-app/btn-close.svg`} alt="" aria-hidden="true" />
           </a>
         </div>
@@ -558,16 +585,16 @@ export default function CheckinExperiencePage({ stationId }) {
 
       <section
         className={`ar-live-sheet is-${sheetPosition}`}
-        aria-label="Điều khiển AR"
+        aria-label={tc("sheetAria")}
         onPointerDown={handleSheetPointerDown}
         onPointerUp={handleSheetPointerUp}
       >
-        <button className="ar-live-sheet-handle" type="button" aria-label="Kéo bảng điều khiển AR" />
-        <p>Lia camera xuống nền phẳng.</p>
+        <button className="ar-live-sheet-handle" type="button" aria-label={tc("sheetHandleAria")} />
+        <p>{tc("sheetHint")}</p>
         <h1>
           {isTracking
-            ? "Đã nhận diện mặt đất, chạm để đặt hướng dẫn viên ảo."
-            : "Khi hệ thống nhận diện mặt đất, chạm để đặt hướng dẫn viên ảo."}
+            ? tc("sheetTitleTracking")
+            : tc("sheetTitleIdle")}
         </h1>
 
         {arMessage ? <p className="ar-live-message">{arMessage}</p> : null}
@@ -593,16 +620,16 @@ export default function CheckinExperiencePage({ stationId }) {
         <div className="ar-live-secondary-row">
           <button className={`ar-live-secondary ${isNarrating ? "is-playing" : ""}`} type="button" onClick={handleNarration}>
             <img src={`${viewArBase}/mobile-app/ic-phat-thuyet-minh.svg`} alt="" aria-hidden="true" />
-            {isNarrating ? "Dừng thuyết minh" : "Phát thuyết minh"}
+            {isNarrating ? tc("narration.stop") : tc("narration.play")}
           </button>
-          <button className={`ar-live-icon-button ${isMuted ? "is-active" : ""}`} type="button" onClick={toggleNarrationMute} aria-label="Bật tắt âm thanh">
+          <button className={`ar-live-icon-button ${isMuted ? "is-active" : ""}`} type="button" onClick={toggleNarrationMute} aria-label={tc("narration.muteAria")}>
             <img src={`${viewArBase}/mobile-app/ic-mute-voice.svg`} alt="" aria-hidden="true" />
           </button>
         </div>
 
         <button className="ar-live-stamp" type="button" disabled={!isTracking} onClick={handleStamp}>
           <img src={`${viewArBase}/mobile-app/ic-dong-dau-passport-so.svg`} alt="" aria-hidden="true" />
-          {isStamped ? "Đã đóng dấu passport số" : "Đóng dấu passport số"}
+          {isStamped ? tc("stamp.done") : tc("stamp.action")}
         </button>
 
         <span className={`ar-live-bottom-dot ${isTracking ? "is-active" : ""}`} aria-hidden="true" />
@@ -612,50 +639,50 @@ export default function CheckinExperiencePage({ stationId }) {
       {showUploadModal && (
         <div className="ar-upload-modal-backdrop">
           <div className="ar-upload-modal-content">
-            <h3>Đăng Tải Kỷ Niệm AR</h3>
-            <p>Chọn và đăng tải bức ảnh chụp cùng hướng dẫn viên ảo bạn vừa chụp bằng camera iPhone để ghi nhận dấu mộc!</p>
-            
+            <h3>{tc("uploadModal.title")}</h3>
+            <p>{tc("uploadModal.description")}</p>
+
             <div className="ar-upload-preview">
               {previewUrl ? (
-                <img src={previewUrl} alt="Ảnh chụp AR" />
+                <img src={previewUrl} alt={tc("uploadModal.photoAlt")} />
               ) : (
-                <div className="ar-upload-placeholder font-baloo">Chưa chọn ảnh kỷ niệm</div>
+                <div className="ar-upload-placeholder font-baloo">{tc("uploadModal.noPhoto")}</div>
               )}
             </div>
 
             <div className="ar-upload-input-group">
-              <input 
-                type="file" 
-                accept="image/*" 
+              <input
+                type="file"
+                accept="image/*"
                 id="ar-photo-file-input"
                 onChange={handleFileChange}
                 style={{ display: "none" }}
                 disabled={isUploading}
               />
               <label htmlFor="ar-photo-file-input" className="ar-upload-file-label">
-                {selectedFile ? "Thay đổi ảnh chọn" : "Chọn ảnh từ Thư viện"}
+                {selectedFile ? tc("uploadModal.changePhoto") : tc("uploadModal.choosePhoto")}
               </label>
             </div>
 
             {isUploading && (
               <div className="ar-upload-progress-container">
                 <div className="ar-upload-progress-bar" style={{ width: `${uploadProgress}%` }} />
-                <span>Đang tải lên máy chủ: {uploadProgress}%</span>
+                <span>{tc("uploadModal.uploadingPrefix")} {uploadProgress}%</span>
               </div>
             )}
 
             <div className="ar-upload-modal-actions">
-              <button 
-                type="button" 
-                className="ar-upload-submit-btn" 
+              <button
+                type="button"
+                className="ar-upload-submit-btn"
                 onClick={handleUploadAndStamp}
                 disabled={!selectedFile || isUploading}
               >
-                {isUploading ? "Đang lưu..." : "Đóng dấu mộc hành trình"}
+                {isUploading ? tc("uploadModal.saving") : tc("uploadModal.submit")}
               </button>
-              <button 
-                type="button" 
-                className="ar-upload-cancel-btn" 
+              <button
+                type="button"
+                className="ar-upload-cancel-btn"
                 onClick={() => {
                   setShowUploadModal(false);
                   setSelectedFile(null);
@@ -663,7 +690,7 @@ export default function CheckinExperiencePage({ stationId }) {
                 }}
                 disabled={isUploading}
               >
-                Hủy bỏ
+                {tc("uploadModal.cancel")}
               </button>
             </div>
           </div>
@@ -697,26 +724,26 @@ export default function CheckinExperiencePage({ stationId }) {
                 <polyline points="22 4 12 14.01 9 11.01" />
               </svg>
             </div>
-            <h3>{hasCompletedAllStops ? "Chúc mừng bạn đã hoàn thành hành trình!" : "Ghi Nhận Thành Công!"}</h3>
+            <h3>{hasCompletedAllStops ? tc("success.allDoneTitle") : tc("success.stationDoneTitle")}</h3>
             <p>
               {hasCompletedAllStops ? (
-                <>Bạn đã check-in đủ 6 điểm đến và hoàn thành hành trình di sản Ninh Bình. Hộ Chiếu của bạn đã ghi nhận trọn vẹn các dấu mộc!</>
+                <>{tc("success.allDoneText")}</>
               ) : (
-                <>Chúc mừng bạn đã hoàn thành check-in tại <strong>{station.name}</strong> và đóng dấu mộc hành trình thành công!</>
+                <>{tc("success.stationDonePrefix")} <strong>{displayStation.name}</strong> {tc("success.stationDoneSuffix")}</>
               )}
             </p>
-            
+
             <div className="checkin-success-buttons">
-              <button 
+              <button
                 type="button"
                 className="checkin-success-btn-primary"
                 onClick={() => {
                   window.location.href = "/ho-chieu";
                 }}
               >
-                Xem Hộ Chiếu của tôi
+                {tc("success.viewPassport")}
               </button>
-              
+
               {!hasCompletedAllStops && (
                 <button
                   type="button"
@@ -725,7 +752,7 @@ export default function CheckinExperiencePage({ stationId }) {
                     window.location.href = "/hanh-trinh";
                   }}
                 >
-                  Về Bản đồ hành trình
+                  {tc("success.backToMap")}
                 </button>
               )}
             </div>

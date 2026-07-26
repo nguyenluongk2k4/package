@@ -1,0 +1,36 @@
+{
+  "vi": {
+    "qrLocation": "Hành lang La Hán — đoạn giữa, gần lối sang tháp chuông",
+    "qrDescription": "Mã QR được đặt tại cột đá đầu tiên của đoạn hành lang La Hán phía Tây, gần lối rẽ lên tháp chuông.",
+    "qrDetails": [
+      "QR được khắc/chế tác trên bề mặt đá tự nhiên của cột hành lang",
+      "Có khung đồng nhỏ viền quanh",
+      "Bên cạnh có biểu tượng Sắc Cố Đô nhỏ"
+    ],
+    "hints": [
+      "Vào cổng Tam Quan chùa Bái Đính",
+      "Đi thẳng qua điện Tam Thế",
+      "Rẽ trái vào hành lang La Hán",
+      "Đi khoảng 50m, tới cột đá thứ 7 bên tay phải",
+      "QR nằm trên thân cột, ngang tầm mắt"
+    ],
+    "tips": "Khuôn viên rộng, đi bộ nhiều. Ăn mặc lịch sự. QR có khung kính bảo vệ."
+  },
+  "en": {
+    "qrLocation": "Arhat Corridor — midway point, near the path to the bell tower",
+    "qrDescription": "The QR code is placed at the first stone pillar of the western Arhat Corridor, near the turn toward the bell tower.",
+    "qrDetails": [
+      "QR is carved/mounted onto the natural stone surface of the corridor pillar",
+      "Framed with a small bronze border",
+      "A small Sac Co Do emblem sits beside it"
+    ],
+    "hints": [
+      "Enter through the Tam Quan gate of Bai Dinh Pagoda",
+      "Walk straight through the Tam The hall",
+      "Turn left into the Arhat Corridor",
+      "Walk about 50m to the 7th stone pillar on the right",
+      "The QR is on the pillar, at eye level"
+    ],
+    "tips": "The grounds are large with a lot of walking. Dress modestly. The QR has a protective glass cover."
+  }
+}

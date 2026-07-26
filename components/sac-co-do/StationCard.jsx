@@ -1,8 +1,14 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { translate, useI18n } from "./I18nProvider";
+import journeyDict from "../../locales/journey.json";
+import { localizeStation } from "./stationLocalization";
 
-export default function StationCard({ station, variant = "default" }) {
+export default function StationCard({ station: rawStation, variant = "default" }) {
+  const { locale } = useI18n();
+  const tj = (key) => translate(journeyDict, locale, key);
+  const station = localizeStation(rawStation, locale);
   const images = useMemo(() => {
     const gallery = station.gallery || [];
     return [station.image, ...gallery].filter((image, index, list) => image && list.indexOf(image) === index);
@@ -40,13 +46,13 @@ export default function StationCard({ station, variant = "default" }) {
         <h3>{station.name}</h3>
         <p>{station.description}</p>
         {previewImages.length > 0 && (
-          <div className="station-card-thumbs" aria-label={`Chọn ảnh ${station.name}`}>
+          <div className="station-card-thumbs" aria-label={`${tj("stationCard.chooseImageAria")} ${station.name}`}>
             {previewImages.map((image) => (
               <button
                 className={image === activeImage ? "is-active" : ""}
                 key={image}
                 type="button"
-                aria-label={`Xem ảnh ${station.name}`}
+                aria-label={`${tj("stationCard.viewImageAria")} ${station.name}`}
                 onClick={(event) => {
                   event.stopPropagation();
                   setActiveImage(image);
@@ -59,16 +65,16 @@ export default function StationCard({ station, variant = "default" }) {
         )}
         <dl>
           <div>
-            <dt>Giờ mở</dt>
+            <dt>{tj("stationCard.hoursLabel")}</dt>
             <dd>{station.hours}</dd>
           </div>
           <div>
-            <dt>Dấu mốc</dt>
+            <dt>{tj("stationCard.stampLabel")}</dt>
             <dd>{station.stamp}</dd>
           </div>
         </dl>
         <a className="station-checkin-link" href={detailHref} onClick={(event) => event.stopPropagation()}>
-          Xem chi tiết
+          {tj("stationCard.viewDetail")}
         </a>
       </div>
     </article>

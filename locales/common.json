@@ -1,0 +1,30 @@
+{
+  "vi": {
+    "language.vi": "Tiếng Việt",
+    "language.en": "English",
+    "common.heroMedia.defaultAlt": "Sắc Cố Đô",
+    "common.heroMedia.defaultVideoTitle": "Sắc Cố Đô Video",
+    "common.heroMedia.defaultPrimaryCta": "Khám phá ngay",
+    "common.heroMedia.defaultVideoCta": "Xem video giới thiệu",
+    "common.heroMedia.defaultImageCta": "Xem ảnh giới thiệu",
+    "common.accountFab.activated": "Tài khoản đã kích hoạt",
+    "common.accountFab.verifyNow": "Xác nhận ngay",
+    "common.accountFab.verifyAria": "Xác thực tài khoản",
+    "common.scrollToTopAria": "Lên đầu trang",
+    "common.closeToastAria": "Đóng thông báo"
+  },
+  "en": {
+    "language.vi": "Tiếng Việt",
+    "language.en": "English",
+    "common.heroMedia.defaultAlt": "Sac Co Do",
+    "common.heroMedia.defaultVideoTitle": "Sac Co Do Video",
+    "common.heroMedia.defaultPrimaryCta": "Explore now",
+    "common.heroMedia.defaultVideoCta": "Watch intro video",
+    "common.heroMedia.defaultImageCta": "View intro image",
+    "common.accountFab.activated": "Account activated",
+    "common.accountFab.verifyNow": "Verify now",
+    "common.accountFab.verifyAria": "Verify account",
+    "common.scrollToTopAria": "Back to top",
+    "common.closeToastAria": "Close notification"
+  }
+}

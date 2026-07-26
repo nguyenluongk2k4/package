@@ -1,0 +1,68 @@
+{
+  "vi": {
+    "name": "Chùa Bái Đính",
+    "navName": "BÁI ĐÍNH",
+    "eyebrow": "Hành trình tìm về miền đất Phật",
+    "title": "Chùa Bái Đính",
+    "subtitle": "Quần thể chùa rộng lớn giữa thung lũng, nơi kiến trúc truyền thống hòa cùng cảnh quan kỳ vĩ.",
+    "featureCaption": "Nơi sương khói mờ ảo quyện cùng tiếng chuông chùa thanh tịnh.",
+    "sectionLabel": "Di sản ngàn năm",
+    "introTitle": "Truyền thuyết động thiêng",
+    "introParagraphs": [
+      "Nằm giữa thung lũng rộng lớn, Chùa Bái Đính là một trong những quần thể chùa lớn nhất Đông Nam Á.",
+      "Theo truyền thuyết, thiền sư Nguyễn Minh Không đã tìm thấy động thiêng tại vùng núi Bái Đính và lập chùa để chữa bệnh cứu người.",
+      "Không chỉ gây ấn tượng bởi quy mô đồ sộ, nơi đây còn là sự kết hợp hài hòa giữa kiến trúc truyền thống và cảnh quan thiên nhiên kỳ vĩ của vùng đất cố đô."
+    ],
+    "storyTitle": "Kỷ lục Phật giáo",
+    "storyParagraphs": [
+      "Điểm đặc biệt của Chùa Bái Đính là hệ thống tượng Phật bằng đồng lớn, hành lang La Hán dài hàng trăm mét cùng tháp chuông và bảo tháp uy nghiêm.",
+      "Trải qua nhiều thế kỷ, nơi đây dần trở thành một trung tâm Phật giáo quan trọng, thu hút hàng triệu Phật tử và du khách đến chiêm bái mỗi năm.",
+      "Mỗi công trình đều mang những giá trị nghệ thuật và tâm linh đặc sắc, phản ánh nét đẹp của văn hóa Phật giáo Việt Nam.",
+      "Vào những ngày đầu xuân, lễ hội chùa Bái Đính thu hút hàng vạn du khách thập phương đến cầu bình an, sức khỏe và may mắn cho một năm mới.",
+      "Giữa nhịp sống hối hả của thời hiện đại, Chùa Bái Đính giống như một khoảng lặng, nơi con người tìm lại sự cân bằng trong tâm hồn và cảm nhận rõ hơn vẻ đẹp của văn hóa, tín ngưỡng truyền thống Việt Nam."
+    ],
+    "highlights": [
+      { "number": "500", "title": "Hành lang La Hán", "description": "Dãy hành lang dài với hàng trăm tượng La Hán tạo nên nhịp điệu chiêm bái tĩnh tại." },
+      { "number": "100", "title": "Tượng Phật Đồng", "description": "Hệ thống tượng lớn tạo dấu ấn về quy mô và kỹ thuật đúc đồng truyền thống." },
+      { "number": "13", "title": "Bảo Tháp Xá Lợi", "description": "Công trình tâm linh nổi bật, mở ra tầm nhìn rộng giữa núi non." }
+    ],
+    "galleryEyebrow": "Không gian",
+    "galleryTitle": "Góc nhìn di sản",
+    "galleryCaptions": ["Toàn cảnh Bái Đính", "Không gian Phật điện", "Mái chùa giữa núi", "Hành lang La Hán", "Ánh vàng tĩnh lặng"],
+    "closingTitle": "Tìm lại sự cân bằng",
+    "closingText": "Bái Đính đón bạn bằng tiếng chuông chùa thanh tịnh và không gian khoáng đạt của núi rừng."
+  },
+  "en": {
+    "name": "Bai Dinh Pagoda",
+    "navName": "BAI DINH",
+    "eyebrow": "A journey to the land of Buddha",
+    "title": "Bai Dinh Pagoda",
+    "subtitle": "A vast pagoda complex nestled in a valley, where traditional architecture meets a breathtaking landscape.",
+    "featureCaption": "Where drifting mist mingles with the serene sound of temple bells.",
+    "sectionLabel": "A thousand-year heritage",
+    "introTitle": "The legend of the sacred cave",
+    "introParagraphs": [
+      "Set within a vast valley, Bai Dinh Pagoda is one of the largest pagoda complexes in Southeast Asia.",
+      "According to legend, Zen master Nguyen Minh Khong discovered a sacred cave in the Bai Dinh mountains and built a pagoda there to heal and help the people.",
+      "Beyond its immense scale, the site is also a harmonious blend of traditional architecture and the breathtaking natural landscape of the ancient capital region."
+    ],
+    "storyTitle": "A Buddhist Record-Setter",
+    "storyParagraphs": [
+      "What sets Bai Dinh Pagoda apart is its system of large bronze Buddha statues, an Arhat corridor stretching hundreds of meters, and its majestic bell tower and stupas.",
+      "Over the centuries, the site has grown into an important Buddhist center, drawing millions of pilgrims and visitors each year.",
+      "Every structure carries distinct artistic and spiritual value, reflecting the beauty of Vietnamese Buddhist culture.",
+      "In early spring, the Bai Dinh Pagoda festival draws tens of thousands of visitors from across the country to pray for peace, health, and good fortune in the new year.",
+      "Amid the rush of modern life, Bai Dinh Pagoda offers a quiet pause — a place to restore inner balance and feel more deeply the beauty of Vietnam's traditional culture and beliefs."
+    ],
+    "highlights": [
+      { "number": "500", "title": "Arhat Corridor", "description": "A long corridor lined with hundreds of Arhat statues, setting a calm, contemplative rhythm." },
+      { "number": "100", "title": "Bronze Buddha Statues", "description": "A grand system of statues showcasing scale and traditional bronze-casting craftsmanship." },
+      { "number": "13", "title": "Relic Stupa", "description": "A striking spiritual landmark with sweeping views across the mountains." }
+    ],
+    "galleryEyebrow": "The space",
+    "galleryTitle": "Heritage perspectives",
+    "galleryCaptions": ["Bai Dinh in full view", "Inside the Buddha hall", "Pagoda roof amid the mountains", "Arhat Corridor", "Still golden light"],
+    "closingTitle": "Find your balance again",
+    "closingText": "Bai Dinh welcomes you with the serene sound of temple bells and the open expanse of the mountains."
+  }
+}

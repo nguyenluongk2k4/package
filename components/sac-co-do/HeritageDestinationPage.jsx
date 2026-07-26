@@ -4,8 +4,52 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import SiteFooter from "./SiteFooter";
 import SiteHeader from "./SiteHeader";
-import { useI18n } from "./I18nProvider";
+import { translate, useI18n } from "./I18nProvider";
 import { heritageDestinations } from "./heritageDestinations";
+import heritageDict from "../../locales/heritage.json";
+import heritageTrangAn from "../../locales/heritage/trang-an.json";
+import heritageHoaLu from "../../locales/heritage/hoa-lu.json";
+import heritageBaiDinh from "../../locales/heritage/bai-dinh.json";
+import heritagePhoCoHoaLu from "../../locales/heritage/pho-co-hoa-lu.json";
+import heritageTamCoc from "../../locales/heritage/tam-coc.json";
+import heritageHangMua from "../../locales/heritage/hang-mua.json";
+
+const heritageTextBySlug = {
+  "trang-an": heritageTrangAn,
+  "hoa-lu": heritageHoaLu,
+  "bai-dinh": heritageBaiDinh,
+  "pho-co-hoa-lu": heritagePhoCoHoaLu,
+  "tam-coc": heritageTamCoc,
+  "hang-mua": heritageHangMua,
+};
+
+function localizeDestination(destination, locale) {
+  const dict = heritageTextBySlug[destination.slug];
+  const text = dict?.[locale] || dict?.vi;
+  if (!text) return destination;
+
+  return {
+    ...destination,
+    name: text.name,
+    navName: text.navName,
+    eyebrow: text.eyebrow,
+    title: text.title,
+    subtitle: text.subtitle,
+    featureCaption: text.featureCaption,
+    sectionLabel: text.sectionLabel,
+    introTitle: text.introTitle,
+    introParagraphs: text.introParagraphs,
+    storyTitle: text.storyTitle,
+    storyParagraphs: text.storyParagraphs,
+    highlights: text.highlights,
+    galleryEyebrow: text.galleryEyebrow,
+    galleryTitle: text.galleryTitle,
+    gallery: destination.gallery.map((image, index) => ({ ...image, caption: text.galleryCaptions?.[index] || image.caption })),
+    stats: text.stats || destination.stats,
+    closingTitle: text.closingTitle,
+    closingText: text.closingText,
+  };
+}
 
 const destinationNarrationAudio = {
   "trang-an": "/assets/am-thanh/TM%20Tr%C3%A0ng%20An.MP3",
@@ -14,6 +58,15 @@ const destinationNarrationAudio = {
   "tam-coc": "/assets/am-thanh/TM%20Tam%20Coc%20-%20Bich%20Dong.MP3",
   "pho-co-hoa-lu": "/assets/am-thanh/TM%20Ph%E1%BB%91%20c%E1%BB%95%20Hoa%20L%C6%B0.MP3",
   "hang-mua": "/assets/am-thanh/TM%20Hang%20M%C3%BAa.MP3",
+};
+
+const destinationNarrationAudioEn = {
+  "trang-an": "/assets/am-thanh/eng/trang-an2.mp3",
+  "hoa-lu": "/assets/am-thanh/eng/co-do-hoa-lu2.mp3",
+  "bai-dinh": "/assets/am-thanh/eng/bai-dinh2.mp3",
+  "tam-coc": "/assets/am-thanh/eng/tam-coc-2.mp3",
+  "pho-co-hoa-lu": "/assets/am-thanh/eng/pho-co-hoa-lu2.mp3",
+  "hang-mua": "/assets/am-thanh/eng/hang-mua2.mp3",
 };
 
 function LazyImage({ src, alt, className = "", loading = "lazy", ...props }) {
@@ -34,13 +87,18 @@ function LazyImage({ src, alt, className = "", loading = "lazy", ...props }) {
 }
 
 function DestinationNav({ activeSlug }) {
+  const { locale } = useI18n();
+  const th = (key) => translate(heritageDict, locale, key);
   return (
-    <div className="heritage-destination-nav" aria-label="Danh sách địa danh">
-      {heritageDestinations.map((item) => (
-        <Link className={item.slug === activeSlug ? "is-active" : ""} href={`/dia-danh/${item.slug}`} key={item.slug}>
-          {item.navName}
-        </Link>
-      ))}
+    <div className="heritage-destination-nav" aria-label={th("navAria")}>
+      {heritageDestinations.map((item) => {
+        const navName = heritageTextBySlug[item.slug]?.[locale]?.navName || heritageTextBySlug[item.slug]?.vi?.navName || item.navName;
+        return (
+          <Link className={item.slug === activeSlug ? "is-active" : ""} href={`/dia-danh/${item.slug}`} key={item.slug}>
+            {navName}
+          </Link>
+        );
+      })}
     </div>
   );
 }
@@ -89,7 +147,10 @@ function AudioChip({ destination }) {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isLoadingAudio, setIsLoadingAudio] = useState(false);
   const audioRef = useRef(null);
-  const narrationUrl = destinationNarrationAudio[destination.slug];
+  const narrationUrl =
+    locale === "en"
+      ? destinationNarrationAudioEn[destination.slug] || destinationNarrationAudio[destination.slug]
+      : destinationNarrationAudio[destination.slug];
 
   useEffect(() => {
     return () => {
@@ -99,6 +160,16 @@ function AudioChip({ destination }) {
       }
     };
   }, []);
+
+  // Stop narration if the user switches language mid-playback so the wrong-language audio doesn't keep playing.
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      audioRef.current = null;
+    }
+    setIsSpeaking(false);
+  }, [locale]);
 
   function stopNarration() {
     if (audioRef.current) {
@@ -146,7 +217,7 @@ function AudioChip({ destination }) {
       <span aria-hidden="true">{isLoadingAudio ? "…" : isSpeaking ? "■" : "▶"}</span>
       <div>
         <strong>{locale === "en" ? "Audio Guide" : "Thuyết minh"}</strong>
-        <small>{locale === "en" ? "Vietnamese narration" : "Âm thanh thuyết minh địa danh"}</small>
+        <small>{locale === "en" ? "English narration" : "Âm thanh thuyết minh địa danh"}</small>
       </div>
       <em>{isLoadingAudio ? (locale === "en" ? "Loading" : "Đang tạo") : isSpeaking ? (locale === "en" ? "Stop" : "Dừng") : (locale === "en" ? "Play" : "Nghe")}</em>
     </button>
@@ -154,6 +225,8 @@ function AudioChip({ destination }) {
 }
 
 function Hero({ destination }) {
+  const { locale } = useI18n();
+  const th = (key) => translate(heritageDict, locale, key);
   return (
     <section className="heritage-destination-hero" aria-labelledby="destination-title">
       <img src={destination.heroImage} alt="" aria-hidden="true" decoding="async" fetchPriority="high" />
@@ -164,11 +237,11 @@ function Hero({ destination }) {
         <span>{destination.subtitle}</span>
         <AudioChip destination={destination} />
         <div className="heritage-destination-actions">
-          <a href={`/hanh-trinh/${destination.slug}`}>Khám phá hành trình</a>
-          <a href="#thu-vien-anh">Xem thư viện ảnh</a>
+          <a href={`/hanh-trinh/${destination.slug}`}>{th("exploreJourney")}</a>
+          <a href="#thu-vien-anh">{th("viewGallery")}</a>
         </div>
       </div>
-      <a className="heritage-destination-scroll" href="#cau-chuyen" aria-label="Cuộn xuống nội dung">
+      <a className="heritage-destination-scroll" href="#cau-chuyen" aria-label={th("scrollDownAria")}>
         <span />
       </a>
     </section>
@@ -176,6 +249,8 @@ function Hero({ destination }) {
 }
 
 function IntroSplit({ destination, reverse = false }) {
+  const { locale } = useI18n();
+  const th = (key) => translate(heritageDict, locale, key);
   return (
     <section className={`heritage-destination-intro ${reverse ? "is-reversed" : ""}`} id="cau-chuyen">
       <article className="heritage-destination-intro-copy">
@@ -185,7 +260,7 @@ function IntroSplit({ destination, reverse = false }) {
           <p key={paragraph}>{paragraph}</p>
         ))}
         <a className="heritage-destination-dark-button" href="#thu-vien-anh">
-          Nhìn ngắm di sản
+          {th("viewHeritage")}
         </a>
       </article>
       <figure className="heritage-destination-feature">
@@ -197,11 +272,13 @@ function IntroSplit({ destination, reverse = false }) {
 }
 
 function DarkStory({ destination, compact = false }) {
+  const { locale } = useI18n();
+  const th = (key) => translate(heritageDict, locale, key);
   const imageLeft = destination.storyImage1 || destination.featureImage;
   const imageRight = destination.storyImage2 || destination.gallery[0]?.src || destination.heroImage;
 
   return (
-    <section className={`heritage-destination-story ${compact ? "is-compact" : ""}`} aria-label={`Câu chuyện ${destination.name}`}>
+    <section className={`heritage-destination-story ${compact ? "is-compact" : ""}`} aria-label={`${th("storyAriaPrefix")} ${destination.name}`}>
       <div className="heritage-destination-story-inner">
         <div className="heritage-story-split">
           <div className="heritage-story-split-images">
@@ -302,6 +379,8 @@ function LightEssay({ destination }) {
 }
 
 function Closing({ destination, circleImage = false }) {
+  const { locale } = useI18n();
+  const th = (key) => translate(heritageDict, locale, key);
   return (
     <section className={`heritage-destination-closing ${circleImage ? "has-circle-image" : ""}`}>
       <div>
@@ -309,10 +388,10 @@ function Closing({ destination, circleImage = false }) {
         <p>{destination.closingText}</p>
         <p className="heritage-destination-closing-actions">
           <Link className="heritage-destination-dark-button" href="/hanh-trinh">
-            Bắt đầu hành trình
+            {th("startJourney")}
           </Link>
           <Link className="heritage-destination-outline-button" href="/ho-chieu">
-            Hộ Chiếu của tôi
+            {th("myPassport")}
           </Link>
         </p>
       </div>
@@ -346,6 +425,8 @@ function BaiDinhLayout({ destination }) {
 }
 
 function TamCocLayout({ destination }) {
+  const { locale } = useI18n();
+  const th = (key) => translate(heritageDict, locale, key);
   return (
     <>
       <IntroSplit destination={destination} reverse />
@@ -362,22 +443,24 @@ function TamCocLayout({ destination }) {
             </article>
           ))}
         </div>
-        <a className="heritage-destination-dark-button" href="/hanh-trinh">Khám phá hành trình</a>
+        <a className="heritage-destination-dark-button" href="/hanh-trinh">{th("exploreJourney")}</a>
       </section>
     </>
   );
 }
 
 function PhoCoLayout({ destination }) {
+  const { locale } = useI18n();
+  const th = (key) => translate(heritageDict, locale, key);
   return (
     <>
       <IntroSplit destination={destination} reverse />
       <LightEssay destination={destination} />
       <section className="heritage-food-section">
         <div className="heritage-food-heading">
-          <p className="heritage-destination-kicker">Ẩm thực & quà lưu niệm</p>
+          <p className="heritage-destination-kicker">{th("foodSectionKicker")}</p>
           <h2>{destination.storyTitle}</h2>
-          <a href="/san-pham">Khám phá thực đơn</a>
+          <a href="/san-pham">{th("exploreMenu")}</a>
         </div>
         <div className="heritage-food-grid">
           {destination.highlights.map((item, index) => (
@@ -426,7 +509,9 @@ const layouts = {
   "trang-an": TrangAnLayout,
 };
 
-export default function HeritageDestinationPage({ destination }) {
+export default function HeritageDestinationPage({ destination: rawDestination }) {
+  const { locale } = useI18n();
+  const destination = localizeDestination(rawDestination, locale);
   const Layout = layouts[destination.layout] || TrangAnLayout;
 
   return (

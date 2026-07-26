@@ -197,6 +197,50 @@ async function seedProductSales() {
   );
 }
 
+const PRODUCT_TRANSLATABLE_FIELDS = [
+  "name",
+  "shortName",
+  "category",
+  "description",
+  "story",
+  "storyTitle",
+  "badge",
+  "ingredients",
+  "usage",
+  "shelfLife",
+  "storage",
+  "note",
+  "saleLabel",
+  "saleNote",
+];
+
+// Only writes "<field>_en" keys (merge:true), never touches price, images, status,
+// or any other field — safe to run even if admins have already customized products
+// directly in Firestore beyond what's in data/products.js.
+async function seedProductTranslations() {
+  await Promise.all(
+    hardcodedProducts.map((product) => {
+      const id = product.slug || product.id || slugFrom(product.name);
+      const payload = {};
+
+      for (const field of PRODUCT_TRANSLATABLE_FIELDS) {
+        const enValue = product[`${field}_en`];
+        if (enValue) {
+          payload[`${field}_en`] = enValue;
+        }
+      }
+
+      if (Object.keys(payload).length === 0) {
+        return Promise.resolve();
+      }
+
+      payload.updatedAt = serverTimestamp();
+
+      return db.collection("products").doc(id).set(payload, { merge: true });
+    })
+  );
+}
+
 async function seedPassportProduct() {
   const detailImages = [
     "/assets/san-pham/pop-up-passport/IMG_3447.JPG",
@@ -301,6 +345,9 @@ async function seedAdminUser() {
 if (seedMode === "products-only") {
   await seedProducts();
   console.log("Firebase product seed completed.");
+} else if (seedMode === "product-translations-only") {
+  await seedProductTranslations();
+  console.log("Firebase product translation (_en fields) seed completed.");
 } else if (seedMode === "product-sales-only") {
   await seedProductSales();
   console.log("Firebase product sale metadata seed completed.");

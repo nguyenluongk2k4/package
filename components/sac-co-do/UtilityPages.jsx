@@ -11,6 +11,9 @@ import WebArViewer from "./WebArViewer";
 import { useFirebaseAuth } from "./FirebaseAuthProvider";
 import { saveJourneyProgress } from "../../lib/firebase/userData";
 import { useToast } from "./ToastProvider";
+import { translate, useI18n } from "./I18nProvider";
+import photoboothDict from "../../locales/photobooth.json";
+import rewardDict from "../../locales/reward.json";
 
 export function CartPage() {
   const { user, db, loading } = useFirebaseAuth();
@@ -604,6 +607,8 @@ function LocalCertificateModal({ certificate, onClose, initialName }) {
 
 export function PhotoboothPage() {
   const { user, db } = useFirebaseAuth();
+  const { locale } = useI18n();
+  const tpb = (key) => translate(photoboothDict, locale, key);
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -619,7 +624,7 @@ export function PhotoboothPage() {
           localPhotosList = Object.keys(photosMap).map((key) => ({
             id: key,
             url: photosMap[key],
-            caption: `Kỷ niệm check-in tại ${stations.find(s => s.id === key)?.name || key}`,
+            caption: `${tpb("checkinCaptionPrefix")} ${stations.find(s => s.id === key)?.name || key}`,
           }));
         } catch (_) {}
       }
@@ -627,7 +632,7 @@ export function PhotoboothPage() {
       // If not logged in, set local photos and return
       if (!db || !user) {
         if (active) {
-          setPhotos(localPhotosList.length > 0 ? localPhotosList : gallery.map((url, idx) => ({ id: `place-${idx}`, url, caption: "Ảnh mẫu Ninh Bình" })));
+          setPhotos(localPhotosList.length > 0 ? localPhotosList : gallery.map((url, idx) => ({ id: `place-${idx}`, url, caption: tpb("sampleCaption") })));
           setLoading(false);
         }
         return;
@@ -637,14 +642,14 @@ export function PhotoboothPage() {
       try {
         const querySnapshot = await getDocs(collection(db, "users", user.uid, "photoboothPhotos"));
         if (!active) return;
-        
+
         const dbPhotos = [];
         querySnapshot.forEach((docSnapshot) => {
           const data = docSnapshot.data();
           dbPhotos.push({
             id: docSnapshot.id,
             url: data.url,
-            caption: data.caption || "Ảnh kỷ niệm",
+            caption: data.caption || tpb("defaultCaption"),
             createdAt: data.createdAt,
           });
         });
@@ -659,10 +664,10 @@ export function PhotoboothPage() {
 
         const finalPhotos = Array.from(mergedMap.values());
 
-        setPhotos(finalPhotos.length > 0 ? finalPhotos : gallery.map((url, idx) => ({ id: `place-${idx}`, url, caption: "Ảnh mẫu Ninh Bình" })));
+        setPhotos(finalPhotos.length > 0 ? finalPhotos : gallery.map((url, idx) => ({ id: `place-${idx}`, url, caption: tpb("sampleCaption") })));
       } catch (err) {
         console.warn("⚠️ [Photobooth] Lỗi tải ảnh từ Firestore:", err);
-        setPhotos(localPhotosList.length > 0 ? localPhotosList : gallery.map((url, idx) => ({ id: `place-${idx}`, url, caption: "Ảnh mẫu Ninh Bình" })));
+        setPhotos(localPhotosList.length > 0 ? localPhotosList : gallery.map((url, idx) => ({ id: `place-${idx}`, url, caption: tpb("sampleCaption") })));
       } finally {
         if (active) setLoading(false);
       }
@@ -672,13 +677,13 @@ export function PhotoboothPage() {
     return () => {
       active = false;
     };
-  }, [user, db]);
+  }, [user, db, locale]);
 
   return (
     <UtilityPage
-      eyebrow="Photobooth"
-      title="Khung ảnh lưu niệm của bạn"
-      description="Sau khi chụp ảnh check-in AR tại các danh thắng, những bức ảnh lưu niệm độc quyền của bạn sẽ được lưu giữ tại đây."
+      eyebrow={tpb("eyebrow")}
+      title={tpb("title")}
+      description={tpb("description")}
     >
       {loading ? (
         <div className="loading-placeholder-container">
@@ -713,57 +718,38 @@ export function PhotoboothPage() {
 }
 
 export function RewardPage() {
+  const { locale } = useI18n();
+  const tr = (key) => translate(rewardDict, locale, key);
   return (
     <UtilityPage
-      eyebrow="Phần thưởng"
-      title="Certificate và quà số sau khi hoàn thành"
-      description="Hoàn thành 6 trạm để nhận certificate cá nhân và bộ ảnh lưu niệm."
+      eyebrow={tr("eyebrow")}
+      title={tr("title")}
+      description={tr("description")}
     >
       <div className="reward-card">
-        <span>Sắc Cố Đô</span>
-        <h3>Certificate of Journey</h3>
-        <p>Trao cho người đã hoàn thành đủ 6 dấu mộc Ninh Bình.</p>
+        <span>{tr("cardBrand")}</span>
+        <h3>{tr("cardTitle")}</h3>
+        <p>{tr("cardDescription")}</p>
       </div>
     </UtilityPage>
   );
 }
 
 export function ArOnboardingGuide({ onClose, onStart }) {
+  const { locale } = useI18n();
+  const tpb = (key) => translate(photoboothDict, locale, key);
   const [activeStep, setActiveStep] = useState(0);
   const [dontShowAgain, setDontShowAgain] = useState(false);
 
-  const GUIDE_STEPS = [
-    {
-      title: "Bước 1: Quét bề mặt đất",
-      dialogue: "Xin chào bạn hữu! Hãy cùng tôi khám phá di sản nhé. Đầu tiên, bạn hãy lia camera điện thoại chậm rãi để quét sạch bề mặt sàn nhà hoặc mặt đất xung quanh.",
-      image: "/tour-guide/asset/step1-nibi.png",
-      badge: "Bước 1"
-    },
-    {
-      title: "Bước 2: Chọn vị trí đặt Nibi",
-      dialogue: "Tuyệt vời! Khi thấy vòng tròn vàng xuất hiện, bạn hãy chạm nhẹ tay lên vị trí đó để đặt tôi đứng vững trong không gian nhé.",
-      image: "/tour-guide/asset/step2-nibi.png",
-      badge: "Bước 2"
-    },
-    {
-      title: "Bước 3: Chụp và lưu ảnh cùng Nibi",
-      dialogue: "Cười lên nào! Bạn hãy căn chỉnh góc máy thật đẹp, xoay/phóng to thu nhỏ tôi cho hợp lý, rồi nhấn nút chụp ảnh để lưu giữ kỷ niệm vào thiết bị.",
-      image: "/tour-guide/asset/step3--nibi.png",
-      badge: "Bước 3"
-    },
-    {
-      title: "Bước 4: Đóng dấu mộc hộ chiếu",
-      dialogue: "Sắp hoàn thành rồi! Bây giờ bạn hãy tải bức ảnh vừa chụp lên website để hệ thống xác nhận và đóng con dấu mộc số lưu niệm vào cuốn hộ chiếu di sản nha.",
-      image: "/tour-guide/asset/step4-nibi.png",
-      badge: "Bước 4"
-    },
-    {
-      title: "Bước 5: Chia sẻ hành trình di sản",
-      dialogue: "Tuyệt vời ông mặt trời! Hãy chia sẻ khoảnh khắc đáng nhớ cùng Sắc Cố Đô để lưu giữ những kỷ niệm đẹp và tiếp tục hành trình di sản của bạn.",
-      image: "/tour-guide/asset/step5-nibi.png",
-      badge: "Bước 5"
-    }
+  const stepImages = [
+    "/tour-guide/asset/step1-nibi.png",
+    "/tour-guide/asset/step2-nibi.png",
+    "/tour-guide/asset/step3--nibi.png",
+    "/tour-guide/asset/step4-nibi.png",
+    "/tour-guide/asset/step5-nibi.png",
   ];
+  const stepsText = photoboothDict[locale]?.arGuide?.steps || photoboothDict.vi.arGuide.steps;
+  const GUIDE_STEPS = stepsText.map((step, index) => ({ ...step, image: stepImages[index] }));
 
   const currentStep = GUIDE_STEPS[activeStep];
 
@@ -789,7 +775,7 @@ export function ArOnboardingGuide({ onClose, onStart }) {
       <div className="ar-guide-overlay" role="dialog" aria-modal="true">
         <div className="ar-guide-backdrop" onClick={onClose} />
         <div className="ar-guide-card animate-scale-up">
-          <button className="ar-guide-close" onClick={onClose} aria-label="Đóng">✕</button>
+          <button className="ar-guide-close" onClick={onClose} aria-label={tpb("arGuide.closeAria")}>✕</button>
           
           <div className="ar-guide-grid-container">
             {/* Left side: Image container */}
@@ -806,7 +792,7 @@ export function ArOnboardingGuide({ onClose, onStart }) {
                   {currentStep.badge}
                 </span>
                 <span className="ar-guide-step-indicator text-xs text-neutral-400 font-medium">
-                  Bước {activeStep + 1}/5
+                  {tpb("arGuide.stepIndicatorPrefix")} {activeStep + 1}/5
                 </span>
               </div>
 
@@ -819,7 +805,7 @@ export function ArOnboardingGuide({ onClose, onStart }) {
                   <img src="/ar/avt-nibi-no-bg.png" alt="Nibi Tourguide" className="ar-guide-dialogue-avatar" />
                 </div>
                 <div className="ar-guide-dialogue-content">
-                  <div className="ar-guide-dialogue-name">Nibi Hướng Dẫn Viên</div>
+                  <div className="ar-guide-dialogue-name">{tpb("arGuide.narratorName")}</div>
                   <p className="ar-guide-dialogue-text">
                     "{currentStep.dialogue}"
                   </p>
@@ -841,28 +827,28 @@ export function ArOnboardingGuide({ onClose, onStart }) {
                       onChange={(e) => setDontShowAgain(e.target.checked)} 
                       className="ar-guide-checkbox" 
                     />
-                    <span>Không hiển thị lại hướng dẫn này</span>
+                    <span>{tpb("arGuide.dontShowAgain")}</span>
                   </label>
                 )}
                 <div className="ar-guide-buttons flex items-center justify-between gap-3 w-full">
                   {activeStep > 0 ? (
-                    <button 
+                    <button
                       type="button"
-                      className="ar-guide-btn-secondary" 
+                      className="ar-guide-btn-secondary"
                       onClick={handleBack}
                     >
-                      Quay lại
+                      {tpb("arGuide.back")}
                     </button>
                   ) : (
                     <div className="flex-1" />
                   )}
-                  
-                  <button 
+
+                  <button
                     type="button"
-                    className="ar-guide-btn-primary" 
+                    className="ar-guide-btn-primary"
                     onClick={handleNext}
                   >
-                    {activeStep === 4 ? "Bắt đầu ngay ✨" : "Tiếp theo"}
+                    {activeStep === 4 ? tpb("arGuide.start") : tpb("arGuide.next")}
                   </button>
                 </div>
               </div>

@@ -1,0 +1,34 @@
+{
+  "vi": {
+    "qrLocation": "Cổng thành Hoa Lư — bên phải cổng chính",
+    "qrDescription": "Mã QR được đặt tại tường thành bên phải cổng chính vào khu đền, gần bảng thông tin di tích.",
+    "qrDetails": [
+      "QR gắn trên tường gạch cổ, trong khung kính bảo vệ",
+      "Ngang tầm mắt, dễ thấy",
+      "Có đèn LED nhỏ chiếu sáng vào buổi tối"
+    ],
+    "hints": [
+      "Đi qua cổng chính Hoa Lư (cổng tam quan)",
+      "Rẽ phải ngay sau khi vào cổng",
+      "Đi dọc tường thành khoảng 10m",
+      "QR ở ngay cạnh bảng thông tin di tích"
+    ],
+    "tips": "Khu vực có mái che, QR được bảo vệ khỏi mưa. Giữ trật tự khi quét."
+  },
+  "en": {
+    "qrLocation": "Hoa Lu ancient gate — to the right of the main entrance",
+    "qrDescription": "The QR code is placed on the wall to the right of the main temple gate, near the heritage information board.",
+    "qrDetails": [
+      "QR is mounted on the ancient brick wall, inside a protective glass frame",
+      "At eye level, easy to spot",
+      "A small LED light illuminates it in the evening"
+    ],
+    "hints": [
+      "Walk through the main Hoa Lu gate (the three-entrance gate)",
+      "Turn right right after entering",
+      "Walk along the wall for about 10m",
+      "The QR is right next to the heritage information board"
+    ],
+    "tips": "The area is covered, so the QR is protected from rain. Please keep order while scanning."
+  }
+}

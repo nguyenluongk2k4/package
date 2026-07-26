@@ -1,0 +1,26 @@
+{
+  "vi": {
+    "kicker": "Sản phẩm",
+    "title": "Sắc Cố Đô",
+    "description": "Khám phá bộ sưu tập quà tặng văn hóa độc quyền và ẩm thực nổi tiếng mang trọn tinh hoa vùng đất Cố Đô Ninh Bình.",
+    "tabs": {
+      "all": "Tất cả sản phẩm",
+      "tourism": "Hành lý du lịch",
+      "specialty": "Đặc sản Ninh Bình"
+    },
+    "quickViewAria": "Xem chi tiết",
+    "quickViewLabel": "Chi tiết"
+  },
+  "en": {
+    "kicker": "Products",
+    "title": "Sac Co Do",
+    "description": "Discover an exclusive collection of cultural gifts and famous specialties capturing the essence of the ancient capital of Ninh Binh.",
+    "tabs": {
+      "all": "All products",
+      "tourism": "Travel gear",
+      "specialty": "Ninh Binh specialties"
+    },
+    "quickViewAria": "View details",
+    "quickViewLabel": "Details"
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "vi": {
+    "toast": {
+      "loginRequired": "Vui lòng đăng nhập trước khi kích hoạt hộ chiếu di sản!",
+      "checkinQrDetected": "Phát hiện mã QR check-in trạm! Đang di chuyển sang trang check-in...",
+      "qrDetectedPrefix": "Phát hiện mã QR:",
+      "dbError": "Lỗi kết nối cơ sở dữ liệu. Vui lòng thử lại sau.",
+      "codeNotFoundPrefix": "Mã",
+      "codeNotFoundSuffix": "không tồn tại trên hệ thống! Vui lòng kiểm tra lại.",
+      "codeUsed": "Mã kích hoạt này đã được sử dụng cho tài khoản khác!",
+      "codeInactive": "Mã kích hoạt này đã bị vô hiệu hóa hoặc thu hồi!",
+      "activationSuccess": "Kích hoạt Hộ chiếu thành công! Đã mở khóa Hành trình di sản.",
+      "activationError": "Đã xảy ra lỗi khi kích hoạt. Vui lòng thử lại.",
+      "emptyCode": "Vui lòng nhập hoặc quét mã passport!"
+    },
+    "cameraError": "Không thể kích hoạt camera quét QR. Bạn vẫn có thể nhập mã thủ công ở bên phải.",
+    "banner": {
+      "eyebrow": "Kích hoạt",
+      "title": "Kích Hoạt Hộ Chiếu Di Sản",
+      "description": "Đưa mã QR trên Hộ chiếu của bạn vào trước camera để tự động điền, hoặc nhập thông tin thủ công bên dưới."
+    },
+    "scanner": {
+      "heading": "Quét mã QR tự động",
+      "instructionActivated": "Tài khoản của bạn đã được kích hoạt Hộ chiếu di sản thành công. Camera quét đã tự động tắt để tiết kiệm pin.",
+      "instructionIdle": "Đưa mã QR trước camera của thiết bị để quét tự động liên tục.",
+      "readyTitle": "Hộ chiếu đã sẵn sàng!",
+      "readyText": "Hãy vào mục hành trình để bắt đầu đóng dấu mộc di sản Ninh Bình."
+    },
+    "manual": {
+      "heading": "Thông tin kích hoạt",
+      "instruction": "Mã QR sau khi quét được sẽ tự động điền vào ô dưới. Nhấn kích hoạt để xác nhận kích hoạt tài khoản.",
+      "codeLabel": "Mã kích hoạt hộ chiếu",
+      "codePlaceholder": "Ví dụ: SC#7A9X",
+      "submitting": "Đang kích hoạt...",
+      "activated": "Tài khoản đã kích hoạt",
+      "submit": "Kích hoạt (Xác nhận OK)"
+    }
+  },
+  "en": {
+    "toast": {
+      "loginRequired": "Please log in before activating your heritage passport!",
+      "checkinQrDetected": "Station check-in QR detected! Moving to the check-in page...",
+      "qrDetectedPrefix": "QR code detected:",
+      "dbError": "Database connection error. Please try again later.",
+      "codeNotFoundPrefix": "Code",
+      "codeNotFoundSuffix": "was not found in the system! Please check and try again.",
+      "codeUsed": "This activation code has already been used on another account!",
+      "codeInactive": "This activation code has been disabled or revoked!",
+      "activationSuccess": "Passport activated successfully! Your Heritage Journey is unlocked.",
+      "activationError": "Something went wrong during activation. Please try again.",
+      "emptyCode": "Please enter or scan your passport code!"
+    },
+    "cameraError": "Couldn't start the QR scanner camera. You can still enter the code manually on the right.",
+    "banner": {
+      "eyebrow": "Activate",
+      "title": "Activate Your Heritage Passport",
+      "description": "Hold your Passport's QR code up to the camera to auto-fill it, or enter the details manually below."
+    },
+    "scanner": {
+      "heading": "Automatic QR scan",
+      "instructionActivated": "Your account's Heritage Passport has been activated successfully. The scanner camera has turned off automatically to save battery.",
+      "instructionIdle": "Hold the QR code in front of your device's camera for continuous automatic scanning.",
+      "readyTitle": "Your passport is ready!",
+      "readyText": "Head to the journey section to start collecting Ninh Binh heritage stamps."
+    },
+    "manual": {
+      "heading": "Activation details",
+      "instruction": "A scanned QR code will auto-fill the field below. Press activate to confirm your account activation.",
+      "codeLabel": "Passport activation code",
+      "codePlaceholder": "e.g. SC#7A9X",
+      "submitting": "Activating...",
+      "activated": "Account activated",
+      "submit": "Activate (Confirm)"
+    }
+  }
+}

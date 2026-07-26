@@ -1,0 +1,34 @@
+{
+  "vi": {
+    "qrLocation": "Cầu đá Kỳ Lân — đầu cầu phía Đông",
+    "qrDescription": "Mã QR đặt tại lan can cầu đá Kỳ Lân (phía Đông), nơi có góc nhìn ra hồ và dãy đèn lồng.",
+    "qrDetails": [
+      "QR gắn trên mặt lan can đá, phẳng, dễ quét",
+      "Có đèn LED vàng chiếu sáng ban đêm",
+      "Gần biển tên 'Cầu Kỳ Lân'"
+    ],
+    "hints": [
+      "Vào khu phố đi bộ Phố Cổ Hoa Lư",
+      "Đi về phía cầu Kỳ Lân (cầu đá bắc qua hồ)",
+      "Lên cầu, đi về đầu cầu phía Đông (gần quảng trường)",
+      "QR trên lan can đá bên phải, ngay cạnh biển tên cầu"
+    ],
+    "tips": "Đẹp nhất sau 18:00 khi lên đèn. QR có đèn LED nên quét được cả buổi tối."
+  },
+  "en": {
+    "qrLocation": "Ky Lan stone bridge — Eastern end of the bridge",
+    "qrDescription": "The QR code is placed on the railing of the Ky Lan stone bridge (East side), with a view of the lake and the row of lanterns.",
+    "qrDetails": [
+      "QR is on the flat stone railing surface, easy to scan",
+      "A warm LED light illuminates it at night",
+      "Near the 'Ky Lan Bridge' name sign"
+    ],
+    "hints": [
+      "Enter the Hoa Lu Old Quarter walking street",
+      "Head toward Ky Lan bridge (the stone bridge over the lake)",
+      "Cross the bridge to the Eastern end (near the plaza)",
+      "The QR is on the right stone railing, right next to the bridge name sign"
+    ],
+    "tips": "Most beautiful after 6 PM when the lights turn on. The QR has an LED light so it can be scanned in the evening too."
+  }
+}
